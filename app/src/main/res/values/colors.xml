@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <!-- Basic color -->
+    <color name="primary">#40916C</color>
+    <color name="primaryVeryLight">#74C69D</color>
+    <color name="primaryLight">#52B788</color>
+    <color name="primaryDark">#2D6A4F</color>
+    <color name="primaryVeryDark">#1B4332</color>
+    <color name="primary_50">#8040916C</color>
+    <color name="secondary">#468FAF</color>
+    <color name="error">#D62839</color>
+    <color name="richeBlack">#031926</color>
+    <color name="richeBlack1">#032130</color>
+    <color name="richeBlack2">#042B3E</color>
+    <color name="richeBlack3">#05364D</color>
+    <color name="richeBlack4">#095981</color>
+    <color name="richeBlack5">#0C73A7</color>
+    <color name="richeBlack_50">#80031926</color>
+    <color name="richeBlack3_50">#8005364D</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="snow">#EDF2FB</color>
+
 </resources>
