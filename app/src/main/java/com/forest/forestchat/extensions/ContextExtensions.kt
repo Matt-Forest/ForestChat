@@ -16,29 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.forest.forestchat.extensions
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0"
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.35.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
+import android.app.Activity
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+fun Context.closeKeyboard(view: View?): Boolean {
+    return view?.let {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+    } ?: false
 }

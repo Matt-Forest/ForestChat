@@ -16,29 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.forest.forestchat.extensions
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0"
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.35.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+fun Any.generateConsistentId() : Int = javaClass.hashCode()

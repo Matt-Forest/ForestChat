@@ -18,50 +18,66 @@
  */
 package com.forest.forestchat.ui
 
-import android.graphics.Color
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
 import com.forest.forestchat.R
+import com.forest.forestchat.extensions.asColor
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class NavigationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_navigation)
+    }
 
-        hideSystemUI()
+    override fun onResume() {
+        super.onResume()
+        updateStatusBarTheme()
+        updateNavigationBarTheme()
+    }
 
-        window.statusBarColor = when(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            true -> Color.parseColor("#00000000")
-            false -> Color.parseColor("#66000000")
-        }
-
-        val contentViewAction = { setContentView(R.layout.activity_navigation) }
-
-        val hasSavedInstanceState = savedInstanceState != null
-        if(hasSavedInstanceState) {
-            // To properly restore instance state, we need to directly
-            // set content view to properly restore instance state.
-            contentViewAction()
+    private fun updateStatusBarTheme() {
+        with(window) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                with(decorView) {
+                    systemUiVisibility =
+                        when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                            Configuration.UI_MODE_NIGHT_YES -> {
+                                statusBarColor = R.color.richeBlack.asColor(context)
+                                systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                            }
+                            else -> {
+                                statusBarColor = R.color.white.asColor(context)
+                                systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            }
+                        }
+                }
+            }
         }
     }
 
-    private fun hideSystemUI() {
+    private fun updateNavigationBarTheme() {
         with(window) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                setDecorFitsSystemWindows(false)
-                insetsController?.let {
-                    it.hide(WindowInsets.Type.statusBars())
-                    it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                with(decorView) {
+                    systemUiVisibility =
+                        when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                            Configuration.UI_MODE_NIGHT_YES -> {
+                                navigationBarColor = R.color.richeBlack.asColor(context)
+                                systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+                            }
+                            else -> {
+                                navigationBarColor = R.color.white.asColor(context)
+                                systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                            }
+                        }
                 }
-            } else {
-                @Suppress("DEPRECATION")
-                decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
             }
         }
     }

@@ -16,29 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.forest.forestchat.ui.home
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0"
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.35.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
+import android.view.View
+import androidx.fragment.app.viewModels
+import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.forest.forestchat.ui.chats.ChatsViewModel
+import com.forest.forestchat.ui.dashboard.DashboardViewModel
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
+class HomeFragment : NavigationFragment() {
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    private val chatsViewModel: ChatsViewModel by viewModels()
+    private val dashboardViewModel: DashboardViewModel by viewModels()
+
+    private val navigationView: HomeNavigationView
+        get() = view as HomeNavigationView
+
+    override fun buildNavigationView(): View = HomeNavigationView(requireContext())
+
 }

@@ -17,18 +17,18 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/navigationHost"
+        android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:navGraph="@navigation/graph_navigation"
-        app:defaultNavHost="true"/>
+        android:background="@color/background"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/graph_navigation" />
 
 </FrameLayout>

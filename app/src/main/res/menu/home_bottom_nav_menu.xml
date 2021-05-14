@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
@@ -16,11 +17,14 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
-    <string name="app_name" translatable="false">ForestChat</string>
-
-    <string name="bottom_nav_chat">Chat</string>
-    <string name="bottom_nav_dashboard">Dashboard</string>
-    <string name="bottom_nav_add">Add</string>
-
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/chats"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/bottom_nav_chat" />
+    <item
+        android:id="@+id/dashboard"
+        android:icon="@drawable/ic_discovery"
+        android:title="@string/bottom_nav_dashboard" />
+</menu>

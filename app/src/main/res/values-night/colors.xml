@@ -19,4 +19,7 @@
   -->
 <resources>
 
+    <color name="background">#031926</color>
+    <color name="bottomNavBackground">#042B3E</color>
+
 </resources>

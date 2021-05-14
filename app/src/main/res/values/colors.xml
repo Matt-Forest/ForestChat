@@ -39,4 +39,7 @@
     <color name="white_50">#80FFFFFF</color>
     <color name="snow">#EDF2FB</color>
 
+    <color name="background">#FFFFFF</color>
+    <color name="bottomNavBackground">#FFFFFF</color>
+
 </resources>
