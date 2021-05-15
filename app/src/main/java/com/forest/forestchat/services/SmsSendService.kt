@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.services
 
-import com.forest.forestchat.R
+import android.content.Intent
+import androidx.core.app.JobIntentService
 
-enum class HomeTab(val id: Int) {
+class SmsSendService : JobIntentService() {
 
-    Chats(R.id.chats),
-
-    Dashboard(R.id.dashboard)
+    override fun onHandleWork(intent: Intent) {
+        TODO("Not yet implemented")
+    }
 
 }

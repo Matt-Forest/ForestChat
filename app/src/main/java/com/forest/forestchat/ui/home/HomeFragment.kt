@@ -18,9 +18,19 @@
  */
 package com.forest.forestchat.ui.home
 
+import android.Manifest
+import android.app.role.RoleManager
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.provider.Telephony
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
+import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.forest.forestchat.ui.chats.ChatsEvent
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 
@@ -32,6 +42,50 @@ class HomeFragment : NavigationFragment() {
     private val navigationView: HomeNavigationView
         get() = view as HomeNavigationView
 
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
     override fun buildNavigationView(): View = HomeNavigationView(requireContext())
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(chatsViewModel) {
+            observeEvents(chatsEvent()) { event ->
+                when (event) {
+                    ChatsEvent.RequestDefaultSms -> showDefaultSmsDialog()
+                    ChatsEvent.RequestPermission -> requestPermission()
+                    is ChatsEvent.ConversationsData -> {
+
+                    }
+                }
+            }
+
+            getConversations()
+        }
+    }
+
+    private fun showDefaultSmsDialog() {
+        activity?.let { fActivity ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val roleManager = fActivity.getSystemService(RoleManager::class.java) as RoleManager
+                resultLauncher.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS))
+            } else {
+                val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, fActivity.packageName)
+                fActivity.startActivity(intent)
+            }
+        }
+    }
+
+    private fun requestPermission() {
+        activity?.let {
+            ActivityCompat.requestPermissions(
+                it, arrayOf(
+                    Manifest.permission.READ_SMS,
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.READ_CONTACTS
+                ), 0
+            )
+        }
+    }
 
 }

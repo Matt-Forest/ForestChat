@@ -16,14 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.domain.useCases
 
-import com.forest.forestchat.R
+import android.content.Context
+import android.database.Cursor
+import android.provider.Telephony
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-enum class HomeTab(val id: Int) {
+@Singleton
+class GetConversationsUseCase @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
-    Chats(R.id.chats),
+    operator fun invoke() : String? {
 
-    Dashboard(R.id.dashboard)
+        return ""
+    }
 
 }

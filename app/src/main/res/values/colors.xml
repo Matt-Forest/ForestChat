@@ -41,5 +41,7 @@
 
     <color name="background">#FFFFFF</color>
     <color name="bottomNavBackground">#FFFFFF</color>
+    <color name="toolbarBackground">#FFFFFF</color>
+    <color name="searchBackground">#EDF2FB</color>
 
 </resources>

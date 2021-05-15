@@ -16,14 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.extensions
 
-import com.forest.forestchat.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import com.zhuinden.eventemitter.EventSource
 
-enum class HomeTab(val id: Int) {
 
-    Chats(R.id.chats),
+fun <T> Fragment.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
+    liveData.observe(viewLifecycleOwner, Observer { data: T? ->
+        if (data != null) {
+            observer(data)
+        }
+    })
+}
 
-    Dashboard(R.id.dashboard)
-
+fun <T> Fragment.observeEvents(eventSource: EventSource<T>, observer: (T) -> Unit) {
+    eventSource.startListening { data: T? ->
+        if (data != null) {
+            observer(data)
+        }
+    }
 }

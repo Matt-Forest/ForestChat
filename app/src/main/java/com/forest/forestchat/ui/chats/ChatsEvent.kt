@@ -16,14 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.ui.chats
 
-import com.forest.forestchat.R
-
-enum class HomeTab(val id: Int) {
-
-    Chats(R.id.chats),
-
-    Dashboard(R.id.dashboard)
-
+sealed class ChatsEvent {
+    object RequestPermission : ChatsEvent()
+    object RequestDefaultSms : ChatsEvent()
+    data class ConversationsData(val test: String?) : ChatsEvent()
 }
