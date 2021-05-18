@@ -18,14 +18,11 @@
  */
 package com.forest.forestchat.ui.chats
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.app.PermissionsManager
 import com.forest.forestchat.domain.useCases.GetConversationsUseCase
+import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatsViewModel @Inject constructor(
     private val getConversationsUseCase: GetConversationsUseCase,
-    private val permissionsManager: PermissionsManager
+    private val permissionsManager: PermissionsManager,
+    private val syncDataUseCase: SyncDataUseCase
 ) : ViewModel() {
 
     private val chatsEvent = EventEmitter<ChatsEvent>()
@@ -47,7 +45,13 @@ class ChatsViewModel @Inject constructor(
             when {
                 !permissionsManager.isDefaultSms() -> ChatsEvent.RequestDefaultSms
                 !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> ChatsEvent.RequestPermission
-                else -> ChatsEvent.ConversationsData(getConversationsUseCase())
+                else -> {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        syncDataUseCase()
+                    }
+
+                    ChatsEvent.ConversationsData(getConversationsUseCase())
+                }
             }
         )
     }

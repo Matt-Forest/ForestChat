@@ -19,7 +19,7 @@
 package com.forest.forestchat.domain.useCases
 
 import android.content.Context
-import android.database.Cursor
+import android.net.Uri
 import android.provider.Telephony
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -31,7 +31,23 @@ class GetConversationsUseCase @Inject constructor(
 ) {
 
     operator fun invoke() : String? {
-
+        context.contentResolver.query(
+            Uri.parse(
+                "content://mms-sms/canonical-addresses"
+            ),
+            null,
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            if (cursor.count > 0) {
+                val count = cursor.count.toString()
+                while (cursor.moveToNext()) {
+                    val conversationId = cursor.getString(0)
+                    val recipientId = cursor.getString(1)
+                }
+            }
+        }
         return ""
     }
 
