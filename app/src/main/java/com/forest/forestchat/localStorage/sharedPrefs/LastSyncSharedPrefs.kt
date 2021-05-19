@@ -16,26 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.useCases.synchronize
+package com.forest.forestchat.localStorage.sharedPrefs
 
-import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
-import java.util.*
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SyncDataUseCase @Inject constructor(
-    private val syncMessagesUseCase: SyncMessagesUseCase,
-    private val syncContactsUseCase: SyncContactsUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase,
-    private val lastSyncSharedPrefs: LastSyncSharedPrefs
+class LastSyncSharedPrefs @Inject constructor(
+    @ApplicationContext context: Context
 ) {
 
-    suspend operator fun invoke() {
-        syncMessagesUseCase()
-        syncContactsUseCase()
-        syncConversationsUseCase()
-        lastSyncSharedPrefs.set(Date().time)
+    private object Key {
+        const val LastSyncDate = "LastSyncDate"
+    }
+
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
+        "shared_preferences_last_sync",
+        Context.MODE_PRIVATE
+    )
+
+    fun get() = sharedPreferences.getLong(Key.LastSyncDate, 0L)
+
+    fun set(lastSync: Long) {
+        sharedPreferences.edit {
+            putLong(Key.LastSyncDate, lastSync)
+        }
     }
 
 }

@@ -31,7 +31,7 @@ interface ConversationDao {
     suspend fun insert(conversation: Conversation)
 
     @Query("SELECT * FROM Conversation")
-    suspend fun getAll(): List<Conversation>
+    suspend fun getAll(): List<Conversation>?
 
     @Query("DELETE FROM Conversation")
     suspend fun deleteAll()

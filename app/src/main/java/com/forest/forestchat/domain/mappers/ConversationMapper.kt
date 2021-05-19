@@ -27,12 +27,12 @@ import com.forest.forestchat.domain.models.message.Message
 
 fun Cursor.toConversation(
     recipients: (List<String>, List<Contact>) -> List<Recipient>,
-    conversationsPersisted: List<Conversation>,
+    conversationsPersisted: List<Conversation>?,
     contacts: List<Contact>,
     messages: List<Message>
 ): Conversation {
     val id = getLong(getColumnIndex(Telephony.Threads._ID))
-    val persisted = conversationsPersisted.firstOrNull { it.id == id }
+    val persisted = conversationsPersisted?.firstOrNull { it.id == id }
     return Conversation(
         id = id,
         archived = persisted?.archived ?: false,

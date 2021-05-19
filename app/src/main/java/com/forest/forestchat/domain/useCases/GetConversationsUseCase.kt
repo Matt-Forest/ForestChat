@@ -18,37 +18,16 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import android.content.Context
-import android.net.Uri
-import android.provider.Telephony
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.localStorage.database.daos.ConversationDao
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class GetConversationsUseCase @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val conversationDao: ConversationDao
 ) {
 
-    operator fun invoke() : String? {
-        context.contentResolver.query(
-            Uri.parse(
-                "content://mms-sms/canonical-addresses"
-            ),
-            null,
-            null,
-            null,
-            null
-        )?.use { cursor ->
-            if (cursor.count > 0) {
-                val count = cursor.count.toString()
-                while (cursor.moveToNext()) {
-                    val conversationId = cursor.getString(0)
-                    val recipientId = cursor.getString(1)
-                }
-            }
-        }
-        return ""
-    }
+    suspend operator fun invoke(): List<Conversation>? = conversationDao.getAll()
 
 }
