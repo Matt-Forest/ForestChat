@@ -29,5 +29,9 @@ class GetConversationsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): List<Conversation>? = conversationDao.getAll()
+        ?.filter { it.lastMessage != null && !it.archived && it.blocked == null }
+        ?.sortedBy { it.lastMessage?.read == false }
+        ?.sortedBy { it.pinned }
+        ?.sortedByDescending { it.lastMessage?.date }
 
 }

@@ -16,28 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.common.avatar
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+sealed class AvatarType {
 
-@Entity
-data class Conversation(
-    @PrimaryKey
-    val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
-    val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
-
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
+    sealed class Single : AvatarType() {
+        object Profile : Single()
+        data class Letters(val letters: String) : Single()
+        data class Image(val uri: String) : Single()
     }
 
+    data class Group(val foreground: Single, val background: Single) : AvatarType()
 }

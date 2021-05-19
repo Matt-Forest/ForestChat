@@ -16,28 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.chats.adapter
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.common.avatar.AvatarType
 
-@Entity
-data class Conversation(
-    @PrimaryKey
+class ConversationItem(
     val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
+    val title: String,
+    val lastMessage: String,
+    val date: String,
+    val avatarType: AvatarType,
     val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
+    val unread: Boolean
+) : BaseAdapterItem() {
 
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
-    }
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is ConversationItem && oldItem.id == id
 
 }

@@ -16,28 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.base.recycler
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+abstract class BaseAdapterItem {
 
-@Entity
-data class Conversation(
-    @PrimaryKey
-    val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
-    val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
+    /**
+     * Returns view type associated to this item.
+     * If your adapter use only one item type, you can let
+     * this value by default.
+     */
+    open fun getViewType() : Int = 0
 
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
-    }
+    abstract fun isItemTheSame(oldItem: BaseAdapterItem) : Boolean
+
+    open fun getChangePayload(oldItem: BaseAdapterItem) : Any? = null
 
 }

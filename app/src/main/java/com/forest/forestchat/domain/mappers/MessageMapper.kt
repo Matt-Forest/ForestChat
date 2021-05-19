@@ -55,8 +55,8 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
             }
         } ?: MessageBox.All,
         type = type,
-        date = getLong(getColumnIndex(Telephony.Mms.DATE)) * 1_000,
-        dateSent = getLong(getColumnIndex(Telephony.Mms.DATE_SENT)) * 1_000,
+        date = getLong(getColumnIndex(Telephony.Mms.DATE)).toDate(type),
+        dateSent = getLong(getColumnIndex(Telephony.Mms.DATE_SENT)).toDate(type),
         seen = when (type) {
             MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.SEEN)) != 0
             MessageType.Mms -> getInt(getColumnIndex(Telephony.Mms.SEEN)) != 0
@@ -88,6 +88,11 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
             else -> null
         }
     )
+}
+
+private fun Long.toDate(type: MessageType) : Long = when (type) {
+    MessageType.Mms -> this * 1_000
+    else -> this
 }
 
 private fun String?.toMessageType(): MessageType = when {

@@ -21,15 +21,15 @@ package com.forest.forestchat.ui.home
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.forest.forestchat.ui.chats.ChatsEvent
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
+
+    lateinit var requestSmsPermissionChats: () -> Unit
 
     private var selectedTab: HomeTab = HomeTab.Chats
     private val binding: NavigationHomeBinding
@@ -40,8 +40,26 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
         binding.fab.drawable.setTint(R.color.white.asColor(context))
 
+        setupChatsView()
         setupBottomView()
         toggleViews()
+    }
+
+    private fun setupChatsView() {
+        binding.chatsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
+    }
+
+    fun event(event: HomeEvent) {
+        binding.chatsContainerView.event(
+            when (event) {
+                HomeEvent.RequestDefaultSms,
+                HomeEvent.RequestPermission -> ChatsEvent.NeedPermission
+                is HomeEvent.ConversationsData -> when (event.conversations) {
+                    null -> ChatsEvent.NoData
+                    else -> ChatsEvent.ConversationsData(event.conversations)
+                }
+            }
+        )
     }
 
     private fun setupBottomView() {

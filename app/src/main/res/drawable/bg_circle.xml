@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
@@ -16,12 +17,8 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M12.007,3.0975C11.4555,3.0975 11.01,3.543 11.01,4.0946L11.0029,11.003L4.0874,11.003C3.5359,11.003 3.0904,11.4485 3.0904,12C3.0904,12.5515 3.5359,12.997 4.0874,12.997L11.0029,12.997L11.0029,19.9125C11.0029,20.4641 11.4484,20.9095 12,20.9095C12.5515,20.9095 12.997,20.4641 12.997,19.9125L12.997,12.997L19.9125,12.997C20.464,12.997 20.9095,12.5515 20.9095,12C20.9095,11.4485 20.464,11.003 19.9125,11.003L12.997,11.003L12.997,4.0875C12.997,3.5501 12.5444,3.0975 12.007,3.0975Z"
-      android:fillColor="#ffffff"/>
-</vector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="1000dp" />
+    <solid android:color="@android:color/white" />
+</shape>

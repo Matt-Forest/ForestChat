@@ -16,18 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats
+package com.forest.forestchat.ui.common.avatar
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.forest.forestchat.databinding.NavigationChatsBinding
-import com.forest.forestchat.extensions.gone
-import com.forest.forestchat.extensions.visible
-import com.forest.forestchat.ui.chats.adapter.ConversationsAdapter
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import com.forest.forestchat.databinding.ViewGroupAvatarBinding
 
-class ChatsNavigationView : ConstraintLayout {
+class GroupAvatarView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -37,36 +36,35 @@ class ChatsNavigationView : ConstraintLayout {
         defStyle
     )
 
-    lateinit var requestSmsPermission: () -> Unit
-
-    private val binding: NavigationChatsBinding
+    private val binding: ViewGroupAvatarBinding
 
     init {
         val layoutInflater = LayoutInflater.from(context)
-        binding = NavigationChatsBinding.inflate(layoutInflater, this)
-
-        binding.changePermission.setOnClickListener { requestSmsPermission() }
+        binding = ViewGroupAvatarBinding.inflate(layoutInflater, this)
     }
 
-    fun event(event: ChatsEvent) = when (event) {
-        ChatsEvent.NeedPermission -> {
-            binding.empty.gone()
-            binding.recyclerChat.gone()
-            binding.requestPermission.visible()
-        }
-        ChatsEvent.NoData -> {
-            binding.empty.visible()
-            binding.recyclerChat.gone()
-            binding.requestPermission.gone()
-        }
-        is ChatsEvent.ConversationsData -> {
-            binding.empty.gone()
-            binding.recyclerChat.visible()
-            binding.requestPermission.gone()
+    override fun onFinishInflate() {
+        super.onFinishInflate()
 
-            val adapter =
-                ConversationsAdapter().apply { setConversations(context, event.conversations) }
-            binding.recyclerChat.adapter = adapter
+        if (!isInEditMode) {
+            updateAvatars(AvatarType.Single.Profile)
+        }
+    }
+
+    fun updateAvatars(type: AvatarType) {
+        with(binding) {
+            avatarForegroundFrame.updateLayoutParams<LayoutParams> {
+                matchConstraintPercentWidth = if (type is AvatarType.Group) 0.75f else 1.0f
+            }
+            avatarBackground.isVisible = type is AvatarType.Group
+
+            when (type) {
+                is AvatarType.Single -> avatarForeground.setAvatar(type)
+                is AvatarType.Group -> {
+                    avatarForeground.setAvatar(type.foreground)
+                    avatarBackground.setAvatar(type.background)
+                }
+            }
         }
     }
 

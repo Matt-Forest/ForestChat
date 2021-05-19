@@ -23,5 +23,7 @@
     <color name="bottomNavBackground">#042B3E</color>
     <color name="toolbarBackground">#042B3E</color>
     <color name="searchBackground">#031926</color>
+    <color name="text">#FFFFFF</color>
+    <color name="text_50">#80FFFFFF</color>
 
 </resources>

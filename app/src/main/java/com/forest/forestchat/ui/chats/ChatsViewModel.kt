@@ -24,6 +24,7 @@ import com.forest.forestchat.app.PermissionsManager
 import com.forest.forestchat.domain.useCases.GetConversationsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
+import com.forest.forestchat.ui.home.HomeEvent
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,20 +41,20 @@ class ChatsViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
-    private val chatsEvent = EventEmitter<ChatsEvent>()
-    fun chatsEvent(): EventSource<ChatsEvent> = chatsEvent
+    private val chatsEvent = EventEmitter<HomeEvent>()
+    fun chatsEvent(): EventSource<HomeEvent> = chatsEvent
 
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
             val event = when {
-                !permissionsManager.isDefaultSms() -> ChatsEvent.RequestDefaultSms
-                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> ChatsEvent.RequestPermission
+                !permissionsManager.isDefaultSms() -> HomeEvent.RequestDefaultSms
+                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> HomeEvent.RequestPermission
                 else -> {
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
                         syncDataUseCase()
                     }
-                    ChatsEvent.ConversationsData(getConversationsUseCase())
+                    HomeEvent.ConversationsData(getConversationsUseCase())
                 }
             }
 

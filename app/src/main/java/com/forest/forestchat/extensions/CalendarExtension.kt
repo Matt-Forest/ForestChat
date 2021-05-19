@@ -16,28 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.extensions
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+import java.util.*
 
-@Entity
-data class Conversation(
-    @PrimaryKey
-    val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
-    val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
+fun Calendar.isSameDay(other: Calendar): Boolean {
+    return get(Calendar.YEAR) == other.get(Calendar.YEAR) && get(Calendar.DAY_OF_YEAR) == other.get(
+        Calendar.DAY_OF_YEAR)
+}
 
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
-    }
+fun Calendar.isSameWeek(other: Calendar): Boolean {
+    return get(Calendar.YEAR) == other.get(Calendar.YEAR) && get(Calendar.WEEK_OF_YEAR) == other.get(
+        Calendar.WEEK_OF_YEAR)
+}
 
+fun Calendar.isSameYear(other: Calendar): Boolean {
+    return get(Calendar.YEAR) == other.get(Calendar.YEAR)
 }

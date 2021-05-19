@@ -40,4 +40,24 @@ data class Message(
     val subId: Int?,
     val sms: MessageSms?,
     val mms: MessageMms?
-)
+) {
+
+    fun isUser(): Boolean {
+        val isIncomingMms =
+            type == MessageType.Mms && (box == MessageBox.Inbox || box == MessageBox.All)
+        val isIncomingSms =
+            type == MessageType.Sms && (box == MessageBox.Inbox || box == MessageBox.All)
+
+        return !(isIncomingMms || isIncomingSms)
+    }
+
+    /**
+     * Returns the text that should be displayed when a preview of the message
+     * needs to be displayed, such as in the conversation view or in a notification
+     */
+    fun getSummary(): String = when (type) {
+        MessageType.Sms -> sms?.body
+        else -> mms?.getSummary()
+    } ?: ""
+
+}

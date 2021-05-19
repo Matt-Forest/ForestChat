@@ -30,4 +30,14 @@ data class MmsPart(
     val seq: Int,
     val name: String?,
     val text: String?
-)
+) {
+
+    fun getSummary(): String? = when(type) {
+        MmsPartType.Text -> text
+        MmsPartType.ContactCard -> "Contact card"
+        MmsPartType.Image -> "Photo"
+        MmsPartType.Video -> "Video"
+        else -> null
+    }
+
+}

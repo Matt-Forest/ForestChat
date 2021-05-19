@@ -30,7 +30,6 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import com.forest.forestchat.ui.chats.ChatsEvent
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 
@@ -48,15 +47,18 @@ class HomeFragment : NavigationFragment() {
     override fun buildNavigationView(): View = HomeNavigationView(requireContext())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(navigationView) {
+            requestSmsPermissionChats = { showDefaultSmsDialog() }
+        }
+
         with(chatsViewModel) {
             observeEvents(chatsEvent()) { event ->
                 when (event) {
-                    ChatsEvent.RequestDefaultSms -> showDefaultSmsDialog()
-                    ChatsEvent.RequestPermission -> requestPermission()
-                    is ChatsEvent.ConversationsData -> {
-
-                    }
+                    HomeEvent.RequestDefaultSms -> showDefaultSmsDialog()
+                    HomeEvent.RequestPermission -> requestPermission()
+                    else -> {}
                 }
+                navigationView.event(event)
             }
 
             getConversations()

@@ -21,7 +21,7 @@ package com.forest.forestchat.ui.chats
 import com.forest.forestchat.domain.models.Conversation
 
 sealed class ChatsEvent {
-    object RequestPermission : ChatsEvent()
-    object RequestDefaultSms : ChatsEvent()
-    data class ConversationsData(val conversations: List<Conversation>?) : ChatsEvent()
+    object NeedPermission : ChatsEvent()
+    object NoData : ChatsEvent()
+    data class ConversationsData(val conversations: List<Conversation>) : ChatsEvent()
 }

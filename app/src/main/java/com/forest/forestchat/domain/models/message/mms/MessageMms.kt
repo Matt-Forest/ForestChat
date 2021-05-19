@@ -21,4 +21,27 @@ package com.forest.forestchat.domain.models.message.mms
 data class MessageMms(
     val subject: String?,
     val parts: List<MmsPart>
-)
+) {
+
+    fun getSummary() : String {
+        val sb = StringBuilder()
+
+        // Add subject
+        getCleansedSubject().takeIf { it.isNotEmpty() }?.let { subject -> sb.appendLine(subject) }
+
+        // Add parts
+        parts.map { it.getSummary() }.forEach { summary -> sb.appendLine(summary) }
+
+        return sb.toString().trim()
+    }
+
+    /**
+     * Cleanses the subject in case it's useless, so that the UI doesn't have to show it
+     */
+    private fun getCleansedSubject(): String {
+        val uselessSubjects = listOf("no subject", "NoSubject", "<not present>")
+
+        return if (uselessSubjects.contains(subject)) "" else subject ?: ""
+    }
+
+}

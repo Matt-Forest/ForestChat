@@ -16,28 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.home
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.domain.models.Conversation
 
-@Entity
-data class Conversation(
-    @PrimaryKey
-    val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
-    val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
-
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
-    }
-
+sealed class HomeEvent {
+    object RequestPermission : HomeEvent()
+    object RequestDefaultSms : HomeEvent()
+    data class ConversationsData(val conversations: List<Conversation>?) : HomeEvent()
 }

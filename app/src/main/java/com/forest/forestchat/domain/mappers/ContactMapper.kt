@@ -41,5 +41,5 @@ fun Cursor.toContact(context: Context) = Contact(
     name = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
     photoUri = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)),
     starred = getInt(getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED)) != 0,
-    lastUpdate = getLong(getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_LAST_UPDATED_TIMESTAMP)) * 1_000,
+    lastUpdate = getLong(getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_LAST_UPDATED_TIMESTAMP)),
 )

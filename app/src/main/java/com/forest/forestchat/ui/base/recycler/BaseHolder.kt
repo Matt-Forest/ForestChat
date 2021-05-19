@@ -16,28 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.base.recycler
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.forest.forestchat.domain.models.message.Message
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 
-@Entity
-data class Conversation(
-    @PrimaryKey
-    val id: Long,
-    val archived: Boolean,
-    val blocked: ConversationBlock?,
-    val pinned: Boolean,
-    val recipients: List<Recipient>,
-    val lastMessage: Message?,
-    val draft: String?,
-    val name: String?
-) {
+abstract class BaseHolder<T> : RecyclerView.ViewHolder {
 
-    fun getTitle(): String {
-        return name.takeIf { it?.isNotBlank() == true }
-            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
-    }
+    constructor(parent: ViewGroup, @LayoutRes layoutId: Int) :
+            super(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
+
+    constructor(view: View) : super(view)
+
+    val context: Context
+        get() = itemView.context
+
+    open fun bind(item: T) {}
+
+    open fun onViewRecycled() {}
 
 }
