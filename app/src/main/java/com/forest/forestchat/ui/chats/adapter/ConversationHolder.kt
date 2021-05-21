@@ -24,6 +24,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderConversationBinding
+import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class ConversationHolder(
@@ -34,14 +35,18 @@ class ConversationHolder(
 
     override fun bind(item: ConversationItem) {
         with(binding) {
-            // TODO add chips ads and draft
             avatars.updateAvatars(item.avatarType)
             title.text = item.title
             snippet.text = item.lastMessage
             date.text = item.date
             pinned.isVisible = item.pinned
             unread.isVisible = item.unread
+            chip.isVisible = item.draft
 
+            snippet.setTextColor(when (item.unread) {
+                true -> R.color.text.asColor(context)
+                false -> R.color.text_50.asColor(context)
+            })
             title.typeface = updateTypeFace(item.unread)
             snippet.typeface = updateTypeFace(item.unread)
             date.typeface = updateTypeFace(item.unread)

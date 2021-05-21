@@ -17,17 +17,8 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
-
-    <string name="bottom_nav_chat">Chats</string>
-    <string name="bottom_nav_dashboard">Tableau de bord</string>
-    <string name="bottom_nav_add">Ajout</string>
-
-    <string name="chats_search_hint">Recherche</string>
-    <string name="chats_change_permission">Changer</string>
-    <string name="chats_empty_conversation">Aucune conversation pour le moment.\nEnvoyer un message pour commencer.</string>
-    <string name="chats_permission_needed_text">Plus qu\’à choisir ForestChat comme application par défaut.\n\nPas de panique ! Vous retrouverez tous vos SMS ici et vous pouvez revenir sur votre ancienne application quand vous le voulez.</string>
-    <string name="chats_sender_user">Vous: %s</string>
-    <string name="chats_draft">Brouillon</string>
-
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="5dp" />
+    <solid android:color="@color/primary" />
+</shape>

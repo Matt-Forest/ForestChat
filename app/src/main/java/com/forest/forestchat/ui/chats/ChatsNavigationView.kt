@@ -64,8 +64,9 @@ class ChatsNavigationView : ConstraintLayout {
             binding.recyclerChat.visible()
             binding.requestPermission.gone()
 
-            val adapter =
-                ConversationsAdapter().apply { setConversations(context, event.conversations) }
+            val adapter = ConversationsAdapter().apply {
+                    setConversations(context, event.conversations)
+                }
             binding.recyclerChat.adapter = adapter
         }
     }

@@ -28,7 +28,8 @@ class ConversationItem(
     val date: String,
     val avatarType: AvatarType,
     val pinned: Boolean,
-    val unread: Boolean
+    val unread: Boolean,
+    val draft: Boolean
 ) : BaseAdapterItem() {
 
     override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =

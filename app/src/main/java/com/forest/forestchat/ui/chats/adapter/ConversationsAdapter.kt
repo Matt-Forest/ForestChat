@@ -50,7 +50,8 @@ class ConversationsAdapter : BaseAdapter() {
                     ?.getConversationTimestamp(context) ?: "",
                 avatarType = buildAvatar(conversation.recipients),
                 pinned = conversation.pinned,
-                unread = conversation.lastMessage?.read == false
+                unread = conversation.lastMessage?.read == false,
+                draft = false
             )
         }
         submitList(items)
