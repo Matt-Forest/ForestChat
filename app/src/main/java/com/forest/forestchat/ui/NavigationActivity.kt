@@ -18,13 +18,9 @@
  */
 package com.forest.forestchat.ui
 
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.forest.forestchat.R
-import com.forest.forestchat.extensions.asColor
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -34,52 +30,6 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        updateStatusBarTheme()
-        updateNavigationBarTheme()
-    }
-
-    private fun updateStatusBarTheme() {
-        with(window) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                with(decorView) {
-                    systemUiVisibility =
-                        when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                            Configuration.UI_MODE_NIGHT_YES -> {
-                                statusBarColor = R.color.richeBlack.asColor(context)
-                                systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-                            }
-                            else -> {
-                                statusBarColor = R.color.white.asColor(context)
-                                systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                            }
-                        }
-                }
-            }
-        }
-    }
-
-    private fun updateNavigationBarTheme() {
-        with(window) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                with(decorView) {
-                    systemUiVisibility =
-                        when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                            Configuration.UI_MODE_NIGHT_YES -> {
-                                navigationBarColor = R.color.richeBlack.asColor(context)
-                                systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-                            }
-                            else -> {
-                                navigationBarColor = R.color.white.asColor(context)
-                                systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                            }
-                        }
-                }
-            }
-        }
     }
 
 }

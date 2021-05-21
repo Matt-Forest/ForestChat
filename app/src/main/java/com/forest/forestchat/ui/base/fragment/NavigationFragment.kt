@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.closeKeyboard
 import com.forest.forestchat.extensions.generateConsistentId
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,13 +31,23 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 abstract class NavigationFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         buildNavigationView().also { view ->
             view.id = generateConsistentId()
 
             // prevents click below fragments
             view.setOnClickListener { }
         }
+
+    override fun onResume() {
+        super.onResume()
+        updateStatusBarMode()
+        updateNavigationBar()
+    }
 
     override fun onPause() {
         super.onPause()
@@ -47,5 +58,23 @@ abstract class NavigationFragment : Fragment() {
      * set fragment view
      */
     protected abstract fun buildNavigationView(): View
+
+    /**
+     * Get color of status bar
+     */
+    protected abstract fun getStatusBarBgColor(): Int
+
+    /**
+     * Get color of navigation bar
+     */
+    protected abstract fun getNavigationBarBgColor(): Int
+
+    fun updateStatusBarMode() {
+        requireActivity().window.statusBarColor = getStatusBarBgColor().asColor(context)
+    }
+
+    fun updateNavigationBar() {
+        requireActivity().window.navigationBarColor = getNavigationBarBgColor().asColor(context)
+    }
 
 }

@@ -48,7 +48,6 @@ class ConversationHolder(
                 false -> R.color.text_50.asColor(context)
             })
             title.typeface = updateTypeFace(item.unread)
-            snippet.typeface = updateTypeFace(item.unread)
             date.typeface = updateTypeFace(item.unread)
         }
     }

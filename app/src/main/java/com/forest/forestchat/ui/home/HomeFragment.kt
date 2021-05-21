@@ -28,6 +28,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
+import com.forest.forestchat.R
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
@@ -41,14 +42,28 @@ class HomeFragment : NavigationFragment() {
     private val navigationView: HomeNavigationView
         get() = view as HomeNavigationView
 
+    private var homeTab = HomeTab.Chats
+
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
     override fun buildNavigationView(): View = HomeNavigationView(requireContext())
 
+    override fun getStatusBarBgColor(): Int = when (homeTab) {
+        HomeTab.Chats -> R.color.toolbarBackground
+        HomeTab.Dashboard -> R.color.background
+    }
+
+    override fun getNavigationBarBgColor(): Int = R.color.background
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {
             requestSmsPermissionChats = { showDefaultSmsDialog() }
+            toggleTab = {
+                homeTab = it
+                updateStatusBarMode()
+                updateNavigationBar()
+            }
         }
 
         with(chatsViewModel) {

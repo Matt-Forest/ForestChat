@@ -41,17 +41,21 @@ class ChatsNavigationView : ConstraintLayout {
     lateinit var requestSmsPermission: () -> Unit
 
     private val binding: NavigationChatsBinding
+    private val conversationsAdapter = ConversationsAdapter()
 
     init {
         val layoutInflater = LayoutInflater.from(context)
         binding = NavigationChatsBinding.inflate(layoutInflater, this)
 
-        binding.changePermission.setOnClickListener { requestSmsPermission() }
-        binding.userProfile.setOnClickListener {
-            when (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-                true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        with(binding) {
+            changePermission.setOnClickListener { requestSmsPermission() }
+            userProfile.setOnClickListener {
+                when (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+                    true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
             }
+            recyclerChat.adapter = conversationsAdapter
         }
     }
 
@@ -71,10 +75,10 @@ class ChatsNavigationView : ConstraintLayout {
             binding.recyclerChat.visible()
             binding.requestPermission.gone()
 
-            val adapter = ConversationsAdapter().apply {
-                    setConversations(context, event.conversations)
-                }
-            binding.recyclerChat.adapter = adapter
+            conversationsAdapter.apply {
+                setConversations(context, event.conversations)
+            }
+            binding.recyclerChat.adapter = conversationsAdapter
         }
     }
 

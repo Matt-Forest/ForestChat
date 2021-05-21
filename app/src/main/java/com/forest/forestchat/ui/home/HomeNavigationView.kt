@@ -30,6 +30,7 @@ import com.forest.forestchat.ui.chats.ChatsEvent
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
     lateinit var requestSmsPermissionChats: () -> Unit
+    lateinit var toggleTab: (HomeTab) -> Unit
 
     private var selectedTab: HomeTab = HomeTab.Chats
     private val binding: NavigationHomeBinding
@@ -79,6 +80,7 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
                     toggleViews()
                 }
             }
+            toggleTab(selectedTab)
 
             true
         }
