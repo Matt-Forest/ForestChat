@@ -21,6 +21,7 @@ package com.forest.forestchat.ui.chats
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.forest.forestchat.databinding.NavigationChatsBinding
 import com.forest.forestchat.extensions.gone
@@ -46,6 +47,12 @@ class ChatsNavigationView : ConstraintLayout {
         binding = NavigationChatsBinding.inflate(layoutInflater, this)
 
         binding.changePermission.setOnClickListener { requestSmsPermission() }
+        binding.userProfile.setOnClickListener {
+            when (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+                true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
     }
 
     fun event(event: ChatsEvent) = when (event) {

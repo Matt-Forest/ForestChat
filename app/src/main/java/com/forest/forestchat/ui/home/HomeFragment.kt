@@ -28,10 +28,10 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
-import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
+import com.zhuinden.liveevent.observe
 
 class HomeFragment : NavigationFragment() {
 
@@ -52,11 +52,12 @@ class HomeFragment : NavigationFragment() {
         }
 
         with(chatsViewModel) {
-            observeEvents(chatsEvent()) { event ->
+            chatsEvent().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     HomeEvent.RequestDefaultSms -> showDefaultSmsDialog()
                     HomeEvent.RequestPermission -> requestPermission()
-                    else -> {}
+                    else -> {
+                    }
                 }
                 navigationView.event(event)
             }
