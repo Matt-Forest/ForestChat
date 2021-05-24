@@ -30,3 +30,5 @@ jni/libspeex/.deps/
 pkcs11.password
 app/schemas
 app/prodForestChat
+app/src/prodForestChat/google-services.json
+app/src/devForestChat/google-services.json
