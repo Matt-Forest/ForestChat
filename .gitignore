@@ -9,9 +9,11 @@ bin/
 gen/
 .idea/
 *.iml
+*.aab
 out
 tests
 local.properties
+keystore.properties
 ant.properties
 .DS_Store
 build.log
@@ -27,3 +29,4 @@ obj/
 jni/libspeex/.deps/
 pkcs11.password
 app/schemas
+app/prodForestChat
