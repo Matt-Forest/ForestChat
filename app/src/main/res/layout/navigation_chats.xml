@@ -66,6 +66,36 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/loadingData"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChat">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/primary" />
+
+        <TextView
+            style="@style/Typography.Subtitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:paddingHorizontal="40dp"
+            android:text="@string/chats_loading"
+            android:textColor="@color/text" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/empty"
         style="@style/Typography.Subtitle2"

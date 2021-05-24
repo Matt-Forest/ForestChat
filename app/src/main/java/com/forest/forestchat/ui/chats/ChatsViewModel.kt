@@ -24,6 +24,7 @@ import com.forest.forestchat.app.PermissionsManager
 import com.forest.forestchat.domain.useCases.GetConversationsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
+import com.forest.forestchat.receiver.DefaultSmsChangedReceiver
 import com.forest.forestchat.ui.home.HomeEvent
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
@@ -52,6 +53,9 @@ class ChatsViewModel @Inject constructor(
                 else -> {
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
+                        withContext(Dispatchers.Main) {
+                            chatsEvent.emit(HomeEvent.ChatsLoading)
+                        }
                         syncDataUseCase()
                     }
                     HomeEvent.ConversationsData(getConversationsUseCase())
@@ -63,5 +67,11 @@ class ChatsViewModel @Inject constructor(
             }
         }
     }
+
+    fun onDefaultSmsChange(event: DefaultSmsChangedReceiver.ReceiverEvent) = when (event) {
+        DefaultSmsChangedReceiver.ReceiverEvent.Load -> chatsEvent.emit(HomeEvent.ChatsLoading)
+            DefaultSmsChangedReceiver.ReceiverEvent.Complete -> getConversations()
+    }
+
 
 }

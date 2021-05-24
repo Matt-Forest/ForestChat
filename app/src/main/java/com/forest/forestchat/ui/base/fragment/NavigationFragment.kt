@@ -27,6 +27,7 @@ import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.closeKeyboard
 import com.forest.forestchat.extensions.generateConsistentId
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
 
 @AndroidEntryPoint
 abstract class NavigationFragment : Fragment() {
@@ -52,6 +53,16 @@ abstract class NavigationFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         context?.closeKeyboard(view)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     /**

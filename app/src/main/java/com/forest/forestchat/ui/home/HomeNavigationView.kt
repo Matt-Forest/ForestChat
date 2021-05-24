@@ -55,6 +55,7 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
             when (event) {
                 HomeEvent.RequestDefaultSms,
                 HomeEvent.RequestPermission -> ChatsEvent.NeedPermission
+                HomeEvent.ChatsLoading -> ChatsEvent.Loading
                 is HomeEvent.ConversationsData -> when (event.conversations) {
                     null -> ChatsEvent.NoData
                     else -> ChatsEvent.ConversationsData(event.conversations)

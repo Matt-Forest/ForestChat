@@ -27,19 +27,29 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DefaultSmsChangedReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var syncDataUseCase: SyncDataUseCase
+    @Inject
+    lateinit var syncDataUseCase: SyncDataUseCase
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.getBooleanExtra(Telephony.Sms.Intents.EXTRA_IS_DEFAULT_SMS_APP, false) == true) {
-            GlobalScope.launch(Dispatchers.IO){
+            GlobalScope.launch(Dispatchers.IO) {
+                EventBus.getDefault().post(ReceiverEvent.Load)
                 syncDataUseCase()
+                EventBus.getDefault().post(ReceiverEvent.Complete)
             }
         }
+    }
+
+    // Event used by event bus
+    sealed class ReceiverEvent {
+        object Complete : ReceiverEvent()
+        object Load : ReceiverEvent()
     }
 
 }

@@ -23,5 +23,6 @@ import com.forest.forestchat.domain.models.Conversation
 sealed class HomeEvent {
     object RequestPermission : HomeEvent()
     object RequestDefaultSms : HomeEvent()
+    object ChatsLoading : HomeEvent()
     data class ConversationsData(val conversations: List<Conversation>?) : HomeEvent()
 }

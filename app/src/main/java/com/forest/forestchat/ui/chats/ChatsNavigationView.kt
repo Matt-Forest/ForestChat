@@ -63,16 +63,25 @@ class ChatsNavigationView : ConstraintLayout {
         ChatsEvent.NeedPermission -> {
             binding.empty.gone()
             binding.recyclerChat.gone()
+            binding.loadingData.gone()
             binding.requestPermission.visible()
         }
         ChatsEvent.NoData -> {
             binding.empty.visible()
             binding.recyclerChat.gone()
+            binding.loadingData.gone()
+            binding.requestPermission.gone()
+        }
+        ChatsEvent.Loading -> {
+            binding.empty.gone()
+            binding.recyclerChat.gone()
+            binding.loadingData.visible()
             binding.requestPermission.gone()
         }
         is ChatsEvent.ConversationsData -> {
             binding.empty.gone()
             binding.recyclerChat.visible()
+            binding.loadingData.gone()
             binding.requestPermission.gone()
 
             conversationsAdapter.apply {

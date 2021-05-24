@@ -23,5 +23,6 @@ import com.forest.forestchat.domain.models.Conversation
 sealed class ChatsEvent {
     object NeedPermission : ChatsEvent()
     object NoData : ChatsEvent()
+    object Loading : ChatsEvent()
     data class ConversationsData(val conversations: List<Conversation>) : ChatsEvent()
 }

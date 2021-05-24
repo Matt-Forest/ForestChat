@@ -25,14 +25,18 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Telephony
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
+import com.forest.forestchat.receiver.DefaultSmsChangedReceiver
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.zhuinden.liveevent.observe
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class HomeFragment : NavigationFragment() {
 
@@ -79,6 +83,12 @@ class HomeFragment : NavigationFragment() {
 
             getConversations()
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Suppress("unused")
+    fun onMessageEvent(event: DefaultSmsChangedReceiver.ReceiverEvent) {
+        chatsViewModel.onDefaultSmsChange(event)
     }
 
     private fun showDefaultSmsDialog() {
