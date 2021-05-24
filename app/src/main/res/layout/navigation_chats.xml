@@ -98,7 +98,7 @@
 
     <TextView
         android:id="@+id/empty"
-        style="@style/Typography.Subtitle2"
+        style="@style/Typography.Subtitle1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"

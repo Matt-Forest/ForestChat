@@ -21,6 +21,7 @@ package com.forest.forestchat.ui.home
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isEmpty
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
@@ -56,8 +57,8 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
                 HomeEvent.RequestDefaultSms,
                 HomeEvent.RequestPermission -> ChatsEvent.NeedPermission
                 HomeEvent.ChatsLoading -> ChatsEvent.Loading
-                is HomeEvent.ConversationsData -> when (event.conversations) {
-                    null -> ChatsEvent.NoData
+                is HomeEvent.ConversationsData -> when {
+                    event.conversations == null || event.conversations.isEmpty() -> ChatsEvent.NoData
                     else -> ChatsEvent.ConversationsData(event.conversations)
                 }
             }
