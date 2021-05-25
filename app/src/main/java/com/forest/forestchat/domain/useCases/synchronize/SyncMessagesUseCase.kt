@@ -78,7 +78,9 @@ class SyncMessagesUseCase @Inject constructor(
     }
 
     private fun getMmsAddress(messageId: Long): String? {
-        val uri = Telephony.Mms.Addr.getAddrUriForMessage(messageId.toString())
+        val uri = Telephony.Mms.CONTENT_URI.buildUpon()
+            .appendPath(messageId.toString())
+            .appendPath("addr").build()
 
         val projection = arrayOf(Telephony.Mms.Addr.ADDRESS, Telephony.Mms.Addr.CHARSET)
         val selection = "${Telephony.Mms.Addr.TYPE} = ${PduHeaders.FROM}"
