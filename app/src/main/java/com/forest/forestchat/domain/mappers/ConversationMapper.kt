@@ -26,10 +26,10 @@ import com.forest.forestchat.domain.models.contact.Contact
 import com.forest.forestchat.domain.models.message.Message
 
 fun Cursor.toConversation(
-    recipients: (List<String>, List<Contact>) -> List<Recipient>,
+    recipients: (List<String>, List<Contact>?) -> List<Recipient>,
     conversationsPersisted: List<Conversation>?,
-    contacts: List<Contact>,
-    messages: List<Message>
+    contacts: List<Contact>?,
+    messages: List<Message>?
 ): Conversation {
     val id = getLong(getColumnIndex(Telephony.Threads._ID))
     val persisted = conversationsPersisted?.firstOrNull { it.id == id }
@@ -44,7 +44,7 @@ fun Cursor.toConversation(
                 .filter { it.isNotBlank() },
             contacts
         ),
-        lastMessage = messages.sortedByDescending { it.date }.firstOrNull { it.threadId == id },
+        lastMessage = messages?.sortedByDescending { it.date }?.firstOrNull { it.threadId == id },
         draft = persisted?.draft,
         name = persisted?.name,
     )

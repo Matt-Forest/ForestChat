@@ -22,11 +22,10 @@ import android.content.Context
 import android.view.ViewGroup
 import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.common.mappers.buildAvatar
 
 class ConversationsAdapter : BaseAdapter() {
 
@@ -55,39 +54,6 @@ class ConversationsAdapter : BaseAdapter() {
             )
         }
         submitList(items)
-    }
-
-    private fun buildAvatar(recipients: List<Recipient>): AvatarType = when {
-        recipients.size == 1 -> buildSingleAvatar(recipients[0], false)
-        recipients.size > 1 -> AvatarType.Group(
-            buildSingleAvatar(recipients[0], true),
-            buildSingleAvatar(recipients[1], true)
-        )
-        else -> AvatarType.Single.Profile
-    }
-
-    private fun buildSingleAvatar(recipient: Recipient, isFromGroup: Boolean): AvatarType.Single =
-        when {
-            recipient.contact?.photoUri?.isNotBlank() == true ->
-                AvatarType.Single.Image(recipient.contact.photoUri)
-            recipient.contact?.name?.isNotBlank() == true ->
-                AvatarType.Single.Letters(buildInitial(recipient.contact.name, isFromGroup))
-            else -> AvatarType.Single.Profile
-        }
-
-    private fun buildInitial(name: String, isFromGroup: Boolean): String {
-        val initials = name.substringBefore(',')
-            .split(" ")
-            .filter { it.isNotEmpty() }
-            .map { it[0] }
-            .filter { initial -> initial.isLetterOrDigit() }
-            .map { it.toString() }
-
-        return when {
-            isFromGroup -> initials.first()
-            initials.size > 1 -> initials.first() + initials.last()
-            else -> initials.first()
-        }
     }
 
 }

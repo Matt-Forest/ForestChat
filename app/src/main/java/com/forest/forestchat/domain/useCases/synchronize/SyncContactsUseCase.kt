@@ -34,10 +34,10 @@ class SyncContactsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke() {
-        val defaultNumberIds: List<Long> = contactDao.getAll()
-            .flatMap { it.numbers }
-            .filter { it.isDefault }
-            .map { it.id }
+        val defaultNumberIds: List<Long>? = contactDao.getAll()
+            ?.flatMap { it.numbers }
+            ?.filter { it.isDefault }
+            ?.map { it.id }
         contactDao.deleteAll()
 
         context.contentResolver.query(
@@ -68,7 +68,7 @@ class SyncContactsUseCase @Inject constructor(
                 contactsMap.value
                     .flatMap { it.numbers }
                     .forEach { number ->
-                        number.isDefault = defaultNumberIds.any { id -> id == number.id }
+                        number.isDefault = defaultNumberIds?.any { id -> id == number.id } == true
                         val duplicate = uniqueNumbers.find { other ->
                             PhoneNumberUtils.compare(number.address, other.address)
                         }

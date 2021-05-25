@@ -16,20 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.mappers
+package com.forest.forestchat.extensions
 
-import android.database.Cursor
-import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.Recipient
-import com.forest.forestchat.domain.models.contact.Contact
+import java.text.Normalizer
 
-fun Cursor.toRecipient(contacts: List<Contact>?) : Recipient {
-    val address = getString(1)
-    return Recipient(
-        id = getLong(0),
-        address = address,
-        contact = contacts?.firstOrNull { contact ->
-            contact.numbers.any { PhoneNumberUtils.compare(address, it.address) }
-        }
-    )
-}
+fun CharSequence.removeAccents(): String = Normalizer.normalize(this, Normalizer.Form.NFKD).replace(Regex("\\p{M}"), "")

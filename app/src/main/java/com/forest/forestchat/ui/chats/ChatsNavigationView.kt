@@ -23,10 +23,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doAfterTextChanged
+import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationChatsBinding
-import com.forest.forestchat.extensions.gone
-import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.asString
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.chats.adapter.ConversationsAdapter
+import com.forest.forestchat.ui.chats.searchAdapter.SearchAdapter
 
 class ChatsNavigationView : ConstraintLayout {
 
@@ -39,9 +42,11 @@ class ChatsNavigationView : ConstraintLayout {
     )
 
     lateinit var requestSmsPermission: () -> Unit
+    lateinit var onSearchChange: (String) -> Unit
 
     private val binding: NavigationChatsBinding
     private val conversationsAdapter = ConversationsAdapter()
+    private val searchAdapter = SearchAdapter()
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -55,39 +60,53 @@ class ChatsNavigationView : ConstraintLayout {
                     false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
-            recyclerChat.adapter = conversationsAdapter
+
+            clearSearch.setOnClickListener {
+                searchChat.text.clear()
+            }
+            searchChat.doAfterTextChanged {
+                it?.let { text ->
+                    onSearchChange(text.toString())
+                    clearSearch.visibleIf { text.isNotBlank() }
+                }
+            }
         }
     }
 
-    fun event(event: ChatsEvent) = when (event) {
-        ChatsEvent.NeedPermission -> {
-            binding.empty.gone()
-            binding.recyclerChat.gone()
-            binding.loadingData.gone()
-            binding.requestPermission.visible()
-        }
-        ChatsEvent.NoData -> {
-            binding.empty.visible()
-            binding.recyclerChat.gone()
-            binding.loadingData.gone()
-            binding.requestPermission.gone()
-        }
-        ChatsEvent.Loading -> {
-            binding.empty.gone()
-            binding.recyclerChat.gone()
-            binding.loadingData.visible()
-            binding.requestPermission.gone()
-        }
-        is ChatsEvent.ConversationsData -> {
-            binding.empty.gone()
-            binding.recyclerChat.visible()
-            binding.loadingData.gone()
-            binding.requestPermission.gone()
+    fun event(event: ChatsEvent) {
+        with(binding) {
+            empty.visibleIf { event is ChatsEvent.NoData || event is ChatsEvent.NoSearchData }
+            recyclerChat.visibleIf { event is ChatsEvent.ConversationsData || event is ChatsEvent.SearchData }
+            loadingData.visibleIf { event is ChatsEvent.Loading }
+            requestPermission.visibleIf { event is ChatsEvent.NeedPermission }
 
-            conversationsAdapter.apply {
-                setConversations(context, event.conversations)
+            when (event) {
+                ChatsEvent.NoData -> {
+                    empty.text = R.string.chats_empty_conversation.asString(context)
+                }
+                ChatsEvent.NoSearchData -> {
+                    empty.text = R.string.chats_empty_search.asString(context)
+                }
+                is ChatsEvent.ConversationsData -> {
+                    if (recyclerChat.adapter !== conversationsAdapter) {
+                        recyclerChat.adapter = conversationsAdapter
+                    }
+                    conversationsAdapter.apply {
+                        setConversations(context, event.conversations)
+                    }
+                }
+                is ChatsEvent.SearchData -> {
+                    if (recyclerChat.adapter !== searchAdapter) {
+                        recyclerChat.adapter = searchAdapter
+                    }
+                    searchAdapter.apply {
+                        setData(context, event.conversations, event.contacts)
+                    }
+                }
+                else -> {
+                    // nothing
+                }
             }
-            binding.recyclerChat.adapter = conversationsAdapter
         }
     }
 

@@ -19,10 +19,18 @@
 package com.forest.forestchat.ui.home
 
 import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.domain.models.SearchConversationResult
+import com.forest.forestchat.domain.models.contact.Contact
 
 sealed class HomeEvent {
     object RequestPermission : HomeEvent()
     object RequestDefaultSms : HomeEvent()
     object ChatsLoading : HomeEvent()
-    data class ConversationsData(val conversations: List<Conversation>?) : HomeEvent()
+    object NoConversations: HomeEvent()
+    data class ConversationsData(val conversations: List<Conversation>) : HomeEvent()
+    object NoSearchData : HomeEvent()
+    data class Search(
+        val conversations: List<SearchConversationResult>,
+        val contacts: List<Contact>
+    ) : HomeEvent()
 }

@@ -16,20 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.mappers
+package com.forest.forestchat.domain.useCases
 
-import android.database.Cursor
 import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.models.contact.Contact
+import com.forest.forestchat.extensions.removeAccents
+import com.forest.forestchat.localStorage.database.daos.ContactDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-fun Cursor.toRecipient(contacts: List<Contact>?) : Recipient {
-    val address = getString(1)
-    return Recipient(
-        id = getLong(0),
-        address = address,
-        contact = contacts?.firstOrNull { contact ->
-            contact.numbers.any { PhoneNumberUtils.compare(address, it.address) }
-        }
-    )
+@Singleton
+class SearchContactsUseCase @Inject constructor(
+    private val contactDao: ContactDao
+) {
+
+    suspend operator fun invoke(search: String): List<Contact>? =
+        contactDao.getAll()
+            ?.filter { contact ->
+                contact.name?.removeAccents()?.contains(search.removeAccents(), true) == true ||
+                        contact.numbers.map { it.address }
+                            .any { address -> PhoneNumberUtils.compare(search, address) }
+            }
+
 }

@@ -16,20 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.mappers
+package com.forest.forestchat.ui.chats.searchAdapter.contact
 
-import android.database.Cursor
-import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.Recipient
-import com.forest.forestchat.domain.models.contact.Contact
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderContactSearchBinding
+import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-fun Cursor.toRecipient(contacts: List<Contact>?) : Recipient {
-    val address = getString(1)
-    return Recipient(
-        id = getLong(0),
-        address = address,
-        contact = contacts?.firstOrNull { contact ->
-            contact.numbers.any { PhoneNumberUtils.compare(address, it.address) }
+class SearchContactHolder(
+    parent: ViewGroup
+) : BaseHolder<SearchContactItem>(parent, R.layout.holder_contact_search) {
+
+    private val binding = HolderContactSearchBinding.bind(itemView)
+
+    override fun bind(item: SearchContactItem) {
+        with(binding) {
+            avatars.updateAvatars(item.avatarType)
+            title.text = item.name
+            snippet.text = item.number
         }
-    )
+    }
+
 }

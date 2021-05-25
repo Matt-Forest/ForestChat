@@ -16,20 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.mappers
+package com.forest.forestchat.ui.chats.searchAdapter
 
-import android.database.Cursor
-import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.Recipient
-import com.forest.forestchat.domain.models.contact.Contact
-
-fun Cursor.toRecipient(contacts: List<Contact>?) : Recipient {
-    val address = getString(1)
-    return Recipient(
-        id = getLong(0),
-        address = address,
-        contact = contacts?.firstOrNull { contact ->
-            contact.numbers.any { PhoneNumberUtils.compare(address, it.address) }
-        }
-    )
+object SearchViewTypes {
+    const val HEADER = 0
+    const val CONVERSATION = 1
+    const val CONTACT = 2
 }

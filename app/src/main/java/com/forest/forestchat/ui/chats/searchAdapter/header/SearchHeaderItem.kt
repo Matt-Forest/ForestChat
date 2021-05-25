@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.mappers
+package com.forest.forestchat.ui.chats.searchAdapter.header
 
-import android.database.Cursor
-import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.Recipient
-import com.forest.forestchat.domain.models.contact.Contact
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.chats.searchAdapter.SearchViewTypes
 
-fun Cursor.toRecipient(contacts: List<Contact>?) : Recipient {
-    val address = getString(1)
-    return Recipient(
-        id = getLong(0),
-        address = address,
-        contact = contacts?.firstOrNull { contact ->
-            contact.numbers.any { PhoneNumberUtils.compare(address, it.address) }
-        }
-    )
+class SearchHeaderItem(
+    val label: String
+) : BaseAdapterItem() {
+
+    override fun getViewType(): Int = SearchViewTypes.HEADER
+
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is SearchHeaderItem && oldItem.label == label
+
 }

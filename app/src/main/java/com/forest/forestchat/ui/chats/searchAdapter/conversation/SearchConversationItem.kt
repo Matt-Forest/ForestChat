@@ -16,13 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models.message.mms
+package com.forest.forestchat.ui.chats.searchAdapter.conversation
 
-enum class AttachmentType {
-    Text,
-    Image,
-    Video,
-    Audio,
-    Slideshow,
-    NotLoaded
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.chats.searchAdapter.SearchViewTypes
+import com.forest.forestchat.ui.common.avatar.AvatarType
+
+class SearchConversationItem(
+    val id: Long,
+    val title: String,
+    val message: String,
+    val date: String,
+    val avatarType: AvatarType
+) : BaseAdapterItem() {
+
+    override fun getViewType(): Int = SearchViewTypes.CONVERSATION
+
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is SearchConversationItem && oldItem.id == id
+
 }

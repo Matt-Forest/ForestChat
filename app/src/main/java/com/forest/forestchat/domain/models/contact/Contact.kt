@@ -31,4 +31,8 @@ data class Contact(
     val photoUri: String?,
     val starred: Boolean,
     val lastUpdate: Long
-)
+) {
+
+    fun getDefaultNumber(): PhoneNumber? = numbers.find { number -> number.isDefault }
+
+}

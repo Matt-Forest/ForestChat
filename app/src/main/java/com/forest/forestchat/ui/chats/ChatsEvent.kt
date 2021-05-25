@@ -19,10 +19,17 @@
 package com.forest.forestchat.ui.chats
 
 import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.domain.models.SearchConversationResult
+import com.forest.forestchat.domain.models.contact.Contact
 
 sealed class ChatsEvent {
     object NeedPermission : ChatsEvent()
     object NoData : ChatsEvent()
     object Loading : ChatsEvent()
     data class ConversationsData(val conversations: List<Conversation>) : ChatsEvent()
+    object NoSearchData : ChatsEvent()
+    data class SearchData(
+        val conversations: List<SearchConversationResult>,
+        val contacts: List<Contact>
+    ) : ChatsEvent()
 }

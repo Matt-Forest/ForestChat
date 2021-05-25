@@ -71,7 +71,7 @@ class SyncConversationsUseCase @Inject constructor(
 
     private fun getRecipientByIds(
         ids: List<String>,
-        contacts: List<Contact>
+        contacts: List<Contact>?
     ): List<Recipient> {
         val result = mutableListOf<Recipient>()
 

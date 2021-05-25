@@ -62,7 +62,8 @@ class HomeFragment : NavigationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {
-            requestSmsPermissionChats = { showDefaultSmsDialog() }
+            requestSmsPermissionChats = { chatsViewModel.getConversations() }
+            onSearchChangedChats = chatsViewModel::onSearchChange
             toggleTab = {
                 homeTab = it
                 updateStatusBarMode()

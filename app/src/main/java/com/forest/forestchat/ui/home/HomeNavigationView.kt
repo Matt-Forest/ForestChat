@@ -21,7 +21,6 @@ package com.forest.forestchat.ui.home
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.isEmpty
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
@@ -30,7 +29,11 @@ import com.forest.forestchat.ui.chats.ChatsEvent
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
+    // Conversations view
     lateinit var requestSmsPermissionChats: () -> Unit
+    lateinit var onSearchChangedChats: (String) -> Unit
+
+    // Common
     lateinit var toggleTab: (HomeTab) -> Unit
 
     private var selectedTab: HomeTab = HomeTab.Chats
@@ -48,7 +51,10 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
     }
 
     private fun setupChatsView() {
-        binding.chatsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
+        with(binding.chatsContainerView) {
+            requestSmsPermission = { requestSmsPermissionChats() }
+            onSearchChange = { onSearchChangedChats(it) }
+        }
     }
 
     fun event(event: HomeEvent) {
@@ -57,10 +63,10 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
                 HomeEvent.RequestDefaultSms,
                 HomeEvent.RequestPermission -> ChatsEvent.NeedPermission
                 HomeEvent.ChatsLoading -> ChatsEvent.Loading
-                is HomeEvent.ConversationsData -> when {
-                    event.conversations == null || event.conversations.isEmpty() -> ChatsEvent.NoData
-                    else -> ChatsEvent.ConversationsData(event.conversations)
-                }
+                HomeEvent.NoConversations -> ChatsEvent.NoData
+                is HomeEvent.ConversationsData -> ChatsEvent.ConversationsData(event.conversations)
+                HomeEvent.NoSearchData -> ChatsEvent.NoSearchData
+                is HomeEvent.Search -> ChatsEvent.SearchData(event.conversations, event.contacts)
             }
         )
     }

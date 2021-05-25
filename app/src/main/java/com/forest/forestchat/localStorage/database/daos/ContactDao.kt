@@ -31,7 +31,7 @@ interface ContactDao {
     suspend fun insert(contacts: Contact)
 
     @Query("SELECT * FROM Contact")
-    suspend fun getAll(): List<Contact>
+    suspend fun getAll(): List<Contact>?
 
     @Query("DELETE FROM Contact")
     suspend fun deleteAll()

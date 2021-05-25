@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.app.PermissionsManager
 import com.forest.forestchat.domain.useCases.GetConversationsUseCase
+import com.forest.forestchat.domain.useCases.SearchContactsUseCase
+import com.forest.forestchat.domain.useCases.SearchConversationsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.receiver.DefaultSmsChangedReceiver
@@ -38,6 +40,8 @@ import javax.inject.Inject
 class ChatsViewModel @Inject constructor(
     private val getConversationsUseCase: GetConversationsUseCase,
     private val syncDataUseCase: SyncDataUseCase,
+    private val searchConversationsUseCase: SearchConversationsUseCase,
+    private val searchContactsUseCase: SearchContactsUseCase,
     private val lastSyncSharedPrefs: LastSyncSharedPrefs,
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
@@ -58,7 +62,11 @@ class ChatsViewModel @Inject constructor(
                         }
                         syncDataUseCase()
                     }
-                    HomeEvent.ConversationsData(getConversationsUseCase())
+                    val conversations = getConversationsUseCase()
+                    when (conversations == null || conversations.isEmpty()) {
+                        true -> HomeEvent.NoConversations
+                        false -> HomeEvent.ConversationsData(conversations)
+                    }
                 }
             }
 
@@ -70,8 +78,29 @@ class ChatsViewModel @Inject constructor(
 
     fun onDefaultSmsChange(event: DefaultSmsChangedReceiver.ReceiverEvent) = when (event) {
         DefaultSmsChangedReceiver.ReceiverEvent.Load -> chatsEvent.emit(HomeEvent.ChatsLoading)
-            DefaultSmsChangedReceiver.ReceiverEvent.Complete -> getConversations()
+        DefaultSmsChangedReceiver.ReceiverEvent.Complete -> getConversations()
     }
 
+    fun onSearchChange(search: String) {
+        if (permissionsManager.isDefaultSms()
+            && permissionsManager.hasReadSms()
+            && permissionsManager.hasContacts()
+            && search.isNotBlank()
+        ) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val conversations = searchConversationsUseCase(search)
+                val contacts = searchContactsUseCase(search)
+
+                withContext(Dispatchers.Main) {
+                    chatsEvent.emit(when (conversations?.isNullOrEmpty() == true && contacts?.isNullOrEmpty() == true) {
+                        true -> HomeEvent.NoSearchData
+                        false -> HomeEvent.Search(conversations!!, contacts!!)
+                    })
+                }
+            }
+        } else {
+            getConversations()
+        }
+    }
 
 }
