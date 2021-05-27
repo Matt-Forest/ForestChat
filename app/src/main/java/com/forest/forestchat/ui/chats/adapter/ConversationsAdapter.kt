@@ -24,17 +24,30 @@ import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.chats.adapter.conversation.ConversationHolder
+import com.forest.forestchat.ui.chats.adapter.conversation.ConversationItem
+import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdHolder
+import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 
 class ConversationsAdapter : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
-        ConversationHolder(parent)
+        when (viewType) {
+            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent)
+            ConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
+            else -> null
+        }
 
     fun setConversations(context: Context, conversations: List<Conversation>) {
-        val items = conversations.map { conversation ->
-            ConversationItem(
+        val items = mutableListOf<BaseAdapterItem>()
+        conversations.forEachIndexed { index, conversation ->
+            if (index > 0 && index % 5 == 0) {
+                items.add(NativeAdItem())
+            }
+            items.add(ConversationItem(
                 id = conversation.id,
                 title = conversation.getTitle(),
                 lastMessage = when {
@@ -51,8 +64,9 @@ class ConversationsAdapter : BaseAdapter() {
                 pinned = conversation.pinned,
                 unread = conversation.lastMessage?.read == false,
                 draft = false
-            )
+            ))
         }
+
         submitList(items)
     }
 

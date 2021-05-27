@@ -77,16 +77,25 @@ class AvatarView : View {
     }
 
     private fun buildSingleAvatar(type: AvatarType.Single, canvas: Canvas) {
-        canvas.drawCircle(center.toFloat(), center.toFloat(), center.toFloat(), fillPaint)
-
         when (type) {
-            AvatarType.Single.Profile -> buildSingleProfile(canvas)
-            is AvatarType.Single.Letters -> buildSingleLetters(type.letters, canvas)
-            is AvatarType.Single.Image -> buildSingleImage(type.uri, canvas)
+            AvatarType.Single.Profile -> {
+                canvas.drawCircle(center.toFloat(), center.toFloat(), center.toFloat(), fillPaint)
+                buildProfile(canvas)
+            }
+            AvatarType.Single.Ads -> {
+                fillPaint.color = R.color.error.asColor(context)
+                canvas.drawCircle(center.toFloat(), center.toFloat(), center.toFloat(), fillPaint)
+                buildAds(canvas)
+            }
+            is AvatarType.Single.Letters -> {
+                canvas.drawCircle(center.toFloat(), center.toFloat(), center.toFloat(), fillPaint)
+                buildLetters(type.letters, canvas)
+            }
+            is AvatarType.Single.Image -> buildImage(type.uri, canvas)
         }
     }
 
-    private fun buildSingleProfile(canvas: Canvas) {
+    private fun buildProfile(canvas: Canvas) {
         ContextCompat.getDrawable(context, R.drawable.ic_profile)?.let { drawable ->
             getBitmapFromVectorDrawable(drawable, padding)?.let { image ->
                 canvas.drawBitmap(image, 0F, 0F, fillPaint)
@@ -94,7 +103,7 @@ class AvatarView : View {
         }
     }
 
-    private fun buildSingleLetters(letters: String, canvas: Canvas) {
+    private fun buildLetters(letters: String, canvas: Canvas) {
         val xPos = center
         val yPos = (center - (textPaint.descent() + textPaint.ascent()) / 2).toInt()
         //((textPaint.descent() + textPaint.ascent()) / 2) is the distance from the baseline to the center.
@@ -102,7 +111,7 @@ class AvatarView : View {
         canvas.drawText(letters, xPos.toFloat(), yPos.toFloat(), textPaint)
     }
 
-    private fun buildSingleImage(image: String, canvas: Canvas) {
+    private fun buildImage(image: String, canvas: Canvas) {
         val imageLoader = context.imageLoader
         val request = ImageRequest.Builder(context)
             .data(image)
@@ -115,10 +124,18 @@ class AvatarView : View {
                     }
                 },
                 onError = {
-                    buildSingleProfile(canvas)
+                    buildProfile(canvas)
                 })
             .build()
         imageLoader.enqueue(request)
+    }
+
+    private fun buildAds(canvas: Canvas) {
+        ContextCompat.getDrawable(context, R.drawable.ic_star)?.let { drawable ->
+            getBitmapFromVectorDrawable(drawable, padding)?.let { image ->
+                canvas.drawBitmap(image, 0F, 0F, fillPaint)
+            }
+        }
     }
 
     private fun getBitmapFromVectorDrawable(drawable: Drawable, padding: Int): Bitmap? {

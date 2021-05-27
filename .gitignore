@@ -32,3 +32,5 @@ app/schemas
 app/prodForestChat
 app/src/prodForestChat/google-services.json
 app/src/devForestChat/google-services.json
+app/src/main/res/values/secret.xml
+app/src/devForestChat/res/values/secret.xml

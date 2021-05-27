@@ -30,6 +30,9 @@ import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.chats.adapter.ConversationsAdapter
 import com.forest.forestchat.ui.chats.searchAdapter.SearchAdapter
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 
 class ChatsNavigationView : ConstraintLayout {
 
@@ -47,6 +50,7 @@ class ChatsNavigationView : ConstraintLayout {
     private val binding: NavigationChatsBinding
     private val conversationsAdapter = ConversationsAdapter()
     private val searchAdapter = SearchAdapter()
+    private var bannerLoaded: Boolean = false
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -71,6 +75,37 @@ class ChatsNavigationView : ConstraintLayout {
                 }
             }
         }
+        initBanner()
+    }
+
+    private fun initBanner() {
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                bannerLoaded = true
+            }
+
+            override fun onAdFailedToLoad(adError : LoadAdError) {
+                // Code to be executed when an ad request fails.
+                bannerLoaded = false
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        }
+        binding.adView.loadAd(adRequest)
     }
 
     fun event(event: ChatsEvent) {
@@ -79,6 +114,7 @@ class ChatsNavigationView : ConstraintLayout {
             recyclerChat.visibleIf { event is ChatsEvent.ConversationsData || event is ChatsEvent.SearchData }
             loadingData.visibleIf { event is ChatsEvent.Loading }
             requestPermission.visibleIf { event is ChatsEvent.NeedPermission }
+            adView.visibleIf { event is ChatsEvent.ConversationsData && bannerLoaded }
 
             when (event) {
                 ChatsEvent.NoData -> {

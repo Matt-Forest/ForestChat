@@ -30,6 +30,7 @@
     <string name="chats_permission_needed_text">Plus qu\’à choisir ForestChat comme application par défaut.\n\nPas de panique ! Vous retrouverez tous vos SMS ici et vous pouvez revenir sur votre ancienne application quand vous le voulez.</string>
     <string name="chats_sender_user">Vous: %s</string>
     <string name="chats_draft">Brouillon</string>
+    <string name="chats_ads">Pub</string>
     <string name="chats_loading">Chargement des données…</string>
 
 </resources>

@@ -16,16 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.common.avatar
+package com.forest.forestchat.ui.chats.adapter
 
-sealed class AvatarType {
-
-    sealed class Single : AvatarType() {
-        object Profile : Single()
-        object Ads : Single()
-        data class Letters(val letters: String) : Single()
-        data class Image(val uri: String) : Single()
-    }
-
-    data class Group(val foreground: Single, val background: Single) : AvatarType()
+object ConversationViewTypes {
+    const val CONVERSATION = 0
+    const val NATIVE_AD = 1
 }

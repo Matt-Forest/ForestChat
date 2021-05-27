@@ -38,6 +38,7 @@
         <activity
             android:name=".ui.NavigationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
             android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustResize">
 
@@ -84,6 +85,15 @@
                 <data android:scheme="smsto" />
             </intent-filter>
         </service>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/ads_application_id"/>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true"/>
+
 
     </application>
 

@@ -46,5 +46,6 @@
     <color name="searchBackground">#EDF2FB</color>
     <color name="text">#031926</color>
     <color name="text_50">#80031926</color>
+    <color name="background_shimmer">#1A031926</color>
 
 </resources>

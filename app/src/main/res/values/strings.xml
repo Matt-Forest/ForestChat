@@ -30,6 +30,7 @@
     <string name="chats_permission_needed_text">You just have to choose Forest Chat as the default application.\n\nDon\'t panic! You will find back all your SMS here and you can come back to your old application as you wish.</string>
     <string name="chats_sender_user">You: %s</string>
     <string name="chats_draft">Draft</string>
+    <string name="chats_ads">Ads</string>
     <string name="chats_loading">Data loading…</string>
     <string name="chats_search_contact" translatable="false">Contacts</string>
     <string name="chats_search_conversation" translatable="false">Chats</string>

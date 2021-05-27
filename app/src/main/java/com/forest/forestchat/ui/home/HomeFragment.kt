@@ -20,12 +20,12 @@ package com.forest.forestchat.ui.home
 
 import android.Manifest
 import android.app.role.RoleManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Telephony
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
@@ -34,6 +34,11 @@ import com.forest.forestchat.receiver.DefaultSmsChangedReceiver
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.chats.ChatsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
+import com.google.android.gms.ads.MobileAds
+import com.google.android.ump.ConsentForm
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,6 +52,8 @@ class HomeFragment : NavigationFragment() {
         get() = view as HomeNavigationView
 
     private var homeTab = HomeTab.Chats
+    private var consentInformation: ConsentInformation? = null
+    private var consentForm: ConsentForm? = null
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
@@ -81,9 +88,9 @@ class HomeFragment : NavigationFragment() {
                 }
                 navigationView.event(event)
             }
-
-            getConversations()
         }
+
+        checkConsent()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -115,6 +122,57 @@ class HomeFragment : NavigationFragment() {
                 ), 0
             )
         }
+    }
+
+    private fun checkConsent() {
+        val params = ConsentRequestParameters.Builder()
+            .setTagForUnderAgeOfConsent(false)
+            .build()
+
+        context?.let { ctx ->
+            consentInformation = UserMessagingPlatform.getConsentInformation(context)
+            consentInformation?.requestConsentInfoUpdate(
+                activity,
+                params,
+                {
+                    // The consent information state was updated.
+                    // You are now ready to check if a form is available.
+                    if (consentInformation?.isConsentFormAvailable == true) {
+                        loadForm(ctx)
+                    } else {
+                        init(ctx)
+                    }
+                },
+                {
+                    // Handle the error.
+                    init(ctx)
+                })
+        }
+    }
+
+    private fun loadForm(context: Context) {
+        UserMessagingPlatform.loadConsentForm(
+            context,
+            { consentForm ->
+                this@HomeFragment.consentForm = consentForm
+                if (consentInformation!!.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+                    consentForm.show(activity) {
+                        // Handle dismissal by reloading form.
+                        loadForm(context)
+                    }
+                } else {
+                    init(context)
+                }
+            }
+        ) {
+            // Handle the error
+            init(context)
+        }
+    }
+
+    private fun init(context: Context) {
+        MobileAds.initialize(context)
+        chatsViewModel.getConversations()
     }
 
 }

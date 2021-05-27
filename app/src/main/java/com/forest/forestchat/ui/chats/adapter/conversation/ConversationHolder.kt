@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter
+package com.forest.forestchat.ui.chats.adapter.conversation
 
 import android.graphics.Typeface
 import android.view.ViewGroup
