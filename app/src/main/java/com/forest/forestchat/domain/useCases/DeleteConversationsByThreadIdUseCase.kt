@@ -18,20 +18,28 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import com.forest.forestchat.domain.models.Conversation
+import android.content.ContentUris
+import android.content.Context
+import android.provider.Telephony
 import com.forest.forestchat.localStorage.database.daos.ConversationDao
+import com.forest.forestchat.localStorage.database.daos.MessageDao
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetConversationsUseCase @Inject constructor(
-    private val conversationDao: ConversationDao
+class DeleteConversationsByThreadIdUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val conversationDao: ConversationDao,
+    private val messageDao: MessageDao
 ) {
 
-    suspend operator fun invoke(): List<Conversation>? = conversationDao.getAll()
-        ?.filter { it.lastMessage != null && !it.archived && !it.blocked }
-        ?.sortedByDescending { it.lastMessage?.date }
-        ?.sortedByDescending { it.pinned }
-        ?.sortedByDescending { it.lastMessage?.read == false }
+    suspend operator fun invoke(threadId: Long) {
+        conversationDao.deleteAllById(threadId)
+        messageDao.deleteAllByThreadId(threadId)
+
+        val uri = ContentUris.withAppendedId(Telephony.Threads.CONTENT_URI, threadId)
+        context.contentResolver.delete(uri, null, null)
+    }
 
 }

@@ -36,7 +36,7 @@ fun Cursor.toConversation(
     return Conversation(
         id = id,
         archived = persisted?.archived ?: false,
-        blocked = persisted?.blocked,
+        blocked = persisted?.blocked ?: false,
         pinned = persisted?.pinned ?: false,
         recipients = recipients(
             getString(getColumnIndex(Telephony.Threads.RECIPIENT_IDS))

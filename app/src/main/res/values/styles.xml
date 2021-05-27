@@ -16,14 +16,28 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorAccent">@color/secondary</item>
         <item name="fontFamily">@font/mulish_regular</item>
+        <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheet</item>
         <item name="android:windowBackground">@drawable/window_background_app</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.BottomSheet" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_dialog</item>
     </style>
 
 </resources>

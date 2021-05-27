@@ -16,30 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.localStorage.database.daos
+package com.forest.forestchat.domain.useCases
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.localStorage.database.daos.ConversationDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Dao
-interface ConversationDao {
+@Singleton
+class UpdateConversationUseCase @Inject constructor(
+    private val conversationDao: ConversationDao
+) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(conversation: Conversation)
-
-    @Query("SELECT * FROM Conversation")
-    suspend fun getAll(): List<Conversation>?
-
-    @Query("SELECT * FROM Conversation WHERE id = :id LIMIT 1")
-    suspend fun getConversationById(id: Long): Conversation?
-
-    @Query("DELETE FROM Conversation WHERE id = :id")
-    suspend fun deleteAllById(id: Long)
-
-    @Query("DELETE FROM Conversation")
-    suspend fun deleteAll()
+    suspend operator fun invoke(conversation: Conversation) {
+        conversationDao.insert(conversation)
+    }
 
 }

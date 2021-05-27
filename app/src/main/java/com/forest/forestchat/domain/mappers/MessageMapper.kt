@@ -20,13 +20,10 @@ package com.forest.forestchat.domain.mappers
 
 import android.database.Cursor
 import android.provider.Telephony
-import androidx.core.database.getIntOrNull
-import androidx.core.database.getStringOrNull
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.mms.MmsPart
-import com.forest.forestchat.domain.models.message.mms.MmsPartType
 
 fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> String?): Message {
     val type: MessageType = when {
@@ -57,11 +54,6 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
         type = type,
         date = getLong(getColumnIndex(Telephony.Mms.DATE)).toDate(type),
         dateSent = getLong(getColumnIndex(Telephony.Mms.DATE_SENT)).toDate(type),
-        seen = when (type) {
-            MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.SEEN)) != 0
-            MessageType.Mms -> getInt(getColumnIndex(Telephony.Mms.SEEN)) != 0
-            else -> false
-        },
         read = getInt(getColumnIndex(Telephony.Mms.READ)) != 0,
         locked = when (type) {
             MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.LOCKED)) != 0
@@ -90,7 +82,7 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
     )
 }
 
-private fun Long.toDate(type: MessageType) : Long = when (type) {
+private fun Long.toDate(type: MessageType): Long = when (type) {
     MessageType.Mms -> this * 1_000
     else -> this
 }

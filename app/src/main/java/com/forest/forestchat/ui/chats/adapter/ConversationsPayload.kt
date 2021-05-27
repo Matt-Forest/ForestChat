@@ -16,21 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.ui.chats.adapter
 
-import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.SearchConversationResult
-import com.forest.forestchat.domain.models.contact.Contact
-
-sealed class HomeEvent {
-    object RequestPermission : HomeEvent()
-    object RequestDefaultSms : HomeEvent()
-    object ChatsLoading : HomeEvent()
-    object NoConversations: HomeEvent()
-    data class ConversationsData(val conversations: List<Conversation>) : HomeEvent()
-    object NoSearchData : HomeEvent()
-    data class Search(
-        val conversations: List<SearchConversationResult>,
-        val contacts: List<Contact>
-    ) : HomeEvent()
+sealed class ConversationsPayload {
+    data class Pin(val pin: Boolean) : ConversationsPayload()
+    data class Title(val newTitle: String) : ConversationsPayload()
+    object MarkAsRead : ConversationsPayload()
 }

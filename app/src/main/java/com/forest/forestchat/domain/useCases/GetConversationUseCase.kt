@@ -16,9 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.domain.useCases
 
-data class ConversationBlock(
-    val blockingClient: Int,
-    val blockReason: String?
-)
+import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.localStorage.database.daos.ConversationDao
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class GetConversationUseCase @Inject constructor(
+    private val conversationDao: ConversationDao
+) {
+
+    suspend operator fun invoke(id: Long): Conversation? = conversationDao.getConversationById(id)
+
+}

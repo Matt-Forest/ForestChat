@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -37,19 +38,17 @@ class DefaultSmsChangedReceiver : BroadcastReceiver() {
     lateinit var syncDataUseCase: SyncDataUseCase
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.getBooleanExtra(Telephony.Sms.Intents.EXTRA_IS_DEFAULT_SMS_APP, false) == true) {
+        if (intent?.getBooleanExtra(
+                Telephony.Sms.Intents.EXTRA_IS_DEFAULT_SMS_APP,
+                false
+            ) == true
+        ) {
             GlobalScope.launch(Dispatchers.IO) {
-                EventBus.getDefault().post(ReceiverEvent.Load)
+                EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Load)
                 syncDataUseCase()
-                EventBus.getDefault().post(ReceiverEvent.Complete)
+                EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Complete)
             }
         }
-    }
-
-    // Event used by event bus
-    sealed class ReceiverEvent {
-        object Complete : ReceiverEvent()
-        object Load : ReceiverEvent()
     }
 
 }

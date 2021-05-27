@@ -30,7 +30,7 @@
         android:id="@+id/pinned"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@drawable/ic_pin"
+        android:src="@drawable/ic_pinned"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/snippet"
         app:layout_constraintEnd_toStartOf="@id/unread"

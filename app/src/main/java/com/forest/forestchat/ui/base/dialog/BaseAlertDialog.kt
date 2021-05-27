@@ -16,30 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.localStorage.database.daos
+package com.forest.forestchat.ui.base.dialog
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.forest.forestchat.domain.models.Conversation
+import android.app.AlertDialog
+import android.content.Context
+import android.view.View
+import com.forest.forestchat.R
 
-@Dao
-interface ConversationDao {
+abstract class BaseAlertDialog(
+    val context: Context,
+    private val cancelable: Boolean = true
+) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(conversation: Conversation)
+    abstract fun getView(): View
 
-    @Query("SELECT * FROM Conversation")
-    suspend fun getAll(): List<Conversation>?
+    abstract fun onDialogCreated(dialog: AlertDialog)
 
-    @Query("SELECT * FROM Conversation WHERE id = :id LIMIT 1")
-    suspend fun getConversationById(id: Long): Conversation?
-
-    @Query("DELETE FROM Conversation WHERE id = :id")
-    suspend fun deleteAllById(id: Long)
-
-    @Query("DELETE FROM Conversation")
-    suspend fun deleteAll()
+    fun create(): AlertDialog =
+        AlertDialog.Builder(context, R.style.AlertDialogTheme)
+            .setView(getView())
+            .setCancelable(cancelable)
+            .create()
+            .apply { onDialogCreated(this) }
 
 }

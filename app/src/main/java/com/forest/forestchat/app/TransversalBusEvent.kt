@@ -16,30 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.localStorage.database.daos
+package com.forest.forestchat.app
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.forest.forestchat.domain.models.Conversation
+sealed class TransversalBusEvent {
 
-@Dao
-interface ConversationDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(conversation: Conversation)
-
-    @Query("SELECT * FROM Conversation")
-    suspend fun getAll(): List<Conversation>?
-
-    @Query("SELECT * FROM Conversation WHERE id = :id LIMIT 1")
-    suspend fun getConversationById(id: Long): Conversation?
-
-    @Query("DELETE FROM Conversation WHERE id = :id")
-    suspend fun deleteAllById(id: Long)
-
-    @Query("DELETE FROM Conversation")
-    suspend fun deleteAll()
+    sealed class DefaultSmsChangedEvent : TransversalBusEvent() {
+        object Complete : DefaultSmsChangedEvent()
+        object Load : DefaultSmsChangedEvent()
+    }
 
 }

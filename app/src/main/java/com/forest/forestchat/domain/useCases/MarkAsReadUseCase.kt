@@ -18,20 +18,36 @@
  */
 package com.forest.forestchat.domain.useCases
 
+import android.content.ContentUris
+import android.content.ContentValues
+import android.content.Context
+import android.provider.Telephony
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.localStorage.database.daos.ConversationDao
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetConversationsUseCase @Inject constructor(
+class MarkAsReadUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val conversationDao: ConversationDao
 ) {
 
-    suspend operator fun invoke(): List<Conversation>? = conversationDao.getAll()
-        ?.filter { it.lastMessage != null && !it.archived && !it.blocked }
-        ?.sortedByDescending { it.lastMessage?.date }
-        ?.sortedByDescending { it.pinned }
-        ?.sortedByDescending { it.lastMessage?.read == false }
+    suspend operator fun invoke(conversation: Conversation) {
+        conversationDao.insert(conversation.copy(
+            lastMessage = conversation.lastMessage?.copy(
+                read = true
+            )
+        ))
+
+        val values = ContentValues().apply {
+            put(Telephony.Sms.SEEN, true)
+            put(Telephony.Sms.READ, true)
+        }
+
+        val uri = ContentUris.withAppendedId(Telephony.MmsSms.CONTENT_CONVERSATIONS_URI, conversation.id)
+        context.contentResolver.update(uri, values, "${Telephony.Sms.READ} = 0", null)
+    }
 
 }

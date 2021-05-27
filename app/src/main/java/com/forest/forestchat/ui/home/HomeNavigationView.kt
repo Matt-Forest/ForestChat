@@ -25,13 +25,17 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
-import com.forest.forestchat.ui.chats.ChatsEvent
+import com.forest.forestchat.ui.chats.ConversationEvent
+import com.forest.forestchat.ui.chats.dialog.ConversationOptionType
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
     // Conversations view
     lateinit var requestSmsPermissionChats: () -> Unit
     lateinit var onSearchChangedChats: (String) -> Unit
+    lateinit var optionSelected: (ConversationOptionType) -> Unit
+    lateinit var onConversationSelected: (Long) -> Unit
+    lateinit var onConversationDeleted: (Long) -> Unit
 
     // Common
     lateinit var toggleTab: (HomeTab) -> Unit
@@ -51,24 +55,15 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
     }
 
     private fun setupChatsView() {
-        with(binding.chatsContainerView) {
-            requestSmsPermission = { requestSmsPermissionChats() }
-            onSearchChange = { onSearchChangedChats(it) }
-        }
+        binding.chatsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
+        binding.chatsContainerView.onSearchChange = { onSearchChangedChats(it) }
+        binding.chatsContainerView.optionSelected = { optionSelected(it) }
+        binding.chatsContainerView.onConversationSelected = { onConversationSelected(it) }
+        binding.chatsContainerView.onConversationDeleted = { onConversationDeleted(it) }
     }
 
-    fun event(event: HomeEvent) {
-        binding.chatsContainerView.event(
-            when (event) {
-                HomeEvent.RequestDefaultSms,
-                HomeEvent.RequestPermission -> ChatsEvent.NeedPermission
-                HomeEvent.ChatsLoading -> ChatsEvent.Loading
-                HomeEvent.NoConversations -> ChatsEvent.NoData
-                is HomeEvent.ConversationsData -> ChatsEvent.ConversationsData(event.conversations)
-                HomeEvent.NoSearchData -> ChatsEvent.NoSearchData
-                is HomeEvent.Search -> ChatsEvent.SearchData(event.conversations, event.contacts)
-            }
-        )
+    fun conversationEvent(event: ConversationEvent) {
+        binding.chatsContainerView.event(event)
     }
 
     private fun setupBottomView() {

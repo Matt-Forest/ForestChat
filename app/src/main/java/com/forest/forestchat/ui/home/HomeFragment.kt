@@ -24,15 +24,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.Telephony
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
-import com.forest.forestchat.receiver.DefaultSmsChangedReceiver
+import com.forest.forestchat.app.TransversalBusEvent
+import com.forest.forestchat.observer.ContactObserver
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.chats.ChatsViewModel
+import com.forest.forestchat.ui.chats.ConversationEvent
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentForm
@@ -71,6 +74,9 @@ class HomeFragment : NavigationFragment() {
         with(navigationView) {
             requestSmsPermissionChats = { chatsViewModel.getConversations() }
             onSearchChangedChats = chatsViewModel::onSearchChange
+            optionSelected = chatsViewModel::conversationOptionSelected
+            onConversationSelected = chatsViewModel::onConversationSelected
+            onConversationDeleted = chatsViewModel::removeConversation
             toggleTab = {
                 homeTab = it
                 updateStatusBarMode()
@@ -81,12 +87,12 @@ class HomeFragment : NavigationFragment() {
         with(chatsViewModel) {
             chatsEvent().observe(viewLifecycleOwner) { event ->
                 when (event) {
-                    HomeEvent.RequestDefaultSms -> showDefaultSmsDialog()
-                    HomeEvent.RequestPermission -> requestPermission()
-                    else -> {
-                    }
+                    ConversationEvent.RequestDefaultSms -> showDefaultSmsDialog()
+                    ConversationEvent.RequestPermission -> requestPermission()
+                    is ConversationEvent.AddContact -> addContact(event.address)
+                    else -> null
                 }
-                navigationView.event(event)
+                navigationView.conversationEvent(event)
             }
         }
 
@@ -95,8 +101,11 @@ class HomeFragment : NavigationFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
-    fun onMessageEvent(event: DefaultSmsChangedReceiver.ReceiverEvent) {
-        chatsViewModel.onDefaultSmsChange(event)
+    fun onMessageEvent(event: TransversalBusEvent) {
+        when (event) {
+            is TransversalBusEvent.DefaultSmsChangedEvent -> chatsViewModel.onDefaultSmsChange(event)
+            else -> null
+        }
     }
 
     private fun showDefaultSmsDialog() {
@@ -173,6 +182,15 @@ class HomeFragment : NavigationFragment() {
     private fun init(context: Context) {
         MobileAds.initialize(context)
         chatsViewModel.getConversations()
+    }
+
+    private fun addContact(address: String) {
+        val intent = Intent(Intent.ACTION_INSERT)
+            .setType(ContactsContract.Contacts.CONTENT_TYPE)
+            .putExtra(ContactsContract.Intents.Insert.PHONE, address)
+
+        context?.let { ContactObserver(it) { chatsViewModel.onContactChanged() }.start() }
+        activity?.startActivity(intent)
     }
 
 }

@@ -16,20 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats
+package com.forest.forestchat.ui.chats.dialog
 
-import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.SearchConversationResult
-import com.forest.forestchat.domain.models.contact.Contact
-
-sealed class ChatsEvent {
-    object NeedPermission : ChatsEvent()
-    object NoData : ChatsEvent()
-    object Loading : ChatsEvent()
-    data class ConversationsData(val conversations: List<Conversation>) : ChatsEvent()
-    object NoSearchData : ChatsEvent()
-    data class SearchData(
-        val conversations: List<SearchConversationResult>,
-        val contacts: List<Contact>
-    ) : ChatsEvent()
+enum class ConversationOptionType {
+    AddToContacts,
+    Pin,
+    PinnedOff,
+    MarkAsRead,
+    Archive,
+    Block,
+    Remove
 }

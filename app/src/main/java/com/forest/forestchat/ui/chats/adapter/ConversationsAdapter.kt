@@ -32,14 +32,23 @@ import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdHolder
 import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 
-class ConversationsAdapter : BaseAdapter() {
+class ConversationsAdapter(
+    private val onSelected: (Long) -> Unit
+) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent)
+            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onSelected)
             ConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
             else -> null
         }
+
+    override fun onPayload(holder: BaseHolder<BaseAdapterItem>, position: Int, payload: Any) {
+        holder as ConversationHolder
+        payload as ConversationsPayload
+
+        holder.onPayload(payload)
+    }
 
     fun setConversations(context: Context, conversations: List<Conversation>) {
         val items = mutableListOf<BaseAdapterItem>()

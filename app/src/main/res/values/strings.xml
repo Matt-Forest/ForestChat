@@ -38,5 +38,16 @@
         <item quantity="one">%s message</item>
         <item quantity="other">%s messages</item>
     </plurals>
+    <string name="conversation_option_archived">Archive</string>
+    <string name="conversation_option_deleted">Remove</string>
+    <string name="conversation_option_blocked">Block</string>
+    <string name="conversation_option_pinned">Pin</string>
+    <string name="conversation_option_pinned_off">Pinned-off</string>
+    <string name="conversation_option_mark_read">Mark as read</string>
+    <string name="conversation_option_add_contact">Add to Contacts</string>
+    <string name="conversation_delete_dialog_title">Delete</string>
+    <string name="conversation_delete_dialog_describe">Are you sure you would like to delete this conversation?</string>
+    <string name="conversation_delete_dialog_confirm">Delete</string>
+    <string name="conversation_delete_dialog_refuse">Cancel</string>
 
 </resources>

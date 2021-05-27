@@ -27,7 +27,7 @@ data class Conversation(
     @PrimaryKey
     val id: Long,
     val archived: Boolean,
-    val blocked: ConversationBlock?,
+    val blocked: Boolean,
     val pinned: Boolean,
     val recipients: List<Recipient>,
     val lastMessage: Message?,

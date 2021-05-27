@@ -19,7 +19,6 @@
 package com.forest.forestchat.localStorage.database.converters
 
 import androidx.room.TypeConverter
-import com.forest.forestchat.domain.models.ConversationBlock
 import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.models.message.Message
 import com.squareup.moshi.JsonAdapter
@@ -28,26 +27,6 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 object ConversationConverters {
-
-    class ConversationBlockConverter {
-
-        private val adapter: JsonAdapter<ConversationBlock> =
-            Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
-                .adapter(ConversationBlock::class.java)
-
-        @TypeConverter
-        fun conversationBlockToString(block: ConversationBlock?): String? = block?.let {
-            adapter.toJson(block)
-        }
-
-        @TypeConverter
-        fun conversationBlockFromString(json: String?): ConversationBlock? = json?.let {
-            adapter.fromJson(json)
-        }
-
-    }
 
     class RecipientConverter {
 

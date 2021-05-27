@@ -26,9 +26,11 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderConversationBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.chats.adapter.ConversationsPayload
 
 class ConversationHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onSelected: (Long) -> Unit
 ) : BaseHolder<ConversationItem>(parent, R.layout.holder_conversation) {
 
     private val binding = HolderConversationBinding.bind(itemView)
@@ -39,22 +41,50 @@ class ConversationHolder(
             title.text = item.title
             snippet.text = item.lastMessage
             date.text = item.date
-            pinned.isVisible = item.pinned
-            unread.isVisible = item.unread
             chip.isVisible = item.draft
+        }
+        updatePin(item.pinned)
+        updateMarkAsRead(item.unread)
 
-            snippet.setTextColor(when (item.unread) {
-                true -> R.color.text.asColor(context)
-                false -> R.color.text_50.asColor(context)
-            })
-            title.typeface = updateTypeFace(item.unread)
-            date.typeface = updateTypeFace(item.unread)
+        itemView.setOnLongClickListener {
+            onSelected(item.id)
+            true
         }
     }
 
-    private fun updateTypeFace(unread: Boolean) : Typeface? = when (unread) {
+    private fun updateMarkAsRead(unread: Boolean) {
+        binding.unread.isVisible = unread
+        with(binding) {
+            snippet.setTextColor(
+                when (unread) {
+                    true -> R.color.text.asColor(context)
+                    false -> R.color.text_50.asColor(context)
+                }
+            )
+            title.typeface = updateTypeFace(unread)
+            date.typeface = updateTypeFace(unread)
+        }
+    }
+
+    private fun updateTypeFace(unread: Boolean): Typeface? = when (unread) {
         true -> ResourcesCompat.getFont(context, R.font.mulish_bold)
         false -> ResourcesCompat.getFont(context, R.font.mulish_regular)
+    }
+
+    private fun updatePin(pinned: Boolean) {
+        binding.pinned.isVisible = pinned
+    }
+
+    private fun updateTitle(newTitle: String) {
+        binding.title.text = newTitle
+    }
+
+    fun onPayload(payload: ConversationsPayload) {
+        when (payload) {
+            is ConversationsPayload.Title -> updateTitle(payload.newTitle)
+            is ConversationsPayload.Pin -> updatePin(payload.pin)
+            ConversationsPayload.MarkAsRead -> updateMarkAsRead(false)
+        }
     }
 
 }

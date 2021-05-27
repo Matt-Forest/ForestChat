@@ -32,5 +32,16 @@
     <string name="chats_draft">Brouillon</string>
     <string name="chats_ads">Pub</string>
     <string name="chats_loading">Chargement des données…</string>
+    <string name="conversation_option_archived">Archiver</string>
+    <string name="conversation_option_deleted">Supprimer</string>
+    <string name="conversation_option_blocked">Bloquer</string>
+    <string name="conversation_option_pinned">Epingler</string>
+    <string name="conversation_option_pinned_off">Détacher</string>
+    <string name="conversation_option_mark_read">Marquer comme lu</string>
+    <string name="conversation_option_add_contact">Ajouter aux contacts</string>
+    <string name="conversation_delete_dialog_title">Supprimer</string>
+    <string name="conversation_delete_dialog_describe">Êtes-vous sûr de vouloir supprimer cette conversation ?</string>
+    <string name="conversation_delete_dialog_confirm">Supprimer</string>
+    <string name="conversation_delete_dialog_refuse">Annuler</string>
 
 </resources>

@@ -34,7 +34,6 @@ data class Message(
     val type: MessageType,
     val date: Long,
     val dateSent: Long,
-    val seen: Boolean,
     val read: Boolean,
     val locked: Boolean,
     val subId: Int?,

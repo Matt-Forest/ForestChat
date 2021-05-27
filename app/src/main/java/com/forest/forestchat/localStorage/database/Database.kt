@@ -48,7 +48,6 @@ import com.forest.forestchat.localStorage.database.daos.MessageDao
         SmsConverters.SmsStatusConverter::class,
         MmsConverters.MmsPartTypeConverter::class,
         ContactConverters.PhoneNumberConverter::class,
-        ConversationConverters.ConversationBlockConverter::class,
         ConversationConverters.RecipientConverter::class,
         ConversationConverters.MessageBlockConverter::class,
         RecipientConverters.ContactConverter::class,

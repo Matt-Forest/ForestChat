@@ -20,6 +20,7 @@ package com.forest.forestchat.ui.chats.adapter.conversation
 
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.chats.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.chats.adapter.ConversationsPayload
 import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class ConversationItem(
@@ -37,5 +38,16 @@ class ConversationItem(
 
     override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
         oldItem is ConversationItem && oldItem.id == id
+
+    override fun getChangePayload(oldItem: BaseAdapterItem): Any? {
+        oldItem as ConversationItem
+
+        return when {
+            oldItem.title != title -> ConversationsPayload.Title(title)
+            oldItem.pinned != pinned -> ConversationsPayload.Pin(pinned)
+            oldItem.unread != unread -> ConversationsPayload.MarkAsRead
+            else -> null
+        }
+    }
 
 }
