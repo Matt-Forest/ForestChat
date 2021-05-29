@@ -16,16 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter.nativeAd
+package com.forest.forestchat.ui.conversations.searchAdapter.conversation
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.chats.adapter.ConversationViewTypes
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderConversationSearchBinding
+import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-class NativeAdItem : BaseAdapterItem() {
+class SearchConversationHolder(
+    parent: ViewGroup
+) : BaseHolder<SearchConversationItem>(parent, R.layout.holder_conversation_search) {
 
-    override fun getViewType(): Int = ConversationViewTypes.NATIVE_AD
+    private val binding = HolderConversationSearchBinding.bind(itemView)
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is NativeAdItem
+    override fun bind(item: SearchConversationItem) {
+        with(binding) {
+            avatars.updateAvatars(item.avatarType)
+            title.text = item.title
+            snippet.text = item.message
+            date.text = item.date
+        }
+    }
 
 }

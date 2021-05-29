@@ -16,14 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.dialog
+package com.forest.forestchat.ui.conversations.searchAdapter.header
 
-enum class ConversationOptionType {
-    AddToContacts,
-    Pin,
-    PinnedOff,
-    MarkAsRead,
-    Archive,
-    Block,
-    Remove
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.conversations.searchAdapter.SearchViewTypes
+
+class SearchHeaderItem(
+    val label: String
+) : BaseAdapterItem() {
+
+    override fun getViewType(): Int = SearchViewTypes.HEADER
+
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is SearchHeaderItem && oldItem.label == label
+
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter.conversation
+package com.forest.forestchat.ui.conversations.adapter.conversation
 
 import android.graphics.Typeface
 import android.view.ViewGroup
@@ -26,7 +26,7 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderConversationBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.chats.adapter.ConversationsPayload
+import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
 
 class ConversationHolder(
     parent: ViewGroup,

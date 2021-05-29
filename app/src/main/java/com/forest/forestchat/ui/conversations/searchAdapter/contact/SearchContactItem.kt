@@ -16,26 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.searchAdapter.conversation
+package com.forest.forestchat.ui.conversations.searchAdapter.contact
 
-import android.view.ViewGroup
-import com.forest.forestchat.R
-import com.forest.forestchat.databinding.HolderConversationSearchBinding
-import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.conversations.searchAdapter.SearchViewTypes
+import com.forest.forestchat.ui.common.avatar.AvatarType
 
-class SearchConversationHolder(
-    parent: ViewGroup
-) : BaseHolder<SearchConversationItem>(parent, R.layout.holder_conversation_search) {
+class SearchContactItem(
+    val id: Long,
+    val name: String,
+    val number: String,
+    val avatarType: AvatarType
+) : BaseAdapterItem() {
 
-    private val binding = HolderConversationSearchBinding.bind(itemView)
+    override fun getViewType(): Int = SearchViewTypes.CONTACT
 
-    override fun bind(item: SearchConversationItem) {
-        with(binding) {
-            avatars.updateAvatars(item.avatarType)
-            title.text = item.title
-            snippet.text = item.message
-            date.text = item.date
-        }
-    }
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is SearchContactItem && oldItem.id == id
 
 }

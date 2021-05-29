@@ -21,8 +21,8 @@
     <item
         android:id="@+id/chats"
         android:enabled="true"
-        android:icon="@drawable/ic_chat"
-        android:title="@string/bottom_nav_chat" />
+        android:icon="@drawable/ic_conversation"
+        android:title="@string/bottom_nav_conversation" />
     <item
         android:id="@+id/dashboard"
         android:icon="@drawable/ic_discovery"

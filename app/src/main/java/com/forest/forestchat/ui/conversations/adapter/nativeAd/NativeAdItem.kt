@@ -16,23 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.searchAdapter.conversation
+package com.forest.forestchat.ui.conversations.adapter.nativeAd
 
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.chats.searchAdapter.SearchViewTypes
-import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.conversations.adapter.ConversationViewTypes
 
-class SearchConversationItem(
-    val id: Long,
-    val title: String,
-    val message: String,
-    val date: String,
-    val avatarType: AvatarType
-) : BaseAdapterItem() {
+class NativeAdItem : BaseAdapterItem() {
 
-    override fun getViewType(): Int = SearchViewTypes.CONVERSATION
+    override fun getViewType(): Int = ConversationViewTypes.NATIVE_AD
 
     override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is SearchConversationItem && oldItem.id == id
+        oldItem is NativeAdItem
 
 }

@@ -49,7 +49,7 @@
             android:layout_marginTop="40dp"
             android:gravity="center"
             android:paddingHorizontal="40dp"
-            android:text="@string/chats_permission_needed_text"
+            android:text="@string/conversations_permission_needed_text"
             android:textColor="@color/text" />
 
         <TextView
@@ -61,7 +61,7 @@
             android:background="@drawable/bg_button"
             android:paddingHorizontal="16dp"
             android:paddingVertical="9dp"
-            android:text="@string/chats_change_permission"
+            android:text="@string/conversations_change_permission"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -91,7 +91,7 @@
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:paddingHorizontal="40dp"
-            android:text="@string/chats_loading"
+            android:text="@string/conversations_loading"
             android:textColor="@color/text" />
 
     </LinearLayout>
@@ -104,7 +104,7 @@
         android:layout_marginTop="40dp"
         android:gravity="center"
         android:paddingHorizontal="20dp"
-        android:text="@string/chats_empty_conversation"
+        android:text="@string/conversations_empty_conversation"
         android:textColor="@color/text"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,12 +140,12 @@
                 android:id="@+id/searchChat"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:autofillHints="@string/chats_search_hint"
+                android:autofillHints="@string/conversations_search_hint"
                 android:background="@drawable/bg_search"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="10dp"
                 android:foregroundTint="@color/search_tint_selector"
-                android:hint="@string/chats_search_hint"
+                android:hint="@string/conversations_search_hint"
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingEnd="5dp"

@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter.conversation
+package com.forest.forestchat.ui.conversations.adapter.conversation
 
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.chats.adapter.ConversationViewTypes
-import com.forest.forestchat.ui.chats.adapter.ConversationsPayload
+import com.forest.forestchat.ui.conversations.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
 import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class ConversationItem(

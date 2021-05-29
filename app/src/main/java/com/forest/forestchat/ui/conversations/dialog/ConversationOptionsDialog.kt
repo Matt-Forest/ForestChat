@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.dialog
+package com.forest.forestchat.ui.conversations.dialog
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter.nativeAd
+package com.forest.forestchat.ui.conversations.adapter.nativeAd
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -16,18 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.searchAdapter.header
+package com.forest.forestchat.ui.conversations.adapter
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.chats.searchAdapter.SearchViewTypes
-
-class SearchHeaderItem(
-    val label: String
-) : BaseAdapterItem() {
-
-    override fun getViewType(): Int = SearchViewTypes.HEADER
-
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is SearchHeaderItem && oldItem.label == label
-
+sealed class ConversationsPayload {
+    data class Pin(val pin: Boolean) : ConversationsPayload()
+    data class Title(val newTitle: String) : ConversationsPayload()
+    object MarkAsRead : ConversationsPayload()
 }

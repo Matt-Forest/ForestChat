@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats
+package com.forest.forestchat.ui.conversations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,7 +28,7 @@ import com.forest.forestchat.domain.useCases.synchronize.SyncContactsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
-import com.forest.forestchat.ui.chats.dialog.ConversationOptionType
+import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +38,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatsViewModel @Inject constructor(
+class ConversationsViewModel @Inject constructor(
     private val getConversationsUseCase: GetConversationsUseCase,
     private val getConversationUseCase: GetConversationUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,

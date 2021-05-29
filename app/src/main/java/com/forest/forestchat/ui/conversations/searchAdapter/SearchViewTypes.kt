@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter
+package com.forest.forestchat.ui.conversations.searchAdapter
 
-sealed class ConversationsPayload {
-    data class Pin(val pin: Boolean) : ConversationsPayload()
-    data class Title(val newTitle: String) : ConversationsPayload()
-    object MarkAsRead : ConversationsPayload()
+object SearchViewTypes {
+    const val HEADER = 0
+    const val CONVERSATION = 1
+    const val CONTACT = 2
 }

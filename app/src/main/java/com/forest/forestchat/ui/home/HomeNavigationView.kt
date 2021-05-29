@@ -25,8 +25,8 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
-import com.forest.forestchat.ui.chats.ConversationEvent
-import com.forest.forestchat.ui.chats.dialog.ConversationOptionType
+import com.forest.forestchat.ui.conversations.ConversationEvent
+import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
@@ -55,15 +55,15 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
     }
 
     private fun setupChatsView() {
-        binding.chatsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
-        binding.chatsContainerView.onSearchChange = { onSearchChangedChats(it) }
-        binding.chatsContainerView.optionSelected = { optionSelected(it) }
-        binding.chatsContainerView.onConversationSelected = { onConversationSelected(it) }
-        binding.chatsContainerView.onConversationDeleted = { onConversationDeleted(it) }
+        binding.conversationsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
+        binding.conversationsContainerView.onSearchChange = { onSearchChangedChats(it) }
+        binding.conversationsContainerView.optionSelected = { optionSelected(it) }
+        binding.conversationsContainerView.onConversationSelected = { onConversationSelected(it) }
+        binding.conversationsContainerView.onConversationDeleted = { onConversationDeleted(it) }
     }
 
     fun conversationEvent(event: ConversationEvent) {
-        binding.chatsContainerView.event(event)
+        binding.conversationsContainerView.event(event)
     }
 
     private fun setupBottomView() {
@@ -91,7 +91,7 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
     private fun toggleViews() {
         with(binding) {
-            chatsContainerView.invisibleIf { selectedTab == HomeTab.Dashboard }
+            conversationsContainerView.invisibleIf { selectedTab == HomeTab.Dashboard }
             dashboardContainerView.invisibleIf { selectedTab == HomeTab.Chats }
         }
     }

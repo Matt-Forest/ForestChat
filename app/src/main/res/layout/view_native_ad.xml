@@ -85,7 +85,7 @@
             android:maxLines="1"
             android:paddingHorizontal="6dp"
             android:paddingVertical="2dp"
-            android:text="@string/chats_ads"
+            android:text="@string/conversations_ads"
             android:textColor="@color/white"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/title"

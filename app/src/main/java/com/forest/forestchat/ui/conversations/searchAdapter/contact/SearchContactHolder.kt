@@ -16,10 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.searchAdapter
+package com.forest.forestchat.ui.conversations.searchAdapter.contact
 
-object SearchViewTypes {
-    const val HEADER = 0
-    const val CONVERSATION = 1
-    const val CONTACT = 2
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderContactSearchBinding
+import com.forest.forestchat.ui.base.recycler.BaseHolder
+
+class SearchContactHolder(
+    parent: ViewGroup
+) : BaseHolder<SearchContactItem>(parent, R.layout.holder_contact_search) {
+
+    private val binding = HolderContactSearchBinding.bind(itemView)
+
+    override fun bind(item: SearchContactItem) {
+        with(binding) {
+            avatars.updateAvatars(item.avatarType)
+            title.text = item.name
+            snippet.text = item.number
+        }
+    }
+
 }

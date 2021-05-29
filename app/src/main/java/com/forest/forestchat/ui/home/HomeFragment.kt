@@ -34,8 +34,8 @@ import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.observer.ContactObserver
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import com.forest.forestchat.ui.chats.ChatsViewModel
-import com.forest.forestchat.ui.chats.ConversationEvent
+import com.forest.forestchat.ui.conversations.ConversationsViewModel
+import com.forest.forestchat.ui.conversations.ConversationEvent
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentForm
@@ -48,7 +48,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 class HomeFragment : NavigationFragment() {
 
-    private val chatsViewModel: ChatsViewModel by viewModels()
+    private val conversationsViewModel: ConversationsViewModel by viewModels()
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     private val navigationView: HomeNavigationView
@@ -72,11 +72,11 @@ class HomeFragment : NavigationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {
-            requestSmsPermissionChats = { chatsViewModel.getConversations() }
-            onSearchChangedChats = chatsViewModel::onSearchChange
-            optionSelected = chatsViewModel::conversationOptionSelected
-            onConversationSelected = chatsViewModel::onConversationSelected
-            onConversationDeleted = chatsViewModel::removeConversation
+            requestSmsPermissionChats = { conversationsViewModel.getConversations() }
+            onSearchChangedChats = conversationsViewModel::onSearchChange
+            optionSelected = conversationsViewModel::conversationOptionSelected
+            onConversationSelected = conversationsViewModel::onConversationSelected
+            onConversationDeleted = conversationsViewModel::removeConversation
             toggleTab = {
                 homeTab = it
                 updateStatusBarMode()
@@ -84,7 +84,7 @@ class HomeFragment : NavigationFragment() {
             }
         }
 
-        with(chatsViewModel) {
+        with(conversationsViewModel) {
             chatsEvent().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     ConversationEvent.RequestDefaultSms -> showDefaultSmsDialog()
@@ -103,7 +103,7 @@ class HomeFragment : NavigationFragment() {
     @Suppress("unused")
     fun onMessageEvent(event: TransversalBusEvent) {
         when (event) {
-            is TransversalBusEvent.DefaultSmsChangedEvent -> chatsViewModel.onDefaultSmsChange(event)
+            is TransversalBusEvent.DefaultSmsChangedEvent -> conversationsViewModel.onDefaultSmsChange(event)
             else -> null
         }
     }
@@ -181,7 +181,7 @@ class HomeFragment : NavigationFragment() {
 
     private fun init(context: Context) {
         MobileAds.initialize(context)
-        chatsViewModel.getConversations()
+        conversationsViewModel.getConversations()
     }
 
     private fun addContact(address: String) {
@@ -189,7 +189,7 @@ class HomeFragment : NavigationFragment() {
             .setType(ContactsContract.Contacts.CONTENT_TYPE)
             .putExtra(ContactsContract.Intents.Insert.PHONE, address)
 
-        context?.let { ContactObserver(it) { chatsViewModel.onContactChanged() }.start() }
+        context?.let { ContactObserver(it) { conversationsViewModel.onContactChanged() }.start() }
         activity?.startActivity(intent)
     }
 

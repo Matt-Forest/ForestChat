@@ -79,7 +79,7 @@
         android:maxLines="1"
         android:paddingHorizontal="6dp"
         android:paddingVertical="2dp"
-        android:text="@string/chats_draft"
+        android:text="@string/conversations_draft"
         android:textColor="@color/white"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/title"

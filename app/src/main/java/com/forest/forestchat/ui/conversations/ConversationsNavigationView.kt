@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats
+package com.forest.forestchat.ui.conversations
 
 import android.content.Context
 import android.util.AttributeSet
@@ -25,19 +25,19 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
 import com.forest.forestchat.R
-import com.forest.forestchat.databinding.NavigationChatsBinding
+import com.forest.forestchat.databinding.NavigationConversationsBinding
 import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.visibleIf
-import com.forest.forestchat.ui.chats.adapter.ConversationsAdapter
-import com.forest.forestchat.ui.chats.dialog.ConversationDeleteDialog
-import com.forest.forestchat.ui.chats.dialog.ConversationOptionType
-import com.forest.forestchat.ui.chats.dialog.ConversationOptionsDialog
-import com.forest.forestchat.ui.chats.searchAdapter.SearchAdapter
+import com.forest.forestchat.ui.conversations.adapter.ConversationsAdapter
+import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
+import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
+import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
+import com.forest.forestchat.ui.conversations.searchAdapter.SearchAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 
-class ChatsNavigationView : ConstraintLayout {
+class ConversationsNavigationView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -53,14 +53,14 @@ class ChatsNavigationView : ConstraintLayout {
     lateinit var onConversationSelected: (Long) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
 
-    private val binding: NavigationChatsBinding
+    private val binding: NavigationConversationsBinding
     private var conversationsAdapter = ConversationsAdapter { onConversationSelected(it) }
     private val searchAdapter = SearchAdapter()
     private var bannerLoaded: Boolean = false
 
     init {
         val layoutInflater = LayoutInflater.from(context)
-        binding = NavigationChatsBinding.inflate(layoutInflater, this)
+        binding = NavigationConversationsBinding.inflate(layoutInflater, this)
 
         with(binding) {
             changePermission.setOnClickListener { requestSmsPermission() }
@@ -130,10 +130,10 @@ class ChatsNavigationView : ConstraintLayout {
 
             when (event) {
                 ConversationEvent.NoConversationsData -> {
-                    empty.text = R.string.chats_empty_conversation.asString(context)
+                    empty.text = R.string.conversations_empty_conversation.asString(context)
                 }
                 ConversationEvent.NoSearchData -> {
-                    empty.text = R.string.chats_empty_search.asString(context)
+                    empty.text = R.string.conversations_empty_search.asString(context)
                 }
                 is ConversationEvent.ConversationsData -> {
                     if (recyclerChat.adapter !== conversationsAdapter) {

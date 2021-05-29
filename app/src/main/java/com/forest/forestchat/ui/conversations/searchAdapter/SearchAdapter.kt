@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.searchAdapter
+package com.forest.forestchat.ui.conversations.searchAdapter
 
 import android.content.Context
 import android.view.ViewGroup
@@ -29,12 +29,12 @@ import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.chats.searchAdapter.contact.SearchContactHolder
-import com.forest.forestchat.ui.chats.searchAdapter.contact.SearchContactItem
-import com.forest.forestchat.ui.chats.searchAdapter.conversation.SearchConversationHolder
-import com.forest.forestchat.ui.chats.searchAdapter.conversation.SearchConversationItem
-import com.forest.forestchat.ui.chats.searchAdapter.header.SearchHeaderHolder
-import com.forest.forestchat.ui.chats.searchAdapter.header.SearchHeaderItem
+import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactHolder
+import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactItem
+import com.forest.forestchat.ui.conversations.searchAdapter.conversation.SearchConversationHolder
+import com.forest.forestchat.ui.conversations.searchAdapter.conversation.SearchConversationItem
+import com.forest.forestchat.ui.conversations.searchAdapter.header.SearchHeaderHolder
+import com.forest.forestchat.ui.conversations.searchAdapter.header.SearchHeaderItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 
@@ -56,7 +56,7 @@ class SearchAdapter : BaseAdapter() {
         val items : MutableList<BaseAdapterItem> = mutableListOf()
 
         if (conversations.isNotEmpty()) {
-            items.add(SearchHeaderItem(R.string.chats_search_conversation.asString(context)))
+            items.add(SearchHeaderItem(R.string.conversations_search_conversation.asString(context)))
         }
 
         conversations.forEach { conversation ->
@@ -64,7 +64,7 @@ class SearchAdapter : BaseAdapter() {
         }
 
         if (contacts.isNotEmpty()) {
-            items.add(SearchHeaderItem(R.string.chats_search_contact.asString(context)))
+            items.add(SearchHeaderItem(R.string.conversations_search_contact.asString(context)))
         }
 
         contacts.forEach { contact ->
@@ -89,7 +89,7 @@ class SearchAdapter : BaseAdapter() {
         SearchConversationItem(
             id = conversationsResult.conversation.id,
             title = conversationsResult.conversation.getTitle(),
-            message = R.plurals.chats_search_conversation_count.asPlurals(
+            message = R.plurals.conversations_search_conversation_count.asPlurals(
                 context,
                 conversationsResult.messages
             ),

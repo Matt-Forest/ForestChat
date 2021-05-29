@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.chats.adapter
+package com.forest.forestchat.ui.conversations.adapter
 
 import android.content.Context
 import android.view.ViewGroup
@@ -26,10 +26,10 @@ import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.chats.adapter.conversation.ConversationHolder
-import com.forest.forestchat.ui.chats.adapter.conversation.ConversationItem
-import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdHolder
-import com.forest.forestchat.ui.chats.adapter.nativeAd.NativeAdItem
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationHolder
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItem
+import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdHolder
+import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 
 class ConversationsAdapter(
@@ -62,7 +62,7 @@ class ConversationsAdapter(
                 lastMessage = when {
                     conversation.draft?.isNotEmpty() == true -> conversation.draft
                     conversation.lastMessage?.isUser() == true -> context.getString(
-                        R.string.chats_sender_user,
+                        R.string.conversations_sender_user,
                         conversation.lastMessage.getSummary()
                     )
                     else -> conversation.lastMessage?.getSummary()

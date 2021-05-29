@@ -1,4 +1,4 @@
-package com.forest.forestchat.ui.chats
+package com.forest.forestchat.ui.conversations
 
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.SearchConversationResult
