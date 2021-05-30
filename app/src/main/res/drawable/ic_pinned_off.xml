@@ -1,19 +1,52 @@
-<vector android:height="24dp" android:viewportHeight="44"
-    android:viewportWidth="44" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#00000000"
-        android:pathData="M5.5,5.5L38.5,38.5"
-        android:strokeColor="#031926" android:strokeLineCap="round"
-        android:strokeLineJoin="round" android:strokeWidth="2.75"/>
-    <path android:fillColor="#00000000"
-        android:pathData="M29.7917,22.4602L35.75,16.5M27.5,8.25L21.5435,14.2065L27.5,8.25ZM16.8319,16.8337L12.8334,18.3333L10.0834,21.0833L22.9167,33.9167L25.6667,31.1667L27.17,27.159L16.8319,16.8337Z"
-        android:strokeColor="#031926" android:strokeLineCap="round"
-        android:strokeLineJoin="round" android:strokeWidth="2.75"/>
-    <path android:fillColor="#00000000"
-        android:pathData="M16.5,27.5L8.25,35.75"
-        android:strokeColor="#031926" android:strokeLineCap="round"
-        android:strokeLineJoin="round" android:strokeWidth="2.75"/>
-    <path android:fillColor="#00000000"
-        android:pathData="M26.5834,7.3334L36.6667,17.4167"
-        android:strokeColor="#031926" android:strokeLineCap="round"
-        android:strokeLineJoin="round" android:strokeWidth="2.75"/>
+<!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:pathData="M3,3L21,21"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#031926"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M16.25,12.251L19.5,9M15,4.5L11.751,7.749L15,4.5ZM9.181,9.182L7,10L5.5,11.5L12.5,18.5L14,17L14.82,14.814L9.181,9.182Z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#031926"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M9,15L4.5,19.5"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#031926"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M14.5,4L20,9.5"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#031926"
+      android:strokeLineCap="round"/>
 </vector>

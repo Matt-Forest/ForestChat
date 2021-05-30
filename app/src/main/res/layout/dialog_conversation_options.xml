@@ -117,7 +117,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_mark_as_dread"
+            android:src="@drawable/ic_mark_as_read"
             app:tint="@color/text" />
 
         <TextView

@@ -131,7 +131,7 @@ class AvatarView : View {
     }
 
     private fun buildAds(canvas: Canvas) {
-        ContextCompat.getDrawable(context, R.drawable.ic_star)?.let { drawable ->
+        ContextCompat.getDrawable(context, R.drawable.ic_ad)?.let { drawable ->
             getBitmapFromVectorDrawable(drawable, padding)?.let { image ->
                 canvas.drawBitmap(image, 0F, 0F, fillPaint)
             }

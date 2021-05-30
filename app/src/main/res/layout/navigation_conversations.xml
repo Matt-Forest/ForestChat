@@ -159,7 +159,7 @@
                 android:id="@+id/clearSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_close_square"
+                android:background="@drawable/ic_cancel"
                 android:backgroundTint="@color/text"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
