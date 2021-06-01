@@ -32,6 +32,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.asColor
+import com.forest.forestchat.extensions.asFont
 import com.forest.forestchat.extensions.sp
 
 
@@ -50,7 +51,7 @@ class AvatarView : View {
         color = R.color.primary.asColor(context)
     }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = ResourcesCompat.getFont(context, R.font.mulish_regular)
+        typeface = R.font.mulish_regular.asFont(context)
         textSize = 16.sp.toFloat()
         letterSpacing = 0.0015f
         textAlign = Paint.Align.CENTER

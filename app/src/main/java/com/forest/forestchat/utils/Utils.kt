@@ -16,10 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.receiver
+package com.forest.forestchat.utils
 
-import com.android.mms.transaction.PushReceiver
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class MmsReceiver : PushReceiver()
+fun <T> tryOrNull(body: () -> T?): T? {
+    return try {
+        body()
+    } catch (e: Exception) {
+        null
+    }
+}

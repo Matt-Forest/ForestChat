@@ -25,6 +25,7 @@ import androidx.core.view.isVisible
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderConversationBinding
 import com.forest.forestchat.extensions.asColor
+import com.forest.forestchat.extensions.asFont
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
 
@@ -67,8 +68,8 @@ class ConversationHolder(
     }
 
     private fun updateTypeFace(unread: Boolean): Typeface? = when (unread) {
-        true -> ResourcesCompat.getFont(context, R.font.mulish_bold)
-        false -> ResourcesCompat.getFont(context, R.font.mulish_regular)
+        true -> R.font.mulish_bold.asFont(context)
+        false -> R.font.mulish_regular.asFont(context)
     }
 
     private fun updatePin(pinned: Boolean) {

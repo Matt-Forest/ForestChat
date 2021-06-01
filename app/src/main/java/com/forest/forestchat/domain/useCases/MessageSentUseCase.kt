@@ -16,37 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.app
+package com.forest.forestchat.domain.useCases
 
-import android.Manifest
-import android.app.role.RoleManager
+import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.provider.Telephony
-import androidx.core.content.ContextCompat
+import com.forest.forestchat.domain.models.message.MessageBox
+import com.forest.forestchat.localStorage.database.daos.MessageDao
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PermissionsManager @Inject constructor(
-    @ApplicationContext private val context: Context
+class MessageSentUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val messageDao: MessageDao,
 ) {
 
-    fun isDefaultSms(): Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.getSystemService(RoleManager::class.java)
-                ?.isRoleHeld(RoleManager.ROLE_SMS) == true
-        } else {
-            Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+    suspend operator fun invoke(messageId: Long) {
+        messageDao.getById(messageId)?.let { message ->
+            messageDao.insert(message.copy(box = MessageBox.Sent))
+
+            // Update the message in the native ContentProvider
+            val values = ContentValues()
+            values.put(Telephony.Sms.TYPE, Telephony.Sms.MESSAGE_TYPE_SENT)
+            message.getUri()?.let { uri ->
+                context.contentResolver.update(uri, values, null, null)
+            }
         }
-
-    fun hasReadSms(): Boolean = hasPermission(Manifest.permission.READ_SMS)
-
-    fun hasContacts(): Boolean = hasPermission(Manifest.permission.READ_CONTACTS)
-
-    private fun hasPermission(permission: String): Boolean =
-        ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    }
 
 }

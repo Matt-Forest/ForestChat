@@ -20,7 +20,7 @@ package com.forest.forestchat.ui.conversations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.forest.forestchat.app.PermissionsManager
+import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.useCases.*
@@ -164,7 +164,7 @@ class ConversationsViewModel @Inject constructor(
                         }
                     }
                     ConversationOptionType.MarkAsRead -> {
-                        markAsReadUseCase(conversation)
+                        markAsReadUseCase(conversation.id)
                         getConversations()
                     }
                     ConversationOptionType.Remove -> {

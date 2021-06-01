@@ -31,6 +31,7 @@ val Int.sp
     get() = (this * Resources.getSystem().displayMetrics.scaledDensity).toInt()
 
 fun Int.asString(context: Context?) = context?.resources?.getString(this) ?: ""
+
 fun Int.asStringArray(context: Context?) = context?.resources?.getStringArray(this) ?: emptyArray()
 
 fun Int.asDrawable(context: Context?) = context?.let { ContextCompat.getDrawable(it, this) }

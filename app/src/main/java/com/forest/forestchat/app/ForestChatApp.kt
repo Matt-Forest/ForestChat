@@ -20,6 +20,9 @@ package com.forest.forestchat.app
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import coil.Coil
+import coil.ImageLoader
+import com.forest.forestchat.ui.common.coil.ByteArrayFetcher
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -28,6 +31,17 @@ class ForestChatApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+
+        setupCoil()
+    }
+
+    private fun setupCoil() {
+        val imageLoader = ImageLoader.Builder(this)
+            .componentRegistry {
+                add(ByteArrayFetcher())
+            }
+            .build()
+        Coil.setImageLoader(imageLoader)
     }
 
 }

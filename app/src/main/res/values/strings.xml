@@ -50,4 +50,25 @@
     <string name="conversation_delete_dialog_confirm">Delete</string>
     <string name="conversation_delete_dialog_refuse">Cancel</string>
 
+    <string name="notification_mark_read">Mark read</string>
+    <string name="notification_reply">Reply</string>
+
+    <string name="notification_message_failed_title">Message not sent</string>
+    <string name="notification_message_failed_text">The message to %s failed to send</string>
+
+    <string-array name="notification_forest_chat_responses">
+        <item>Okay</item>
+        <item>Give me a moment</item>
+        <item>On my way</item>
+        <item>Thanks</item>
+        <item>Sounds good</item>
+        <item>What\'s up?</item>
+        <item>Agreed</item>
+        <item>No</item>
+        <item>Love you</item>
+        <item>Sorry</item>
+        <item>LOL</item>
+        <item>That\'s okay</item>
+    </string-array>
+
 </resources>

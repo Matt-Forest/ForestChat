@@ -18,6 +18,9 @@
  */
 package com.forest.forestchat.domain.models.message
 
+import android.content.ContentUris
+import android.net.Uri
+import android.provider.Telephony
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.forest.forestchat.domain.models.message.mms.MessageMms
@@ -35,6 +38,7 @@ data class Message(
     val date: Long,
     val dateSent: Long,
     val read: Boolean,
+    val seen: Boolean,
     val locked: Boolean,
     val subId: Int?,
     val sms: MessageSms?,
@@ -58,5 +62,22 @@ data class Message(
         MessageType.Sms -> sms?.body
         else -> mms?.getSummary()
     } ?: ""
+
+    fun getUri(): Uri? {
+        val baseUri = when (type) {
+            MessageType.Sms -> Telephony.Sms.CONTENT_URI
+            MessageType.Mms -> Telephony.Mms.CONTENT_URI
+            MessageType.Unknown -> return null
+        }
+        return ContentUris.withAppendedId(baseUri, contentId)
+    }
+
+    fun isFailed(): Boolean =
+        when (type) {
+            MessageType.Sms -> box == MessageBox.Failed
+            MessageType.Mms -> (mms != null && mms.errorCode >= Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
+                    || box == MessageBox.Failed
+            else -> false
+        }
 
 }

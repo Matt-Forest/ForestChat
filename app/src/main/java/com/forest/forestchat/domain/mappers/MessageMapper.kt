@@ -55,6 +55,7 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
         date = getLong(getColumnIndex(Telephony.Mms.DATE)).toDate(type),
         dateSent = getLong(getColumnIndex(Telephony.Mms.DATE_SENT)).toDate(type),
         read = getInt(getColumnIndex(Telephony.Mms.READ)) != 0,
+        seen = getInt(getColumnIndex(Telephony.Mms.SEEN)) != 0,
         locked = when (type) {
             MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.LOCKED)) != 0
             MessageType.Mms -> getInt(getColumnIndex(Telephony.Mms.LOCKED)) != 0

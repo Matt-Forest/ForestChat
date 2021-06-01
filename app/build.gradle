@@ -150,6 +150,12 @@ dependencies {
     // event bus
     implementation 'org.greenrobot:eventbus:3.2.0'
 
+    // Coil
+    implementation "io.coil-kt:coil:1.2.1"
+
+    // Shortcut Badger
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
+
     // Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

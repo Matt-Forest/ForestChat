@@ -21,8 +21,7 @@ package com.forest.forestchat.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.Telephony
-import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
+import com.forest.forestchat.domain.useCases.MarkAsReadUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,10 +31,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SmsReceiver : BroadcastReceiver() {
+class MarkReadReceiver : BroadcastReceiver() {
+
+    companion object {
+        const val ThreadId = "threadId"
+    }
 
     @Inject
-    lateinit var receiveSmsUseCase: ReceiveSmsUseCase
+    lateinit var markAsReadUseCase: MarkAsReadUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -44,17 +47,12 @@ class SmsReceiver : BroadcastReceiver() {
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
-
+        intent?.getLongExtra(ThreadId, 0)?.let { threadId ->
             GlobalScope.launch(Dispatchers.IO) {
-                receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
+                markAsReadUseCase(threadId)
 
-                    notificationManager.update(conversation.id)
-
-                    forestChatShortCutManager.updateShortcuts()
-                    forestChatShortCutManager.updateBadge()
-                }
+                notificationManager.update(threadId)
+                forestChatShortCutManager.updateBadge()
             }
         }
     }

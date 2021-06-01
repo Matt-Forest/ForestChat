@@ -16,10 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.receiver
+package com.forest.forestchat.domain.useCases
 
-import com.android.mms.transaction.PushReceiver
-import dagger.hilt.android.AndroidEntryPoint
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.localStorage.database.daos.MessageDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@AndroidEntryPoint
-class MmsReceiver : PushReceiver()
+@Singleton
+class GetUnReadUnSeenMessagesUseCase @Inject constructor(
+    private val messageDao: MessageDao
+) {
+
+    suspend operator fun invoke(threadId: Long): List<Message>? =
+        messageDao.getAllByThreadId(threadId)
+            ?.filter { !it.read && !it.seen }
+            ?.sortedBy { it.date }
+
+}

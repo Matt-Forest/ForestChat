@@ -18,13 +18,12 @@
  */
 package com.forest.forestchat.receiver
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.Telephony
-import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
-import com.forest.forestchat.manager.ForestChatShortCutManager
-import com.forest.forestchat.manager.NotificationManager
+import com.forest.forestchat.domain.useCases.MarkAsDeliveredUseCase
+import com.forest.forestchat.domain.useCases.MarkAsDeliveryFailedUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,28 +31,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SmsReceiver : BroadcastReceiver() {
+class SmsDeliveredReceiver : BroadcastReceiver() {
+
+    companion object {
+        val MessageId = "messageId"
+    }
 
     @Inject
-    lateinit var receiveSmsUseCase: ReceiveSmsUseCase
+    lateinit var markAsDeliveredUseCase: MarkAsDeliveredUseCase
 
     @Inject
-    lateinit var notificationManager: NotificationManager
-
-    @Inject
-    lateinit var forestChatShortCutManager: ForestChatShortCutManager
+    lateinit var markAsDeliveryFailedUseCase: MarkAsDeliveryFailedUseCase
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
-
+        intent?.getLongExtra(SmsSentReceiver.MessageId, 0L)?.let { messageId ->
             GlobalScope.launch(Dispatchers.IO) {
-                receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
-
-                    notificationManager.update(conversation.id)
-
-                    forestChatShortCutManager.updateShortcuts()
-                    forestChatShortCutManager.updateBadge()
+                when (resultCode) {
+                    Activity.RESULT_OK -> markAsDeliveredUseCase(messageId)
+                    Activity.RESULT_CANCELED -> markAsDeliveryFailedUseCase(messageId, resultCode)
                 }
             }
         }

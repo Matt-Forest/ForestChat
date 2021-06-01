@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -43,5 +42,26 @@
     <string name="conversation_delete_dialog_describe">Êtes-vous sûr de vouloir supprimer cette conversation ?</string>
     <string name="conversation_delete_dialog_confirm">Supprimer</string>
     <string name="conversation_delete_dialog_refuse">Annuler</string>
+
+    <string name="notification_mark_read">Marquer comme lu</string>
+    <string name="notification_reply">Répondre</string>
+
+    <string name="notification_message_failed_title">Message non envoyé</string>
+    <string name="notification_message_failed_text">Le message à %s n\'a pu être envoyé</string>
+
+    <string-array name="notification_forest_chat_responses">
+        <item>Okay</item>
+        <item>Donne moi une minute</item>
+        <item>J\'arrive</item>
+        <item>Merci</item>
+        <item>ça me semble correct</item>
+        <item>Quoi de neuf ?</item>
+        <item>Je suis d\'accord</item>
+        <item>Non</item>
+        <item>Je t\'aime</item>
+        <item>Désolé</item>
+        <item>LOL</item>
+        <item>C\'est bon</item>
+    </string-array>
 
 </resources>

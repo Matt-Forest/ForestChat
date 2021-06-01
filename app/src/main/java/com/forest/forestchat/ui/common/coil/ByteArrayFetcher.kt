@@ -16,10 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.receiver
+package com.forest.forestchat.ui.common.coil
 
-import com.android.mms.transaction.PushReceiver
-import dagger.hilt.android.AndroidEntryPoint
+import coil.bitmap.BitmapPool
+import coil.decode.DataSource
+import coil.decode.Options
+import coil.fetch.FetchResult
+import coil.fetch.Fetcher
+import coil.fetch.SourceResult
+import coil.size.Size
+import okio.buffer
+import okio.source
+import java.io.ByteArrayInputStream
 
-@AndroidEntryPoint
-class MmsReceiver : PushReceiver()
+class ByteArrayFetcher : Fetcher<ByteArray> {
+
+    override fun key(data: ByteArray): String? = null
+
+    override suspend fun fetch(
+        pool: BitmapPool,
+        data: ByteArray,
+        size: Size,
+        options: Options
+    ): FetchResult {
+        return SourceResult(
+            source = ByteArrayInputStream(data).source().buffer(),
+            mimeType = null,
+            dataSource = DataSource.MEMORY
+        )
+    }
+}

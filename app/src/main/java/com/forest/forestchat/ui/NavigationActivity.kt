@@ -27,6 +27,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NavigationActivity : AppCompatActivity() {
 
+    companion object {
+        const val ThreadId = "threadId"
+        const val ConversationThreadId = "conversationThreadId"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)

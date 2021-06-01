@@ -89,7 +89,6 @@ class SyncConversationsUseCase @Inject constructor(
             }
         }
 
-
         return result
     }
 

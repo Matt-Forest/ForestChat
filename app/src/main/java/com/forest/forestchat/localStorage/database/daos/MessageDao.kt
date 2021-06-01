@@ -33,6 +33,12 @@ interface MessageDao {
     @Query("SELECT * FROM Message")
     suspend fun getAll(): List<Message>?
 
+    @Query("SELECT * FROM Message WHERE threadId = :threadId")
+    suspend fun getAllByThreadId(threadId: Long): List<Message>?
+
+    @Query("SELECT * FROM Message WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): Message?
+
     @Query("DELETE FROM Message WHERE threadId = :id")
     suspend fun deleteAllByThreadId(id: Long)
 

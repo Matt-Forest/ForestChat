@@ -18,12 +18,12 @@
  */
 package com.forest.forestchat.receiver
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.Telephony
-import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
-import com.forest.forestchat.manager.ForestChatShortCutManager
+import com.forest.forestchat.domain.useCases.MarkAsFailedUseCase
+import com.forest.forestchat.domain.useCases.MessageSentUseCase
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -32,28 +32,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SmsReceiver : BroadcastReceiver() {
+class SmsSentReceiver : BroadcastReceiver() {
+
+    companion object {
+        const val MessageId = "messageId"
+    }
 
     @Inject
-    lateinit var receiveSmsUseCase: ReceiveSmsUseCase
+    lateinit var messageSentUseCase: MessageSentUseCase
+
+    @Inject
+    lateinit var markAsFailedUseCase: MarkAsFailedUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
 
-    @Inject
-    lateinit var forestChatShortCutManager: ForestChatShortCutManager
-
     override fun onReceive(context: Context?, intent: Intent?) {
-        Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
-
+        intent?.getLongExtra(MessageId, 0L)?.let { messageId ->
             GlobalScope.launch(Dispatchers.IO) {
-                receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
-
-                    notificationManager.update(conversation.id)
-
-                    forestChatShortCutManager.updateShortcuts()
-                    forestChatShortCutManager.updateBadge()
+                when (resultCode) {
+                    Activity.RESULT_OK -> messageSentUseCase(messageId)
+                    else -> {
+                        markAsFailedUseCase(messageId, resultCode)
+                        notificationManager.notifyFailed(messageId)
+                    }
                 }
             }
         }

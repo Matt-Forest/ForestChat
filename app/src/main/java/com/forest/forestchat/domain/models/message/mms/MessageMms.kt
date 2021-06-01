@@ -20,7 +20,8 @@ package com.forest.forestchat.domain.models.message.mms
 
 data class MessageMms(
     val subject: String?,
-    val parts: List<MmsPart>
+    val parts: List<MmsPart>,
+    val errorCode: Int
 ) {
 
     fun getSummary() : String {
