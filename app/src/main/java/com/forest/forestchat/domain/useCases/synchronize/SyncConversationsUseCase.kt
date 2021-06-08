@@ -59,7 +59,7 @@ class SyncConversationsUseCase @Inject constructor(
             while (cursor.moveToNext()) {
                 conversationDao.insert(
                     cursor.toConversation(
-                        ::getRecipientByIds,
+                        context,
                         persistedConversationData,
                         contacts,
                         messages
@@ -67,29 +67,6 @@ class SyncConversationsUseCase @Inject constructor(
                 )
             }
         }
-    }
-
-    private fun getRecipientByIds(
-        ids: List<String>,
-        contacts: List<Contact>?
-    ): List<Recipient> {
-        val result = mutableListOf<Recipient>()
-
-        ids.forEach { id ->
-            context.contentResolver.query(
-                Uri.parse("content://mms-sms/canonical-addresses"),
-                null,
-                "_id = ?",
-                arrayOf(id),
-                null
-            )?.use { cursor ->
-                while (cursor.moveToNext()) {
-                    result.add(cursor.toRecipient(contacts))
-                }
-            }
-        }
-
-        return result
     }
 
 }

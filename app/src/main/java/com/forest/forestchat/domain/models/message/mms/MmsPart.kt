@@ -26,17 +26,17 @@ data class MmsPart(
     @PrimaryKey
     val id: Long,
     val messageId: Long,
-    val type: MmsPartType,
+    val type: String,
     val seq: Int,
     val name: String?,
     val text: String?
 ) {
 
-    fun getSummary(): String? = when(type) {
-        MmsPartType.Text -> text
-        MmsPartType.ContactCard -> "Contact card"
-        MmsPartType.Image -> "Photo"
-        MmsPartType.Video -> "Video"
+    fun getSummary(): String? = when {
+        type == "text/plain" -> text
+        type == "text/x-vCard" -> "Contact card"
+        type.startsWith("image") -> "Photo"
+        type.startsWith("video") -> "Video"
         else -> null
     }
 

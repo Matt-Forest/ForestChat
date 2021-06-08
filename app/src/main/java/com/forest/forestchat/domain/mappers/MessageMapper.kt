@@ -18,14 +18,17 @@
  */
 package com.forest.forestchat.domain.mappers
 
+import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.Telephony
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.mms.MmsPart
+import com.google.android.mms.pdu_alt.PduHeaders
 
-fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> String?): Message {
+fun Cursor.toMessage(context: Context): Message {
     val type: MessageType = when {
         getColumnIndex(Telephony.MmsSms.TYPE_DISCRIMINATOR_COLUMN) != -1 -> getString(
             getColumnIndex(Telephony.MmsSms.TYPE_DISCRIMINATOR_COLUMN)
@@ -41,7 +44,7 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
         contentId = contentId,
         address = when (type) {
             MessageType.Sms -> getString(getColumnIndex(Telephony.Sms.ADDRESS))
-            MessageType.Mms -> mmsAddress(contentId)
+            MessageType.Mms -> getMmsAddress(context, contentId)
             else -> null
         },
         box = MessageBox.values().find {
@@ -77,7 +80,7 @@ fun Cursor.toMessage(mmsParts: (Long) -> List<MmsPart>, mmsAddress: (Long) -> St
             else -> null
         },
         mms = when (type) {
-            MessageType.Mms -> toMms(mmsParts(contentId))
+            MessageType.Mms -> toMms(getMmsPartByMessageId(context, contentId))
             else -> null
         }
     )
@@ -92,4 +95,40 @@ private fun String?.toMessageType(): MessageType = when {
     this == "sms" -> MessageType.Sms
     this == "mms" -> MessageType.Mms
     else -> MessageType.Unknown
+}
+
+private fun getMmsAddress(context: Context, messageId: Long): String? {
+    val uri = Telephony.Mms.CONTENT_URI.buildUpon()
+        .appendPath(messageId.toString())
+        .appendPath("addr").build()
+
+    val projection = arrayOf(Telephony.Mms.Addr.ADDRESS, Telephony.Mms.Addr.CHARSET)
+    val selection = "${Telephony.Mms.Addr.TYPE} = ${PduHeaders.FROM}"
+
+    context.contentResolver.query(uri, projection, selection, null, null)
+        ?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                return cursor.getString(0)
+            }
+        }
+
+    return null
+}
+
+private fun getMmsPartByMessageId(context: Context, messageId: Long): List<MmsPart> {
+    val uri = Uri.parse("content://mms/part")
+    val projection = "${Telephony.Mms.Part.MSG_ID} = ?"
+    val selection = arrayOf(messageId.toString())
+
+    val result = mutableListOf<MmsPart>()
+
+    context.contentResolver.query(
+        uri, null, projection, selection, null
+    )?.use { cursor ->
+        while (cursor.moveToNext()) {
+            result.add(cursor.toMmsPart())
+        }
+    }
+
+    return result
 }

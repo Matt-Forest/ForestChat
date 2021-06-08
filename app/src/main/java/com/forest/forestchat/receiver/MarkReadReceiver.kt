@@ -21,6 +21,7 @@ package com.forest.forestchat.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.MarkAsReadUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
@@ -28,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,6 +55,7 @@ class MarkReadReceiver : BroadcastReceiver() {
 
                 notificationManager.update(threadId)
                 forestChatShortCutManager.updateBadge()
+                EventBus.getDefault().post(TransversalBusEvent.MarkAsReadEvent)
             }
         }
     }

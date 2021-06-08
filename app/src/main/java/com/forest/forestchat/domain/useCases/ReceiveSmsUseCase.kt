@@ -26,7 +26,6 @@ import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
-import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
 import com.forest.forestchat.utils.TelephonyThread
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -36,9 +35,7 @@ import javax.inject.Singleton
 class ReceiveSmsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val updateMessageUseCase: UpdateMessageUseCase,
-    private val getConversationUseCase: GetConversationUseCase,
-    private val updateConversationUseCase: UpdateConversationUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase
+    private val updateOrSyncConversationUseCase: UpdateOrSyncConversationUseCase
 ) {
 
     suspend operator fun invoke(subscriptionId: Int, messages: Array<SmsMessage>): Conversation? {
@@ -46,7 +43,7 @@ class ReceiveSmsUseCase @Inject constructor(
             val message = convertToMessage(subscriptionId, messages)
             updateMessageUseCase(message)
 
-            val conversation = updateOrSyncConversation(message)
+            val conversation = updateOrSyncConversationUseCase(message)
             return when (conversation?.blocked == true) {
                 true -> null
                 false -> {
@@ -81,28 +78,6 @@ class ReceiveSmsUseCase @Inject constructor(
             ),
             mms = null,
         )
-    }
-
-    private suspend fun updateOrSyncConversation(message: Message): Conversation? =
-        when (val conversation = getConversationUseCase(message.threadId)) {
-            null -> {
-                syncConversationsUseCase()
-                getConversationUseCase(message.threadId)?.let {
-                    updateConversation(it, message)
-                }
-            }
-            else -> {
-                updateConversation(conversation, message)
-            }
-        }
-
-    private suspend fun updateConversation(
-        conversation: Conversation,
-        message: Message
-    ): Conversation {
-        val conv = conversation.copy(lastMessage = message)
-        updateConversationUseCase(conv)
-        return conv
     }
 
 }

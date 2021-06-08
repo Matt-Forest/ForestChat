@@ -21,9 +21,9 @@ package com.forest.forestchat.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.Telephony
+import android.net.Uri
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
+import com.forest.forestchat.domain.useCases.ReceiveMmsUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,10 +34,10 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SmsReceiver : BroadcastReceiver() {
+class MmsUpdatedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var receiveSmsUseCase: ReceiveSmsUseCase
+    lateinit var receiverMmsUseCase: ReceiveMmsUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -46,17 +46,14 @@ class SmsReceiver : BroadcastReceiver() {
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
-
+        intent?.getStringExtra("uri")?.let { uriString ->
             GlobalScope.launch(Dispatchers.IO) {
-                receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
-
+                receiverMmsUseCase(Uri.parse(uriString))?.let { conversation ->
                     notificationManager.update(conversation.id)
 
                     forestChatShortCutManager.updateShortcuts()
                     forestChatShortCutManager.updateBadge()
-                    EventBus.getDefault().post(TransversalBusEvent.ReceiveSms)
+                    EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
                 }
             }
         }

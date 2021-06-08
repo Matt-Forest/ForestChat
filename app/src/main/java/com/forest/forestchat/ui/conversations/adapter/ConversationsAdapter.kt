@@ -50,10 +50,10 @@ class ConversationsAdapter(
         holder.onPayload(payload)
     }
 
-    fun setConversations(context: Context, conversations: List<Conversation>) {
+    fun setConversations(context: Context, conversations: List<Conversation>, adsActivated: Boolean) {
         val items = mutableListOf<BaseAdapterItem>()
         conversations.forEachIndexed { index, conversation ->
-            if (index > 0 && index % 5 == 0) {
+            if (index > 0 && index % 5 == 0 && adsActivated) {
                 items.add(NativeAdItem())
             }
             items.add(ConversationItem(

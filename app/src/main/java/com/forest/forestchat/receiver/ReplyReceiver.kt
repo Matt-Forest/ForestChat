@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.GetConversationUseCase
 import com.forest.forestchat.domain.useCases.MarkAsReadUseCase
 import com.forest.forestchat.domain.useCases.SendMessageFromNotificationUseCase
@@ -32,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -80,6 +82,7 @@ class ReplyReceiver : BroadcastReceiver() {
             val addresses = conversation?.recipients?.map { it.address } ?: return@launch
 
             sendMessageFromNotificationUseCase(subId, threadId, addresses, body)
+            EventBus.getDefault().post(TransversalBusEvent.ReplyEvent)
         }
     }
 

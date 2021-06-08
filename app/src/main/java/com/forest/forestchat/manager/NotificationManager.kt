@@ -47,7 +47,6 @@ import coil.transform.CircleCropTransformation
 import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.message.Message
-import com.forest.forestchat.domain.models.message.mms.MmsPartType
 import com.forest.forestchat.domain.useCases.GetConversationUseCase
 import com.forest.forestchat.domain.useCases.GetMessageByIdUseCase
 import com.forest.forestchat.domain.useCases.GetUnReadUnSeenMessagesUseCase
@@ -59,6 +58,7 @@ import com.forest.forestchat.receiver.MarkReadReceiver
 import com.forest.forestchat.receiver.MarkSeenReceiver
 import com.forest.forestchat.receiver.ReplyReceiver
 import com.forest.forestchat.ui.NavigationActivity
+import com.google.android.mms.ContentType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -272,9 +272,9 @@ class NotificationManager @Inject constructor(
                 message.date,
                 person.build()
             ).apply {
-                message.mms?.parts?.firstOrNull { it.type == MmsPartType.Image }?.let { part ->
+                message.mms?.parts?.firstOrNull { ContentType.isImageType(it.type) }?.let { part ->
                     setData(
-                        part.type.contentType,
+                        part.type,
                         ContentUris.withAppendedId(Uri.parse("content://mms/part"), part.id)
                     )
                 }

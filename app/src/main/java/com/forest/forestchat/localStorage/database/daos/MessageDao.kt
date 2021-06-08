@@ -23,6 +23,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.domain.models.message.MessageType
 
 @Dao
 interface MessageDao {
@@ -38,6 +39,9 @@ interface MessageDao {
 
     @Query("SELECT * FROM Message WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): Message?
+
+    @Query("SELECT * FROM Message WHERE contentId = :contentId AND type = :type LIMIT 1")
+    suspend fun getByContentId(contentId: Long, type: MessageType): Message?
 
     @Query("DELETE FROM Message WHERE threadId = :id")
     suspend fun deleteAllByThreadId(id: Long)

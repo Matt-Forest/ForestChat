@@ -36,7 +36,7 @@ fun Cursor.toMms(parts: List<MmsPart>) = MessageMms(
             ).string
         },
     parts = parts,
-    errorCode = when (getInt(getColumnIndex(Telephony.MmsSms.PendingMessages.ERROR_TYPE)) != -1) {
+    errorCode = when (getColumnIndex(Telephony.MmsSms.PendingMessages.ERROR_TYPE) != -1) {
         true -> getInt(getColumnIndex(Telephony.MmsSms.PendingMessages.ERROR_TYPE))
         false -> 0
     }

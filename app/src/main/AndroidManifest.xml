@@ -20,6 +20,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.forest.forestchat">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
@@ -31,6 +34,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".app.ForestChatApp"
@@ -86,6 +90,15 @@
         <receiver android:name=".receiver.ReplyReceiver" />
         <receiver android:name=".receiver.SmsSentReceiver" />
         <receiver android:name=".receiver.SmsDeliveredReceiver" />
+        <receiver
+            android:name=".receiver.MmsSentReceiver"
+            android:taskAffinity="com.klinker.android.messaging.MMS_SENT"/>
+        <receiver
+            android:name=".receiver.MmsUpdatedReceiver"
+            android:taskAffinity="com.klinker.android.messaging.MMS_UPDATED" />
+        <receiver
+            android:name=".receiver.MmsReceivedReceiver"
+            android:taskAffinity="com.klinker.android.messaging.MMS_RECEIVED" />
 
         <service
             android:name=".services.SmsSendService"
@@ -93,9 +106,14 @@
             <intent-filter>
                 <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="sms" />
                 <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
             </intent-filter>
         </service>
+        <service android:name="com.android.mms.transaction.TransactionService" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

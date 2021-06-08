@@ -18,7 +18,9 @@
  */
 package com.forest.forestchat.domain.mappers
 
+import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.Telephony
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.Recipient
@@ -26,7 +28,7 @@ import com.forest.forestchat.domain.models.contact.Contact
 import com.forest.forestchat.domain.models.message.Message
 
 fun Cursor.toConversation(
-    recipients: (List<String>, List<Contact>?) -> List<Recipient>,
+    context: Context,
     conversationsPersisted: List<Conversation>?,
     contacts: List<Contact>?,
     messages: List<Message>?
@@ -38,7 +40,8 @@ fun Cursor.toConversation(
         archived = persisted?.archived ?: false,
         blocked = persisted?.blocked ?: false,
         pinned = persisted?.pinned ?: false,
-        recipients = recipients(
+        recipients = getRecipientByIds(
+            context,
             getString(getColumnIndex(Telephony.Threads.RECIPIENT_IDS))
                 .split(" ")
                 .filter { it.isNotBlank() },
@@ -48,4 +51,28 @@ fun Cursor.toConversation(
         draft = persisted?.draft,
         name = persisted?.name,
     )
+}
+
+private fun getRecipientByIds(
+    context: Context,
+    ids: List<String>,
+    contacts: List<Contact>?
+): List<Recipient> {
+    val result = mutableListOf<Recipient>()
+
+    ids.forEach { id ->
+        context.contentResolver.query(
+            Uri.parse("content://mms-sms/canonical-addresses"),
+            null,
+            "_id = ?",
+            arrayOf(id),
+            null
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                result.add(cursor.toRecipient(contacts))
+            }
+        }
+    }
+
+    return result
 }

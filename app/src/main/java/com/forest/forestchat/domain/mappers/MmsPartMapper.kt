@@ -23,22 +23,12 @@ import android.provider.Telephony
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import com.forest.forestchat.domain.models.message.mms.MmsPart
-import com.forest.forestchat.domain.models.message.mms.MmsPartType
 
 fun Cursor.toMmsPart() = MmsPart(
     id = getLong(getColumnIndexOrThrow(Telephony.Mms.Part._ID)),
     messageId = getLong(getColumnIndexOrThrow(Telephony.Mms.Part.MSG_ID)),
-    type = (getStringOrNull(getColumnIndexOrThrow(Telephony.Mms.Part.CONTENT_TYPE))
-        ?: "*/*").toMmsPartType(),
+    type = (getStringOrNull(getColumnIndexOrThrow(Telephony.Mms.Part.CONTENT_TYPE)) ?: "*/*"),
     seq = getIntOrNull(getColumnIndexOrThrow(Telephony.Mms.Part.SEQ)) ?: -1,
     name = getStringOrNull(getColumnIndexOrThrow(Telephony.Mms.Part.NAME)),
     text = getStringOrNull(getColumnIndexOrThrow(Telephony.Mms.Part.TEXT))
 )
-
-private fun String.toMmsPartType(): MmsPartType = when {
-    this == "text/plain" -> MmsPartType.Text
-    this == "text/x-vCard" -> MmsPartType.ContactCard
-    this.startsWith("image") -> MmsPartType.Image
-    this.startsWith("video") -> MmsPartType.Video
-    else -> MmsPartType.All
-}

@@ -72,44 +72,9 @@ class SyncMessagesUseCase @Inject constructor(
             "normalized_date desc"
         )?.use { cursor ->
             while (cursor.moveToNext()) {
-                messageDao.insert(cursor.toMessage(::getMmsPartByMessageId, ::getMmsAddress))
+                messageDao.insert(cursor.toMessage(context))
             }
         }
-    }
-
-    private fun getMmsAddress(messageId: Long): String? {
-        val uri = Telephony.Mms.CONTENT_URI.buildUpon()
-            .appendPath(messageId.toString())
-            .appendPath("addr").build()
-
-        val projection = arrayOf(Telephony.Mms.Addr.ADDRESS, Telephony.Mms.Addr.CHARSET)
-        val selection = "${Telephony.Mms.Addr.TYPE} = ${PduHeaders.FROM}"
-
-        context.contentResolver.query(uri, projection, selection, null, null)
-            ?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(0)
-                }
-            }
-
-        return null
-    }
-
-    private fun getMmsPartByMessageId(messageId: Long): List<MmsPart> {
-        val uri = Uri.parse("content://mms/part")
-        val projection = "${Telephony.Mms.Part.MSG_ID} = ?"
-        val selection = arrayOf(messageId.toString())
-
-        val result = mutableListOf<MmsPart>()
-
-        context.contentResolver.query(uri, null, projection, selection, null
-        )?.use { cursor ->
-            while (cursor.moveToNext()) {
-                result.add(cursor.toMmsPart())
-            }
-        }
-
-        return result
     }
 
 }

@@ -34,8 +34,8 @@ import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.observer.ContactObserver
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import com.forest.forestchat.ui.conversations.ConversationsViewModel
 import com.forest.forestchat.ui.conversations.ConversationEvent
+import com.forest.forestchat.ui.conversations.ConversationsViewModel
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentForm
@@ -85,7 +85,7 @@ class HomeFragment : NavigationFragment() {
         }
 
         with(conversationsViewModel) {
-            chatsEvent().observe(viewLifecycleOwner) { event ->
+            eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     ConversationEvent.RequestDefaultSms -> showDefaultSmsDialog()
                     ConversationEvent.RequestPermission -> requestPermission()
@@ -96,6 +96,7 @@ class HomeFragment : NavigationFragment() {
             }
         }
 
+        conversationsViewModel.getConversations()
         checkConsent()
     }
 
@@ -103,8 +104,13 @@ class HomeFragment : NavigationFragment() {
     @Suppress("unused")
     fun onMessageEvent(event: TransversalBusEvent) {
         when (event) {
-            is TransversalBusEvent.DefaultSmsChangedEvent -> conversationsViewModel.onDefaultSmsChange(event)
-            else -> null
+            is TransversalBusEvent.DefaultSmsChangedEvent -> conversationsViewModel.onDefaultSmsChange(
+                event
+            )
+            TransversalBusEvent.MarkAsReadEvent,
+            TransversalBusEvent.ReplyEvent,
+            TransversalBusEvent.ReceiveSms,
+            TransversalBusEvent.ReceiveMms -> conversationsViewModel.getConversations()
         }
     }
 
@@ -138,24 +144,27 @@ class HomeFragment : NavigationFragment() {
             .setTagForUnderAgeOfConsent(false)
             .build()
 
-        context?.let { ctx ->
-            consentInformation = UserMessagingPlatform.getConsentInformation(context)
-            consentInformation?.requestConsentInfoUpdate(
-                activity,
-                params,
-                {
-                    // The consent information state was updated.
-                    // You are now ready to check if a form is available.
-                    if (consentInformation?.isConsentFormAvailable == true) {
-                        loadForm(ctx)
-                    } else {
+        when (context == null) {
+            true -> conversationsViewModel.getConversations()
+            false -> context?.let { ctx ->
+                consentInformation = UserMessagingPlatform.getConsentInformation(context)
+                consentInformation?.requestConsentInfoUpdate(
+                    activity,
+                    params,
+                    {
+                        // The consent information state was updated.
+                        // You are now ready to check if a form is available.
+                        if (consentInformation?.isConsentFormAvailable == true) {
+                            loadForm(ctx)
+                        } else {
+                            init(ctx)
+                        }
+                    },
+                    {
+                        // Handle the error.
                         init(ctx)
-                    }
-                },
-                {
-                    // Handle the error.
-                    init(ctx)
-                })
+                    })
+            }
         }
     }
 
@@ -181,7 +190,8 @@ class HomeFragment : NavigationFragment() {
 
     private fun init(context: Context) {
         MobileAds.initialize(context)
-        conversationsViewModel.getConversations()
+        navigationView.conversationEvent(ConversationEvent.AdsConsentComplete)
+        conversationsViewModel.activateAds()
     }
 
     private fun addContact(address: String) {

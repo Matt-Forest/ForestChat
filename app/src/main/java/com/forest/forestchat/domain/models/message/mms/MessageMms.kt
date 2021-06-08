@@ -31,7 +31,7 @@ data class MessageMms(
         getCleansedSubject().takeIf { it.isNotEmpty() }?.let { subject -> sb.appendLine(subject) }
 
         // Add parts
-        parts.map { it.getSummary() }.forEach { summary -> sb.appendLine(summary) }
+        parts.mapNotNull { it.getSummary() }.forEach { summary -> sb.appendLine(summary) }
 
         return sb.toString().trim()
     }

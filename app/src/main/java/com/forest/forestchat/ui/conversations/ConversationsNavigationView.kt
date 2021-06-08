@@ -27,6 +27,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationsBinding
 import com.forest.forestchat.extensions.asString
+import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.conversations.adapter.ConversationsAdapter
 import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
@@ -81,7 +82,6 @@ class ConversationsNavigationView : ConstraintLayout {
                 }
             }
         }
-        initBanner()
     }
 
     private fun initBanner() {
@@ -90,6 +90,7 @@ class ConversationsNavigationView : ConstraintLayout {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 bannerLoaded = true
+                binding.adView.visible()
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -140,7 +141,7 @@ class ConversationsNavigationView : ConstraintLayout {
                         recyclerChat.adapter = conversationsAdapter
                     }
                     conversationsAdapter.apply {
-                        setConversations(context, event.conversations)
+                        setConversations(context, event.conversations, event.adsActivated)
                     }
                 }
                 is ConversationEvent.SearchData -> {
@@ -165,6 +166,9 @@ class ConversationsNavigationView : ConstraintLayout {
                     ConversationDeleteDialog(context) { onConversationDeleted(event.id) }
                         .create()
                         .show()
+                }
+                ConversationEvent.AdsConsentComplete -> {
+                    initBanner()
                 }
                 else -> null
             }

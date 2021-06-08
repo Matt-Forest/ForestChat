@@ -22,7 +22,6 @@ import androidx.room.TypeConverter
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.mms.MessageMms
-import com.forest.forestchat.domain.models.message.mms.MmsPartType
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

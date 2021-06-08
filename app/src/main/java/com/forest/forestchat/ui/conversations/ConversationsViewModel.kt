@@ -20,7 +20,6 @@ package com.forest.forestchat.ui.conversations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.useCases.*
@@ -28,6 +27,7 @@ import com.forest.forestchat.domain.useCases.synchronize.SyncContactsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
+import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
@@ -53,10 +53,12 @@ class ConversationsViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
-    private val chatsEvent = EventEmitter<ConversationEvent>()
-    fun chatsEvent(): EventSource<ConversationEvent> = chatsEvent
+    private val eventEmitter = EventEmitter<ConversationEvent>()
+    fun eventSource(): EventSource<ConversationEvent> = eventEmitter
 
+    private var event: ConversationEvent? = null
     private var conversationSelected: Conversation? = null
+    private var adsActivated: Boolean = false
 
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -67,26 +69,31 @@ class ConversationsViewModel @Inject constructor(
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
                         withContext(Dispatchers.Main) {
-                            chatsEvent.emit(ConversationEvent.Loading)
+                            updateEvent(ConversationEvent.Loading)
                         }
                         syncDataUseCase()
                     }
                     val conversations = getConversationsUseCase()
                     when (conversations == null || conversations.isEmpty()) {
                         true -> ConversationEvent.NoConversationsData
-                        false -> ConversationEvent.ConversationsData(conversations)
+                        false -> ConversationEvent.ConversationsData(conversations, adsActivated)
                     }
                 }
             }
 
             withContext(Dispatchers.Main) {
-                chatsEvent.emit(event)
+                updateEvent(event)
             }
         }
     }
 
+    private fun updateEvent(newEvent: ConversationEvent) {
+        event = newEvent
+        eventEmitter.emit(newEvent)
+    }
+
     fun onDefaultSmsChange(event: TransversalBusEvent.DefaultSmsChangedEvent) = when (event) {
-        TransversalBusEvent.DefaultSmsChangedEvent.Load -> chatsEvent.emit(ConversationEvent.Loading)
+        TransversalBusEvent.DefaultSmsChangedEvent.Load -> updateEvent(ConversationEvent.Loading)
         TransversalBusEvent.DefaultSmsChangedEvent.Complete -> getConversations()
     }
 
@@ -101,7 +108,7 @@ class ConversationsViewModel @Inject constructor(
                 val contacts = searchContactsUseCase(search)
 
                 withContext(Dispatchers.Main) {
-                    chatsEvent.emit(
+                    updateEvent(
                         when (conversations?.isNullOrEmpty() == true && contacts?.isNullOrEmpty() == true) {
                             true -> ConversationEvent.NoSearchData
                             false -> ConversationEvent.SearchData(
@@ -122,7 +129,7 @@ class ConversationsViewModel @Inject constructor(
             getConversationUseCase(id)?.let { conversation ->
                 conversationSelected = conversation
                 withContext(Dispatchers.Main) {
-                    chatsEvent.emit(
+                    updateEvent(
                         ConversationEvent.ShowConversationOptions(
                             showAddToContacts = conversation.recipients.first()
                                 .takeIf { recipient -> recipient.contact == null } != null,
@@ -142,7 +149,7 @@ class ConversationsViewModel @Inject constructor(
                 when (type) {
                     ConversationOptionType.AddToContacts -> {
                         withContext(Dispatchers.Main) {
-                            chatsEvent.emit(ConversationEvent.AddContact(conversation.recipients.first().address))
+                            updateEvent(ConversationEvent.AddContact(conversation.recipients.first().address))
                         }
                     }
                     ConversationOptionType.Pin -> {
@@ -169,7 +176,7 @@ class ConversationsViewModel @Inject constructor(
                     }
                     ConversationOptionType.Remove -> {
                         withContext(Dispatchers.Main) {
-                            chatsEvent.emit(ConversationEvent.RequestDeleteDialog(conversation.id))
+                            updateEvent(ConversationEvent.RequestDeleteDialog(conversation.id))
                         }
                     }
                 }
@@ -190,6 +197,15 @@ class ConversationsViewModel @Inject constructor(
             syncContactsUseCase()
             syncConversationUseCase()
             getConversations()
+        }
+    }
+
+    fun activateAds() {
+        adsActivated = true
+        event?.let {
+            if (it is ConversationEvent.ConversationsData) {
+                updateEvent(it.copy(adsActivated = true))
+            }
         }
     }
 

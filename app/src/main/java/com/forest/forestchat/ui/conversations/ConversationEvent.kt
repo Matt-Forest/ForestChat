@@ -10,9 +10,11 @@ sealed class ConversationEvent {
     object Loading : ConversationEvent()
     object NoConversationsData : ConversationEvent()
     object NoSearchData : ConversationEvent()
+    object AdsConsentComplete : ConversationEvent()
 
     data class ConversationsData(
-        val conversations: List<Conversation>
+        val conversations: List<Conversation>,
+        val adsActivated: Boolean
     ) : ConversationEvent()
 
     data class SearchData(

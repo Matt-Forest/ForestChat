@@ -18,8 +18,20 @@
  */
 package com.forest.forestchat.receiver
 
+import android.content.Context
+import android.content.Intent
 import com.android.mms.transaction.PushReceiver
+import com.forest.forestchat.app.TransversalBusEvent
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
 
 @AndroidEntryPoint
-class MmsReceiver : PushReceiver()
+class MmsReceiver : PushReceiver() {
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        super.onReceive(context, intent)
+
+        EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
+    }
+
+}

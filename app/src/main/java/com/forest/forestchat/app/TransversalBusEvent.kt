@@ -25,4 +25,9 @@ sealed class TransversalBusEvent {
         object Load : DefaultSmsChangedEvent()
     }
 
+    object MarkAsReadEvent : TransversalBusEvent()
+    object ReplyEvent : TransversalBusEvent()
+    object ReceiveSms : TransversalBusEvent()
+    object ReceiveMms : TransversalBusEvent()
+
 }

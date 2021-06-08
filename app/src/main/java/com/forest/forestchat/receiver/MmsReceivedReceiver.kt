@@ -21,11 +21,12 @@ package com.forest.forestchat.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.Telephony
+import android.net.Uri
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
+import com.forest.forestchat.domain.useCases.ReceiveMmsUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
+import com.klinker.android.send_message.MmsReceivedReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,10 +35,10 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SmsReceiver : BroadcastReceiver() {
+class MmsReceivedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var receiveSmsUseCase: ReceiveSmsUseCase
+    lateinit var receiverMmsUseCase: ReceiveMmsUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -45,21 +46,41 @@ class SmsReceiver : BroadcastReceiver() {
     @Inject
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
+
     override fun onReceive(context: Context?, intent: Intent?) {
-        Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
+        Receiver(object: Receiver.MmsReceiverListener{
 
-            GlobalScope.launch(Dispatchers.IO) {
-                receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
+            override fun onMessageReceived(context: Context?, messageUri: Uri?) {
+                messageUri?.let { uri ->
+                    GlobalScope.launch(Dispatchers.IO) {
+                        receiverMmsUseCase(uri)?.let { conversation ->
+                            notificationManager.update(conversation.id)
 
-                    notificationManager.update(conversation.id)
-
-                    forestChatShortCutManager.updateShortcuts()
-                    forestChatShortCutManager.updateBadge()
-                    EventBus.getDefault().post(TransversalBusEvent.ReceiveSms)
+                            forestChatShortCutManager.updateShortcuts()
+                            forestChatShortCutManager.updateBadge()
+                            EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
+                        }
+                    }
                 }
             }
+
+        }).onReceive(context, intent)
+    }
+
+    private class Receiver(private val listener: MmsReceiverListener) : MmsReceivedReceiver() {
+
+        override fun onMessageReceived(context: Context?, messageUri: Uri?) {
+            listener.onMessageReceived(context, messageUri)
         }
+
+        override fun onError(p0: Context?, p1: String?) {
+            // Nothing
+        }
+
+        interface MmsReceiverListener {
+            fun onMessageReceived(context: Context?, messageUri: Uri?)
+        }
+
     }
 
 }

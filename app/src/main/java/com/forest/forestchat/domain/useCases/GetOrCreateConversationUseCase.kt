@@ -21,7 +21,6 @@ package com.forest.forestchat.domain.useCases
 import android.content.Context
 import android.telephony.PhoneNumberUtils
 import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
 import com.forest.forestchat.localStorage.database.daos.ConversationDao
 import com.forest.forestchat.utils.TelephonyThread
 import com.forest.forestchat.utils.tryOrNull
@@ -32,8 +31,7 @@ import javax.inject.Singleton
 @Singleton
 class GetOrCreateConversationUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val getConversationUseCase: GetConversationUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase,
+    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
     private val conversationDao: ConversationDao
 ) {
 
@@ -47,8 +45,7 @@ class GetOrCreateConversationUseCase @Inject constructor(
         })
             ?.takeIf { threadId -> threadId != 0L }
             ?.let { threadId ->
-                getConversationUseCase(threadId)
-                    ?: getConversationFromCp(threadId)
+                getOrCreateConversationByThreadIdUseCase(threadId)
             }
     }
 
@@ -62,11 +59,6 @@ class GetOrCreateConversationUseCase @Inject constructor(
                 }
             }
             ?.id
-    }
-
-    private suspend fun getConversationFromCp(threadId: Long): Conversation? {
-        syncConversationsUseCase()
-        return getConversationUseCase(threadId)
     }
 
 }
