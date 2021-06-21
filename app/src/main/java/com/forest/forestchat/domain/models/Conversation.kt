@@ -18,11 +18,14 @@
  */
 package com.forest.forestchat.domain.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.forest.forestchat.domain.models.message.Message
+import kotlinx.android.parcel.Parcelize
 
 @Entity
+@Parcelize
 data class Conversation(
     @PrimaryKey
     val id: Long,
@@ -33,7 +36,7 @@ data class Conversation(
     val lastMessage: Message?,
     val draft: String?,
     val name: String?
-) {
+) : Parcelable {
 
     fun getTitle(): String {
         return name.takeIf { it?.isNotBlank() == true }

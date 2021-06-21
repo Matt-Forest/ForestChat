@@ -71,4 +71,6 @@
         <item>That\'s okay</item>
     </string-array>
 
+    <string name="conversation_message_send_hint">Write a message…</string>
+
 </resources>

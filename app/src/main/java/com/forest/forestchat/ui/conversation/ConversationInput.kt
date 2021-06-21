@@ -16,23 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models
+package com.forest.forestchat.ui.conversation
 
 import android.os.Parcelable
-import android.telephony.PhoneNumberUtils
-import com.forest.forestchat.domain.models.contact.Contact
+import com.forest.forestchat.domain.models.Conversation
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 @Parcelize
-data class Recipient(
-    val id: Long,
-    val address: String,
-    val contact: Contact?
-) : Parcelable {
-
-    fun getDisplayName(): String = contact?.name?.takeIf { it.isNotBlank() }
-        ?: PhoneNumberUtils.formatNumber(address, Locale.getDefault().country)
-        ?: address
-
-}
+data class ConversationInput(val conversation: Conversation) : Parcelable

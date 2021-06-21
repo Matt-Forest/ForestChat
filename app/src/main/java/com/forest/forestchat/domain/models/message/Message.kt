@@ -20,13 +20,16 @@ package com.forest.forestchat.domain.models.message
 
 import android.content.ContentUris
 import android.net.Uri
+import android.os.Parcelable
 import android.provider.Telephony
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.forest.forestchat.domain.models.message.mms.MessageMms
 import com.forest.forestchat.domain.models.message.sms.MessageSms
+import kotlinx.android.parcel.Parcelize
 
 @Entity
+@Parcelize
 data class Message(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
@@ -43,7 +46,7 @@ data class Message(
     val subId: Int?,
     val sms: MessageSms?,
     val mms: MessageMms?
-) {
+) : Parcelable {
 
     fun isUser(): Boolean {
         val isIncomingMms =

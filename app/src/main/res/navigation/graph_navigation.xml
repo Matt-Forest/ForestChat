@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -26,6 +25,28 @@
     <fragment
         android:id="@+id/home_dest"
         android:name="com.forest.forestchat.ui.home.HomeFragment"
-        tools:layout="@layout/navigation_home" />
+        tools:layout="@layout/navigation_home">
+
+        <action
+            android:id="@+id/go_to_conversation"
+            app:destination="@id/conversation_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/conversation_dest"
+        android:name="com.forest.forestchat.ui.conversation.ConversationFragment"
+        tools:layout="@layout/navigation_conversation">
+
+        <argument
+            android:name="input"
+            app:argType="com.forest.forestchat.ui.conversation.ConversationInput"
+            app:nullable="false" />
+
+    </fragment>
 
 </navigation>
