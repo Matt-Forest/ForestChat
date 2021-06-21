@@ -18,10 +18,14 @@
  */
 package com.forest.forestchat.domain.models.contact
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
 @Entity
+@Parcelize
 data class Contact(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
@@ -31,7 +35,7 @@ data class Contact(
     val photoUri: String?,
     val starred: Boolean,
     val lastUpdate: Long
-) {
+) : Parcelable {
 
     fun getDefaultNumber(): PhoneNumber? = numbers.find { number -> number.isDefault }
 

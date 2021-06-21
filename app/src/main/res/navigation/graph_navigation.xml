@@ -33,7 +33,14 @@
             app:enterAnim="@anim/nav_slide_from_right"
             app:exitAnim="@anim/nav_slide_to_left"
             app:popEnterAnim="@anim/nav_slide_from_left"
-            app:popExitAnim="@anim/nav_slide_to_right" />
+            app:popExitAnim="@anim/nav_slide_to_right" >
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.conversation.ConversationInput"
+                app:nullable="false" />
+
+        </action>
 
     </fragment>
 

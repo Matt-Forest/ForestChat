@@ -18,11 +18,15 @@
  */
 package com.forest.forestchat.domain.models.message.mms
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class MessageMms(
     val subject: String?,
     val parts: List<MmsPart>,
     val errorCode: Int
-) {
+) : Parcelable {
 
     fun getSummary() : String {
         val sb = StringBuilder()

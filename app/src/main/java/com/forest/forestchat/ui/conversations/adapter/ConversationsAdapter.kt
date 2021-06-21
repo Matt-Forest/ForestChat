@@ -31,14 +31,15 @@ import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationI
 import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdHolder
 import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 
 class ConversationsAdapter(
-    private val onSelected: (Long) -> Unit
+    private val onEvent: (ConversationItemEvent) -> Unit
 ) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onSelected)
+            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onEvent)
             ConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
             else -> null
         }

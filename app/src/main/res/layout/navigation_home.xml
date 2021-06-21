@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.forest.forestchat.ui.conversations.ConversationsNavigationView
+        <com.forest.forestchat.ui.conversations.HomeConversationsNavigationView
             android:id="@+id/conversationsContainerView"
             android:layout_width="0dp"
             android:layout_height="0dp"

@@ -28,6 +28,7 @@ import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCas
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
@@ -38,7 +39,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ConversationsViewModel @Inject constructor(
+class HomeConversationsViewModel @Inject constructor(
     private val getConversationsUseCase: GetConversationsUseCase,
     private val getConversationUseCase: GetConversationUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,
@@ -53,30 +54,30 @@ class ConversationsViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
-    private val eventEmitter = EventEmitter<ConversationEvent>()
-    fun eventSource(): EventSource<ConversationEvent> = eventEmitter
+    private val eventEmitter = EventEmitter<HomeConversationEvent>()
+    fun eventSource(): EventSource<HomeConversationEvent> = eventEmitter
 
-    private var event: ConversationEvent? = null
+    private var event: HomeConversationEvent? = null
     private var conversationSelected: Conversation? = null
     private var adsActivated: Boolean = false
 
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
             val event = when {
-                !permissionsManager.isDefaultSms() -> ConversationEvent.RequestDefaultSms
-                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> ConversationEvent.RequestPermission
+                !permissionsManager.isDefaultSms() -> HomeConversationEvent.RequestDefaultSms
+                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> HomeConversationEvent.RequestPermission
                 else -> {
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
                         withContext(Dispatchers.Main) {
-                            updateEvent(ConversationEvent.Loading)
+                            updateEvent(HomeConversationEvent.Loading)
                         }
                         syncDataUseCase()
                     }
                     val conversations = getConversationsUseCase()
                     when (conversations == null || conversations.isEmpty()) {
-                        true -> ConversationEvent.NoConversationsData
-                        false -> ConversationEvent.ConversationsData(conversations, adsActivated)
+                        true -> HomeConversationEvent.NoConversationsData
+                        false -> HomeConversationEvent.ConversationsData(conversations, adsActivated)
                     }
                 }
             }
@@ -87,13 +88,13 @@ class ConversationsViewModel @Inject constructor(
         }
     }
 
-    private fun updateEvent(newEvent: ConversationEvent) {
+    private fun updateEvent(newEvent: HomeConversationEvent) {
         event = newEvent
         eventEmitter.emit(newEvent)
     }
 
     fun onDefaultSmsChange(event: TransversalBusEvent.DefaultSmsChangedEvent) = when (event) {
-        TransversalBusEvent.DefaultSmsChangedEvent.Load -> updateEvent(ConversationEvent.Loading)
+        TransversalBusEvent.DefaultSmsChangedEvent.Load -> updateEvent(HomeConversationEvent.Loading)
         TransversalBusEvent.DefaultSmsChangedEvent.Complete -> getConversations()
     }
 
@@ -110,8 +111,8 @@ class ConversationsViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     updateEvent(
                         when (conversations?.isNullOrEmpty() == true && contacts?.isNullOrEmpty() == true) {
-                            true -> ConversationEvent.NoSearchData
-                            false -> ConversationEvent.SearchData(
+                            true -> HomeConversationEvent.NoSearchData
+                            false -> HomeConversationEvent.SearchData(
                                 conversations!!,
                                 contacts!!
                             )
@@ -124,21 +125,36 @@ class ConversationsViewModel @Inject constructor(
         }
     }
 
-    fun onConversationSelected(id: Long) {
+    fun onConversationEvent(event: ConversationItemEvent) {
         viewModelScope.launch(Dispatchers.IO) {
-            getConversationUseCase(id)?.let { conversation ->
-                conversationSelected = conversation
-                withContext(Dispatchers.Main) {
-                    updateEvent(
-                        ConversationEvent.ShowConversationOptions(
-                            showAddToContacts = conversation.recipients.first()
-                                .takeIf { recipient -> recipient.contact == null } != null,
-                            showPin = !conversation.pinned,
-                            showPinnedOff = conversation.pinned,
-                            showMarkAsRead = conversation.lastMessage?.read == false
-                        )
+            when (event) {
+                is ConversationItemEvent.Selected -> onConversationEventSelected(event.id)
+                is ConversationItemEvent.Clicked -> onConversationEventClicked(event.id)
+            }
+        }
+    }
+
+    private suspend fun onConversationEventSelected(id: Long) {
+        getConversationUseCase(id)?.let { conversation ->
+            conversationSelected = conversation
+            withContext(Dispatchers.Main) {
+                updateEvent(
+                    HomeConversationEvent.ShowConversationOptions(
+                        showAddToContacts = conversation.recipients.first()
+                            .takeIf { recipient -> recipient.contact == null } != null,
+                        showPin = !conversation.pinned,
+                        showPinnedOff = conversation.pinned,
+                        showMarkAsRead = conversation.lastMessage?.read == false
                     )
-                }
+                )
+            }
+        }
+    }
+
+    private suspend fun onConversationEventClicked(id: Long) {
+        getConversationUseCase(id)?.let { conversation ->
+            withContext(Dispatchers.Main) {
+                updateEvent(HomeConversationEvent.GoToConversation(conversation))
             }
         }
     }
@@ -149,7 +165,7 @@ class ConversationsViewModel @Inject constructor(
                 when (type) {
                     ConversationOptionType.AddToContacts -> {
                         withContext(Dispatchers.Main) {
-                            updateEvent(ConversationEvent.AddContact(conversation.recipients.first().address))
+                            updateEvent(HomeConversationEvent.AddContact(conversation.recipients.first().address))
                         }
                     }
                     ConversationOptionType.Pin -> {
@@ -176,7 +192,7 @@ class ConversationsViewModel @Inject constructor(
                     }
                     ConversationOptionType.Remove -> {
                         withContext(Dispatchers.Main) {
-                            updateEvent(ConversationEvent.RequestDeleteDialog(conversation.id))
+                            updateEvent(HomeConversationEvent.RequestDeleteDialog(conversation.id))
                         }
                     }
                 }
@@ -203,7 +219,7 @@ class ConversationsViewModel @Inject constructor(
     fun activateAds() {
         adsActivated = true
         event?.let {
-            if (it is ConversationEvent.ConversationsData) {
+            if (it is HomeConversationEvent.ConversationsData) {
                 updateEvent(it.copy(adsActivated = true))
             }
         }

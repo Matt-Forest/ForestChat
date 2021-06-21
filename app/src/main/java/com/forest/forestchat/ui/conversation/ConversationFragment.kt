@@ -22,7 +22,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.zhuinden.liveevent.observe
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class ConversationFragment : NavigationFragment() {
 
@@ -38,7 +42,17 @@ class ConversationFragment : NavigationFragment() {
     override fun getNavigationBarBgColor(): Int = R.color.background
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(viewModel) {
+            eventSource().observe(viewLifecycleOwner) { event ->
 
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Suppress("unused")
+    fun onMessageEvent(event: TransversalBusEvent) {
+        // TODO
     }
 
 }

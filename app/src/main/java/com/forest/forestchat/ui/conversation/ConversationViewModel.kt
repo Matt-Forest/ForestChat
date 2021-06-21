@@ -18,14 +18,27 @@
  */
 package com.forest.forestchat.ui.conversation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.forest.forestchat.extensions.getNavigationInput
+import com.zhuinden.eventemitter.EventEmitter
+import com.zhuinden.eventemitter.EventSource
+import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
-
+    @Assisted handle: SavedStateHandle
 ) : ViewModel() {
 
+    private val eventEmitter = EventEmitter<ConversationEvent>()
+    fun eventSource(): EventSource<ConversationEvent> = eventEmitter
+
+    private val conversation = handle.getNavigationInput<ConversationInput>().conversation
+
+    init {
+        // TODO get messages and show them
+    }
 
 }

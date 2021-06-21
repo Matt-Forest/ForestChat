@@ -18,9 +18,13 @@
  */
 package com.forest.forestchat.domain.models.contact
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class PhoneNumber(
     val id: Long,
     val address: String,
     val type: String,
     var isDefault: Boolean
-)
+) : Parcelable

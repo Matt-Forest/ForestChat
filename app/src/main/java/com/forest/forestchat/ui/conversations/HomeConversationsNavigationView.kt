@@ -30,6 +30,7 @@ import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.conversations.adapter.ConversationsAdapter
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
@@ -38,7 +39,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 
-class ConversationsNavigationView : ConstraintLayout {
+class HomeConversationsNavigationView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -51,11 +52,11 @@ class ConversationsNavigationView : ConstraintLayout {
     lateinit var requestSmsPermission: () -> Unit
     lateinit var onSearchChange: (String) -> Unit
     lateinit var optionSelected: (ConversationOptionType) -> Unit
-    lateinit var onConversationSelected: (Long) -> Unit
+    lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
 
     private val binding: NavigationConversationsBinding
-    private var conversationsAdapter = ConversationsAdapter { onConversationSelected(it) }
+    private var conversationsAdapter = ConversationsAdapter { onConversationEvent(it) }
     private val searchAdapter = SearchAdapter()
     private var bannerLoaded: Boolean = false
 
@@ -115,28 +116,28 @@ class ConversationsNavigationView : ConstraintLayout {
         binding.adView.loadAd(adRequest)
     }
 
-    fun event(event: ConversationEvent) {
+    fun event(event: HomeConversationEvent) {
         with(binding) {
             if (
-                event !is ConversationEvent.ShowConversationOptions
-                && event !is ConversationEvent.RequestDeleteDialog
-                && event !is ConversationEvent.AddContact
+                event !is HomeConversationEvent.ShowConversationOptions
+                && event !is HomeConversationEvent.RequestDeleteDialog
+                && event !is HomeConversationEvent.AddContact
             ) {
-                empty.visibleIf { event is ConversationEvent.NoConversationsData || event is ConversationEvent.NoSearchData }
-                recyclerChat.visibleIf { event is ConversationEvent.ConversationsData || event is ConversationEvent.SearchData }
-                loadingData.visibleIf { event is ConversationEvent.Loading }
-                requestPermission.visibleIf { event is ConversationEvent.RequestPermission }
-                adView.visibleIf { event is ConversationEvent.ConversationsData && bannerLoaded }
+                empty.visibleIf { event is HomeConversationEvent.NoConversationsData || event is HomeConversationEvent.NoSearchData }
+                recyclerChat.visibleIf { event is HomeConversationEvent.ConversationsData || event is HomeConversationEvent.SearchData }
+                loadingData.visibleIf { event is HomeConversationEvent.Loading }
+                requestPermission.visibleIf { event is HomeConversationEvent.RequestPermission }
+                adView.visibleIf { event is HomeConversationEvent.ConversationsData && bannerLoaded }
             }
 
             when (event) {
-                ConversationEvent.NoConversationsData -> {
+                HomeConversationEvent.NoConversationsData -> {
                     empty.text = R.string.conversations_empty_conversation.asString(context)
                 }
-                ConversationEvent.NoSearchData -> {
+                HomeConversationEvent.NoSearchData -> {
                     empty.text = R.string.conversations_empty_search.asString(context)
                 }
-                is ConversationEvent.ConversationsData -> {
+                is HomeConversationEvent.ConversationsData -> {
                     if (recyclerChat.adapter !== conversationsAdapter) {
                         recyclerChat.adapter = conversationsAdapter
                     }
@@ -144,7 +145,7 @@ class ConversationsNavigationView : ConstraintLayout {
                         setConversations(context, event.conversations, event.adsActivated)
                     }
                 }
-                is ConversationEvent.SearchData -> {
+                is HomeConversationEvent.SearchData -> {
                     if (recyclerChat.adapter !== searchAdapter) {
                         recyclerChat.adapter = searchAdapter
                     }
@@ -152,7 +153,7 @@ class ConversationsNavigationView : ConstraintLayout {
                         setData(context, event.conversations, event.contacts)
                     }
                 }
-                is ConversationEvent.ShowConversationOptions -> {
+                is HomeConversationEvent.ShowConversationOptions -> {
                     ConversationOptionsDialog(
                         context,
                         { optionSelected(it) },
@@ -162,12 +163,12 @@ class ConversationsNavigationView : ConstraintLayout {
                         event.showMarkAsRead
                     ).create().show()
                 }
-                is ConversationEvent.RequestDeleteDialog -> {
+                is HomeConversationEvent.RequestDeleteDialog -> {
                     ConversationDeleteDialog(context) { onConversationDeleted(event.id) }
                         .create()
                         .show()
                 }
-                ConversationEvent.AdsConsentComplete -> {
+                HomeConversationEvent.AdsConsentComplete -> {
                     initBanner()
                 }
                 else -> null

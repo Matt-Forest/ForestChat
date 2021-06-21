@@ -16,31 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models.message.mms
+package com.forest.forestchat.extensions
 
-import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import androidx.lifecycle.SavedStateHandle
 
-@Entity
-@Parcelize
-data class MmsPart(
-    @PrimaryKey
-    val id: Long,
-    val messageId: Long,
-    val type: String,
-    val seq: Int,
-    val name: String?,
-    val text: String?
-) : Parcelable {
+fun <T> SavedStateHandle.getNavigationInput() : T =
+    get<T>("input") ?: error("input must be defined in navigation graph")
 
-    fun getSummary(): String? = when {
-        type == "text/plain" -> text
-        type == "text/x-vCard" -> "Contact card"
-        type.startsWith("image") -> "Photo"
-        type.startsWith("video") -> "Video"
-        else -> null
-    }
-
-}
+fun <T> SavedStateHandle.getOrDefault(key: String, defaultProvider: () -> T) : T =
+    get<T>(key) ?: defaultProvider()

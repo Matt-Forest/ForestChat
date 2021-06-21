@@ -25,7 +25,8 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
-import com.forest.forestchat.ui.conversations.ConversationEvent
+import com.forest.forestchat.ui.conversations.HomeConversationEvent
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
@@ -34,7 +35,7 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
     lateinit var requestSmsPermissionChats: () -> Unit
     lateinit var onSearchChangedChats: (String) -> Unit
     lateinit var optionSelected: (ConversationOptionType) -> Unit
-    lateinit var onConversationSelected: (Long) -> Unit
+    lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
 
     // Common
@@ -58,11 +59,11 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
         binding.conversationsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
         binding.conversationsContainerView.onSearchChange = { onSearchChangedChats(it) }
         binding.conversationsContainerView.optionSelected = { optionSelected(it) }
-        binding.conversationsContainerView.onConversationSelected = { onConversationSelected(it) }
+        binding.conversationsContainerView.onConversationEvent = { onConversationEvent(it) }
         binding.conversationsContainerView.onConversationDeleted = { onConversationDeleted(it) }
     }
 
-    fun conversationEvent(event: ConversationEvent) {
+    fun conversationEvent(event: HomeConversationEvent) {
         binding.conversationsContainerView.event(event)
     }
 

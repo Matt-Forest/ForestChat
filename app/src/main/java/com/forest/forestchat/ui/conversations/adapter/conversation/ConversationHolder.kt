@@ -20,7 +20,6 @@ package com.forest.forestchat.ui.conversations.adapter.conversation
 
 import android.graphics.Typeface
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderConversationBinding
@@ -31,7 +30,7 @@ import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
 
 class ConversationHolder(
     parent: ViewGroup,
-    private val onSelected: (Long) -> Unit
+    private val onEvent: (ConversationItemEvent) -> Unit
 ) : BaseHolder<ConversationItem>(parent, R.layout.holder_conversation) {
 
     private val binding = HolderConversationBinding.bind(itemView)
@@ -47,8 +46,12 @@ class ConversationHolder(
         updatePin(item.pinned)
         updateMarkAsRead(item.unread)
 
+        itemView.setOnClickListener {
+            onEvent(ConversationItemEvent.Clicked(item.id))
+        }
+
         itemView.setOnLongClickListener {
-            onSelected(item.id)
+            onEvent(ConversationItemEvent.Selected(item.id))
             true
         }
     }

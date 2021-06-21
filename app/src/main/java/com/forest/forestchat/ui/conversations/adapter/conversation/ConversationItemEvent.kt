@@ -16,31 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.models.message.mms
+package com.forest.forestchat.ui.conversations.adapter.conversation
 
-import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
-
-@Entity
-@Parcelize
-data class MmsPart(
-    @PrimaryKey
-    val id: Long,
-    val messageId: Long,
-    val type: String,
-    val seq: Int,
-    val name: String?,
-    val text: String?
-) : Parcelable {
-
-    fun getSummary(): String? = when {
-        type == "text/plain" -> text
-        type == "text/x-vCard" -> "Contact card"
-        type.startsWith("image") -> "Photo"
-        type.startsWith("video") -> "Video"
-        else -> null
-    }
-
+sealed class ConversationItemEvent {
+    data class Selected(val id: Long) : ConversationItemEvent()
+    data class Clicked(val id: Long) : ConversationItemEvent()
 }
