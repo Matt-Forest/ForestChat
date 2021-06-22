@@ -44,7 +44,7 @@ class ConversationFragment : NavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(viewModel) {
             eventSource().observe(viewLifecycleOwner) { event ->
-
+                navigationView.event(event)
             }
         }
     }

@@ -23,13 +23,12 @@ import androidx.lifecycle.ViewModel
 import com.forest.forestchat.extensions.getNavigationInput
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
-import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
-    @Assisted handle: SavedStateHandle
+    handle: SavedStateHandle
 ) : ViewModel() {
 
     private val eventEmitter = EventEmitter<ConversationEvent>()
@@ -38,7 +37,7 @@ class ConversationViewModel @Inject constructor(
     private val conversation = handle.getNavigationInput<ConversationInput>().conversation
 
     init {
-        // TODO get messages and show them
+        eventEmitter.emit(ConversationEvent.BaseData(conversation.getTitle()))
     }
 
 }

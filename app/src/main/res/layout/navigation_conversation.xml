@@ -46,11 +46,13 @@
             app:tint="@color/text" />
 
         <TextView
-            android:id="@+id/conversationName"
+            android:id="@+id/conversationTitle"
             style="@style/Typography.H6"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/phone"

@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import com.forest.forestchat.databinding.NavigationConversationBinding
 
 class ConversationNavigationView : ConstraintLayout {
@@ -39,6 +40,14 @@ class ConversationNavigationView : ConstraintLayout {
     init {
         val layoutInflater = LayoutInflater.from(context)
         binding = NavigationConversationBinding.inflate(layoutInflater, this)
+
+        binding.back.setOnClickListener { findNavController().popBackStack() }
+    }
+
+    fun event(event: ConversationEvent) {
+        when (event) {
+            is ConversationEvent.BaseData -> binding.conversationTitle.text = event.title
+        }
     }
 
 }
