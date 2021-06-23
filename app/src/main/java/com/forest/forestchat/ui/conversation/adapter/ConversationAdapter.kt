@@ -16,9 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter
+package com.forest.forestchat.ui.conversation.adapter
 
-object ConversationViewTypes {
-    const val CONVERSATION = 0
-    const val NATIVE_AD = 1
+import android.view.ViewGroup
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.ui.base.recycler.BaseAdapter
+import com.forest.forestchat.ui.base.recycler.BaseHolder
+
+class ConversationAdapter(
+
+) : BaseAdapter() {
+
+    override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? {
+        TODO("Not yet implemented")
+    }
+
+    fun setMessages(messages: List<Message>) {
+
+    }
+
 }

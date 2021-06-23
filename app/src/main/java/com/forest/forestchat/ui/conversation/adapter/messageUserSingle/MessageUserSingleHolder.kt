@@ -16,16 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.nativeAd
+package com.forest.forestchat.ui.conversation.adapter.messageUserSingle
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderMessageUserSingleBinding
+import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-class NativeAdItem : BaseAdapterItem() {
+class MessageUserSingleHolder(
+    parent: ViewGroup
+) : BaseHolder<MessageUserSingleItem>(parent, R.layout.holder_message_user_single) {
 
-    override fun getViewType(): Int = HomeConversationViewTypes.NATIVE_AD
+    private val binding = HolderMessageUserSingleBinding.bind(itemView)
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is NativeAdItem
+    override fun bind(item: MessageUserSingleItem) {
+
+    }
 
 }

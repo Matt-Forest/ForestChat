@@ -26,7 +26,7 @@ import com.forest.forestchat.databinding.HolderConversationBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.asFont
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
+import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
 
 class ConversationHolder(
     parent: ViewGroup,
@@ -83,11 +83,11 @@ class ConversationHolder(
         binding.title.text = newTitle
     }
 
-    fun onPayload(payload: ConversationsPayload) {
-        when (payload) {
-            is ConversationsPayload.Title -> updateTitle(payload.newTitle)
-            is ConversationsPayload.Pin -> updatePin(payload.pin)
-            ConversationsPayload.MarkAsRead -> updateMarkAsRead(false)
+    fun onPayload(payloadHome: HomeConversationsPayload) {
+        when (payloadHome) {
+            is HomeConversationsPayload.Title -> updateTitle(payloadHome.newTitle)
+            is HomeConversationsPayload.Pin -> updatePin(payloadHome.pin)
+            HomeConversationsPayload.MarkAsRead -> updateMarkAsRead(false)
         }
     }
 

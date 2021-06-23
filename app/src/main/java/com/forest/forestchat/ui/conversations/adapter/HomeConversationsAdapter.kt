@@ -33,20 +33,20 @@ import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 
-class ConversationsAdapter(
+class HomeConversationsAdapter(
     private val onEvent: (ConversationItemEvent) -> Unit
 ) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onEvent)
-            ConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
+            HomeConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onEvent)
+            HomeConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
             else -> null
         }
 
     override fun onPayload(holder: BaseHolder<BaseAdapterItem>, position: Int, payload: Any) {
         holder as ConversationHolder
-        payload as ConversationsPayload
+        payload as HomeConversationsPayload
 
         holder.onPayload(payload)
     }

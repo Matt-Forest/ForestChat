@@ -29,7 +29,7 @@ import com.forest.forestchat.databinding.NavigationConversationsBinding
 import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
-import com.forest.forestchat.ui.conversations.adapter.ConversationsAdapter
+import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
@@ -56,7 +56,7 @@ class HomeConversationsNavigationView : ConstraintLayout {
     lateinit var onConversationDeleted: (Long) -> Unit
 
     private val binding: NavigationConversationsBinding
-    private var conversationsAdapter = ConversationsAdapter { onConversationEvent(it) }
+    private var conversationsAdapter = HomeConversationsAdapter { onConversationEvent(it) }
     private val searchAdapter = SearchAdapter()
     private var bannerLoaded: Boolean = false
 

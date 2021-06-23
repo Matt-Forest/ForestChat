@@ -16,16 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.nativeAd
+package com.forest.forestchat.ui.conversation.adapter
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
+object ConversationViewTypes {
 
-class NativeAdItem : BaseAdapterItem() {
+    const val MESSAGE_USER_SINGLE = 0
+    const val MESSAGE_USER_START = 1
+    const val MESSAGE_USER_MIDDLE = 2
+    const val MESSAGE_USER_END = 3
 
-    override fun getViewType(): Int = HomeConversationViewTypes.NATIVE_AD
+    const val MESSAGE_RECIPIENT_SINGLE = 4
+    const val MESSAGE_RECIPIENT_START = 5
+    const val MESSAGE_RECIPIENT_MIDDLE = 6
+    const val MESSAGE_RECIPIENT_END = 7
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is NativeAdItem
+    const val DATE = 8
 
 }

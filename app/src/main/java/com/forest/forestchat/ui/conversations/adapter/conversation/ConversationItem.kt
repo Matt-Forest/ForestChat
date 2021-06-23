@@ -19,8 +19,8 @@
 package com.forest.forestchat.ui.conversations.adapter.conversation
 
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.conversations.adapter.ConversationViewTypes
-import com.forest.forestchat.ui.conversations.adapter.ConversationsPayload
+import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
+import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
 import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class ConversationItem(
@@ -34,7 +34,7 @@ class ConversationItem(
     val draft: Boolean
 ) : BaseAdapterItem() {
 
-    override fun getViewType(): Int = ConversationViewTypes.CONVERSATION
+    override fun getViewType(): Int = HomeConversationViewTypes.CONVERSATION
 
     override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
         oldItem is ConversationItem && oldItem.id == id
@@ -43,9 +43,9 @@ class ConversationItem(
         oldItem as ConversationItem
 
         return when {
-            oldItem.title != title -> ConversationsPayload.Title(title)
-            oldItem.pinned != pinned -> ConversationsPayload.Pin(pinned)
-            oldItem.unread != unread -> ConversationsPayload.MarkAsRead
+            oldItem.title != title -> HomeConversationsPayload.Title(title)
+            oldItem.pinned != pinned -> HomeConversationsPayload.Pin(pinned)
+            oldItem.unread != unread -> HomeConversationsPayload.MarkAsRead
             else -> null
         }
     }

@@ -18,8 +18,7 @@
  */
 package com.forest.forestchat.ui.conversations.adapter
 
-sealed class ConversationsPayload {
-    data class Pin(val pin: Boolean) : ConversationsPayload()
-    data class Title(val newTitle: String) : ConversationsPayload()
-    object MarkAsRead : ConversationsPayload()
+object HomeConversationViewTypes {
+    const val CONVERSATION = 0
+    const val NATIVE_AD = 1
 }
