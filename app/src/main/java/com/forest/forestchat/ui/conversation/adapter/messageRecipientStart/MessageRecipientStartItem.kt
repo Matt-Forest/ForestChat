@@ -16,18 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.ui.conversation.adapter.messageRecipientStart
 
-object ConversationViewTypes {
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
-    const val MESSAGE_USER_SINGLE = 0
-    const val MESSAGE_USER_START = 1
-    const val MESSAGE_USER_MIDDLE = 2
-    const val MESSAGE_USER_END = 3
+class MessageRecipientStartItem(
+    val messageId: Long,
+    val message: String,
+    val hours: String,
+    val name: String,
+    val avatarType: AvatarType.Single,
+    val date: String?
+) : BaseAdapterItem() {
 
-    const val MESSAGE_RECIPIENT_SINGLE = 4
-    const val MESSAGE_RECIPIENT_START = 5
-    const val MESSAGE_RECIPIENT_MIDDLE = 6
-    const val MESSAGE_RECIPIENT_END = 7
+    override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_START
+
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is MessageRecipientStartItem && oldItem.messageId == messageId
 
 }

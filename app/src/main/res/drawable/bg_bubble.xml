@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -17,16 +16,8 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
-
-    <color name="background">#031926</color>
-    <color name="bottomNavBackground">#042B3E</color>
-    <color name="toolbarBackground">#042B3E</color>
-    <color name="searchBackground">#031926</color>
-    <color name="text">#FFFFFF</color>
-    <color name="text_50">#80FFFFFF</color>
-    <color name="divider">#1AFFFFFF</color>
-    <color name="backgroundDialog">#042B3E</color>
-    <color name="bubbleBackground">#095981</color>
-
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="10dp" />
+    <solid android:color="@color/bubbleBackground" />
+</shape>

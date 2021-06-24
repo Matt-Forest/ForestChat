@@ -16,25 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter.messageUserSingle
+package com.forest.forestchat.ui.conversation.adapter.messageUserEnd
 
 import android.view.ViewGroup
 import com.forest.forestchat.R
-import com.forest.forestchat.databinding.HolderMessageUserSingleBinding
+import com.forest.forestchat.databinding.HolderMessageUserEndBinding
 import com.forest.forestchat.extensions.visible
-import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-class MessageUserSingleHolder(
+class MessageUserEndHolder(
     parent: ViewGroup
-) : BaseHolder<MessageUserSingleItem>(parent, R.layout.holder_message_user_single) {
+) : BaseHolder<MessageUserEndItem>(parent, R.layout.holder_message_user_end) {
 
-    private val binding = HolderMessageUserSingleBinding.bind(itemView)
+    private val binding = HolderMessageUserEndBinding.bind(itemView)
 
-    override fun bind(item: MessageUserSingleItem) {
+    override fun bind(item: MessageUserEndItem) {
         with(binding) {
-            date.text = item.date
-            date.visibleIf { item.date != null }
             message.text = item.message
             info.text = item.hours
 

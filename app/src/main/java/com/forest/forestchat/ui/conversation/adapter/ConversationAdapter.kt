@@ -22,14 +22,29 @@ import android.view.ViewGroup
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.MessageRecipientEndHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientSingle.MessageRecipientSingleHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientStart.MessageRecipientStartHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserEndHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserSingle.MessageUserSingleHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserStart.MessageUserStartHolder
 
-class ConversationAdapter(
+class ConversationAdapter : BaseAdapter() {
 
-) : BaseAdapter() {
-
-    override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? {
-        TODO("Not yet implemented")
-    }
+    override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
+        when (viewType) {
+            ConversationViewTypes.MESSAGE_USER_SINGLE -> MessageUserSingleHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_START -> MessageUserStartHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_END -> MessageUserEndHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_MIDDLE -> MessageUserMiddleHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent)
+            else -> null
+        }
 
     fun setMessages(messages: List<Message>) {
 

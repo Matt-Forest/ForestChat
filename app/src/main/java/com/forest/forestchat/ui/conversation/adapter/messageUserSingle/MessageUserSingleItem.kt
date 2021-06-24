@@ -22,7 +22,10 @@ import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserSingleItem(
-    val messageId: Long
+    val messageId: Long,
+    val message: String,
+    val hours: String,
+    val date: String?
 ) : BaseAdapterItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_SINGLE
