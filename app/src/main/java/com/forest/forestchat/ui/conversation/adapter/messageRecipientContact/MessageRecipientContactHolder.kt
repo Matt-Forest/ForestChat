@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.ui.conversation.adapter.messageRecipientContact
 
-object ConversationViewTypes {
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderMessageRecipientContactBinding
+import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-    const val MESSAGE_USER_SINGLE = 0
-    const val MESSAGE_USER_START = 1
-    const val MESSAGE_USER_MIDDLE = 2
-    const val MESSAGE_USER_END = 3
-    const val MESSAGE_USER_MEDIA = 4
-    const val MESSAGE_USER_CONTACT = 5
-    const val MESSAGE_USER_FILE = 6
+class MessageRecipientContactHolder(
+    parent: ViewGroup
+) : BaseHolder<MessageRecipientContactItem>(parent, R.layout.holder_message_recipient_contact) {
 
-    const val MESSAGE_RECIPIENT_SINGLE = 7
-    const val MESSAGE_RECIPIENT_START = 8
-    const val MESSAGE_RECIPIENT_MIDDLE = 9
-    const val MESSAGE_RECIPIENT_END = 10
-    const val MESSAGE_RECIPIENT_MEDIA = 11
-    const val MESSAGE_RECIPIENT_CONTACT = 12
-    const val MESSAGE_RECIPIENT_FILE = 13
+    private val binding = HolderMessageRecipientContactBinding.bind(itemView)
+
+    override fun bind(item: MessageRecipientContactItem) {
+        with(binding) {
+            avatar.updateAvatars(item.avatars)
+            name.text = item.name
+        }
+    }
 
 }

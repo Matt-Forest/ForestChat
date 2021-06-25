@@ -73,4 +73,6 @@
 
     <string name="conversation_message_send_hint">Write a message…</string>
 
+    <string name="message_card_contact">Contact card</string>
+
 </resources>

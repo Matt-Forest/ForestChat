@@ -23,7 +23,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingVertical="2dp"
-    android:paddingStart="16dp"
+    android:paddingStart="82dp"
     android:paddingEnd="16dp">
 
     <TextView

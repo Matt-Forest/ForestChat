@@ -66,4 +66,6 @@
 
     <string name="conversation_message_send_hint">Ecrire un message…</string>
 
+    <string name="message_card_contact">Carte de contact</string>
+
 </resources>

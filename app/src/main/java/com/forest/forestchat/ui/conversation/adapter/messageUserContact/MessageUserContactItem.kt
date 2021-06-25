@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.ui.conversation.adapter.messageUserContact
 
-object ConversationViewTypes {
+import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
-    const val MESSAGE_USER_SINGLE = 0
-    const val MESSAGE_USER_START = 1
-    const val MESSAGE_USER_MIDDLE = 2
-    const val MESSAGE_USER_END = 3
-    const val MESSAGE_USER_MEDIA = 4
-    const val MESSAGE_USER_CONTACT = 5
-    const val MESSAGE_USER_FILE = 6
+class MessageUserContactItem(
+    val messageId: Long,
+    val avatars: AvatarType,
+    val name: String,
+) : BaseAdapterItem() {
 
-    const val MESSAGE_RECIPIENT_SINGLE = 7
-    const val MESSAGE_RECIPIENT_START = 8
-    const val MESSAGE_RECIPIENT_MIDDLE = 9
-    const val MESSAGE_RECIPIENT_END = 10
-    const val MESSAGE_RECIPIENT_MEDIA = 11
-    const val MESSAGE_RECIPIENT_CONTACT = 12
-    const val MESSAGE_RECIPIENT_FILE = 13
+    override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_CONTACT
+
+    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+        oldItem is MessageUserContactItem && oldItem.messageId == messageId
 
 }

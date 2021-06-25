@@ -22,11 +22,15 @@ import android.view.ViewGroup
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientContact.MessageRecipientContactHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.MessageRecipientEndHolder
+import com.forest.forestchat.ui.conversation.adapter.messageRecipientFile.MessageRecipientFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientSingle.MessageRecipientSingleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientStart.MessageRecipientStartHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserContact.MessageUserContactHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserEndHolder
+import com.forest.forestchat.ui.conversation.adapter.messageUserFile.MessageUserFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserSingle.MessageUserSingleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserStart.MessageUserStartHolder
@@ -39,10 +43,14 @@ class ConversationAdapter : BaseAdapter() {
             ConversationViewTypes.MESSAGE_USER_START -> MessageUserStartHolder(parent)
             ConversationViewTypes.MESSAGE_USER_END -> MessageUserEndHolder(parent)
             ConversationViewTypes.MESSAGE_USER_MIDDLE -> MessageUserMiddleHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_CONTACT -> MessageUserContactHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_FILE -> MessageUserFileHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(parent)
             else -> null
         }
 
