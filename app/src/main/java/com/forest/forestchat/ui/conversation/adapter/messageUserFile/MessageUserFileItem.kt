@@ -25,6 +25,8 @@ class MessageUserFileItem(
     val messageId: Long,
     val name: String,
     val size: String,
+    val hours: String,
+    val date: String?
 ) : BaseAdapterItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_FILE

@@ -19,6 +19,7 @@
 package com.forest.forestchat.domain.models.message.mms
 
 import android.os.Parcelable
+import androidx.core.net.toUri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
@@ -36,11 +37,25 @@ data class MmsPart(
 ) : Parcelable {
 
     fun getSummary(): String? = when {
-        type == "text/plain" -> text
-        type == "text/x-vCard" -> "Contact card"
-        type.startsWith("image") -> "Photo"
-        type.startsWith("video") -> "Video"
+        isText() -> text
+        isContactCard() -> "Contact card"
+        isImage() -> "Photo"
+        isVideo() -> "Video"
         else -> null
     }
+
+    fun getUri() = "content://mms/part/$id".toUri()
+
+    fun isText(): Boolean = type == "text/plain"
+
+    fun isVideo(): Boolean = type.startsWith("video")
+
+    fun isImage(): Boolean = type.startsWith("image")
+
+    fun isContactCard(): Boolean = type == "text/x-vCard"
+
+    fun isMedia(): Boolean = isImage() || isVideo()
+
+    fun isSmil(): Boolean = type == "application/smil"
 
 }

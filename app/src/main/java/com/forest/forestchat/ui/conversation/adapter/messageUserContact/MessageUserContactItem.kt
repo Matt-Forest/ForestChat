@@ -24,8 +24,9 @@ import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserContactItem(
     val messageId: Long,
-    val avatars: AvatarType,
-    val name: String,
+    val contactName: String,
+    val hours: String,
+    val date: String?
 ) : BaseAdapterItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_CONTACT

@@ -21,6 +21,8 @@ package com.forest.forestchat.ui.conversation.adapter.messageRecipientFile
 import android.view.ViewGroup
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientFileBinding
+import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class MessageRecipientFileHolder(
@@ -31,8 +33,18 @@ class MessageRecipientFileHolder(
 
     override fun bind(item: MessageRecipientFileItem) {
         with(binding) {
-            name.text = item.name
+            date.text = item.date
+            date.visibleIf { item.date != null }
+            info.text = item.hours
+            fileName.text = item.fileName
             label.text = item.size
+
+            name.text = item.name
+            avatar.setAvatar(item.avatarType)
+
+            itemView.setOnClickListener {
+                info.visible()
+            }
         }
     }
 

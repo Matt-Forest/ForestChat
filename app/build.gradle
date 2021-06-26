@@ -152,6 +152,13 @@ dependencies {
     // Shortcut Badger
     implementation "me.leolin:ShortcutBadger:1.1.22@aar"
 
+    // Contact Card
+    implementation ("com.googlecode.ez-vcard:ez-vcard:0.11.2") {
+        exclude group: "org.jsoup", module: "jsoup"
+        exclude group: "org.freemarker", module: "freemarker"
+        exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
+    }
+
     // Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

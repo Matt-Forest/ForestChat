@@ -22,9 +22,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="2dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="2dp">
 
     <TextView
         android:id="@+id/date"
@@ -44,76 +43,28 @@
         tools:text="@tools:sample/date/ddmmyy"
         tools:visibility="visible" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/card"
+    <TableLayout
+        android:id="@+id/medias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="66dp"
-        android:background="@drawable/bg_bubble"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="8dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date">
-
-        <com.forest.forestchat.ui.common.avatar.AvatarView
-            android:id="@+id/avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/barrier"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="right"
-            app:constraint_referenced_ids="avatar" />
-
-        <TextView
-            android:id="@+id/name"
-            style="@style/Typography.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            app:layout_constraintBottom_toTopOf="@id/label"
-            app:layout_constraintStart_toEndOf="@id/barrier"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@tools:sample/full_names" />
-
-        <TextView
-            android:id="@+id/label"
-            style="@style/Typography.Overline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:maxLines="1"
-            android:text="@string/message_card_contact"
-            android:textColor="@color/text_50"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/barrier"
-            app:layout_constraintTop_toBottomOf="@id/name" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/date"/>
 
     <TextView
         android:id="@+id/info"
         style="@style/Typography.Overline2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="82dp"
         android:layout_marginTop="2dp"
         android:maxLines="1"
         android:paddingHorizontal="10dp"
         android:textColor="@color/text_50"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card"
+        app:layout_constraintTop_toBottomOf="@id/medias"
         tools:text="@tools:sample/date/ddmmyy"
         tools:visibility="visible" />
 

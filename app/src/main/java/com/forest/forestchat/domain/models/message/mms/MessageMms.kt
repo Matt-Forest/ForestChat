@@ -28,7 +28,7 @@ data class MessageMms(
     val errorCode: Int
 ) : Parcelable {
 
-    fun getSummary() : String {
+    fun getSummary(): String {
         val sb = StringBuilder()
 
         // Add subject
@@ -40,10 +40,27 @@ data class MessageMms(
         return sb.toString().trim()
     }
 
+    fun getText(): String = parts
+        .filter { it.isText() }
+        .mapNotNull { it.text }
+        .joinToString("\n") { text -> text }
+
+    fun getPartsText(): List<MmsPart> = parts
+        .filter { it.isText() }
+
+    fun getPartsMedia(): List<MmsPart> = parts
+        .filter { it.isMedia() }
+
+    fun getPartsContactCard(): List<MmsPart> = parts
+        .filter { it.isContactCard() }
+
+    fun getPartsOther(): List<MmsPart> = parts
+        .filter { !it.isText() && !it.isMedia() && !it.isContactCard() && !it.isSmil() }
+
     /**
      * Cleanses the subject in case it's useless, so that the UI doesn't have to show it
      */
-    private fun getCleansedSubject(): String {
+    fun getCleansedSubject(): String {
         val uselessSubjects = listOf("no subject", "NoSubject", "<not present>")
 
         return if (uselessSubjects.contains(subject)) "" else subject ?: ""

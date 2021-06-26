@@ -16,25 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter.messageRecipientFile
+package com.forest.forestchat.ui.common.media
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.common.avatar.AvatarType
-import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
+import android.net.Uri
 
-class MessageRecipientFileItem(
-    val messageId: Long,
-    val fileName: String,
-    val size: String,
-    val hours: String,
-    val avatarType: AvatarType.Single,
-    val name: String,
-    val date: String?
-) : BaseAdapterItem() {
-
-    override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_FILE
-
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is MessageRecipientFileItem && oldItem.messageId == messageId
-
-}
+data class Media(
+    val uri: Uri,
+    val isVideo: Boolean
+)

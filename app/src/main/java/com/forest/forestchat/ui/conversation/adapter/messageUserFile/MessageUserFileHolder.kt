@@ -21,6 +21,7 @@ package com.forest.forestchat.ui.conversation.adapter.messageUserFile
 import android.view.ViewGroup
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserFileBinding
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class MessageUserFileHolder(
@@ -31,6 +32,9 @@ class MessageUserFileHolder(
 
     override fun bind(item: MessageUserFileItem) {
         with(binding) {
+            date.text = item.date
+            date.visibleIf { item.date != null }
+            info.text = item.hours
             name.text = item.name
             label.text = item.size
         }

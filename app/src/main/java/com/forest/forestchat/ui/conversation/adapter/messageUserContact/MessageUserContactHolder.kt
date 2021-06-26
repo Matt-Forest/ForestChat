@@ -21,7 +21,9 @@ package com.forest.forestchat.ui.conversation.adapter.messageUserContact
 import android.view.ViewGroup
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserContactBinding
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class MessageUserContactHolder(
     parent: ViewGroup
@@ -31,8 +33,11 @@ class MessageUserContactHolder(
 
     override fun bind(item: MessageUserContactItem) {
         with(binding) {
-            avatar.updateAvatars(item.avatars)
-            name.text = item.name
+            date.text = item.date
+            date.visibleIf { item.date != null }
+            info.text = item.hours
+            avatar.setAvatar(AvatarType.Single.Profile)
+            name.text = item.contactName
         }
     }
 

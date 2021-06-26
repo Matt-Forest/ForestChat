@@ -66,6 +66,11 @@ data class Message(
         else -> mms?.getSummary()
     } ?: ""
 
+    fun getText(): String = when (type) {
+        MessageType.Sms -> sms?.body
+        else -> mms?.getText()
+    } ?: ""
+
     fun getUri(): Uri? {
         val baseUri = when (type) {
             MessageType.Sms -> Telephony.Sms.CONTENT_URI
@@ -82,5 +87,11 @@ data class Message(
                     || box == MessageBox.Failed
             else -> false
         }
+
+    fun compareSender(other: Message): Boolean = when {
+        isUser() && other.isUser() -> subId == other.subId
+        !isUser() && !other.isUser() -> subId == other.subId && address == other.address
+        else -> false
+    }
 
 }

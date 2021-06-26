@@ -23,17 +23,60 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingVertical="2dp"
-    android:paddingStart="82dp"
+    android:paddingStart="16dp"
     android:paddingEnd="16dp">
 
+    <TextView
+        android:id="@+id/date"
+        style="@style/Typography.Subtitle2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/text_50"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/date/ddmmyy"
+        tools:visibility="visible" />
+
+    <com.forest.forestchat.ui.common.avatar.AvatarView
+        android:id="@+id/avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name" />
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/Typography.Overline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:maxLines="1"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/text_50"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        tools:text="@tools:sample/full_names"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:background="@drawable/bg_bubble"
         android:paddingHorizontal="10dp"
         android:paddingVertical="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/name">
 
         <ImageView
             android:id="@+id/icon"
@@ -56,7 +99,7 @@
             app:constraint_referenced_ids="icon" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/fileName"
             style="@style/Typography.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,9 +121,25 @@
             android:textColor="@color/text_50"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/barrier"
-            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/fileName"
             tools:text="120 GB" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/info"
+        style="@style/Typography.Overline2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="2dp"
+        android:maxLines="1"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/text_50"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card"
+        tools:text="@tools:sample/date/ddmmyy"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
