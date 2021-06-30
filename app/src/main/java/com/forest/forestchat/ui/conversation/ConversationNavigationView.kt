@@ -24,18 +24,16 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.forest.forestchat.databinding.NavigationConversationBinding
+import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 
-class ConversationNavigationView : ConstraintLayout {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-        context,
-        attrs,
-        defStyle
-    )
+class ConversationNavigationView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : ConstraintLayout(context, attrs) {
 
     private val binding: NavigationConversationBinding
+
+    private var conversationAdapter = ConversationAdapter(context)
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -45,8 +43,24 @@ class ConversationNavigationView : ConstraintLayout {
     }
 
     fun event(event: ConversationEvent) {
-        when (event) {
-            is ConversationEvent.BaseData -> binding.conversationTitle.text = event.title
+        with(binding) {
+            when (event) {
+                ConversationEvent.Empty -> {
+
+                }
+                ConversationEvent.Loading -> {
+
+                }
+                is ConversationEvent.BaseData -> conversationTitle.text = event.title
+                is ConversationEvent.Data -> {
+                    if (recyclerConversation.adapter !== conversationAdapter) {
+                        recyclerConversation.adapter = conversationAdapter
+                    }
+                    conversationAdapter.apply {
+                        setMessages(event.messages, event.recipients)
+                    }
+                }
+            }
         }
     }
 

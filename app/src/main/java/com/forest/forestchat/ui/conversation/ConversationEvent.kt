@@ -1,5 +1,6 @@
 package com.forest.forestchat.ui.conversation
 
+import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.models.message.Message
 
 sealed class ConversationEvent {
@@ -7,6 +8,6 @@ sealed class ConversationEvent {
     object Loading : ConversationEvent()
 
     data class BaseData(val title: String) : ConversationEvent()
-    data class Data(val messages: List<Message>) : ConversationEvent()
+    data class Data(val messages: List<Message>, val recipients: List<Recipient>) : ConversationEvent()
 
 }

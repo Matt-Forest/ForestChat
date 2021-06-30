@@ -20,14 +20,21 @@ package com.forest.forestchat.ui.conversation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
 import com.forest.forestchat.extensions.getNavigationInput
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
+    private val getMessagesByConversationUseCase: GetMessagesByConversationUseCase,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -38,6 +45,18 @@ class ConversationViewModel @Inject constructor(
 
     init {
         eventEmitter.emit(ConversationEvent.BaseData(conversation.getTitle()))
+        eventEmitter.emit(ConversationEvent.Loading)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val messages = getMessagesByConversationUseCase(conversation.id)
+
+            withContext(Dispatchers.Main) {
+                when (messages == null) {
+                    true -> eventEmitter.emit(ConversationEvent.Empty)
+                    false -> eventEmitter.emit(ConversationEvent.Data(messages, conversation.recipients))
+                }
+            }
+        }
     }
 
 }

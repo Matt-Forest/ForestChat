@@ -26,15 +26,8 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.forest.forestchat.databinding.ViewGroupAvatarBinding
 
-class GroupAvatarView : ConstraintLayout {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-        context,
-        attrs,
-        defStyle
-    )
+class GroupAvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    ConstraintLayout(context, attrs) {
 
     private val binding: ViewGroupAvatarBinding
 

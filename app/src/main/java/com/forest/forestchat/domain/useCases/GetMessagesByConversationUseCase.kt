@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.dashboard
+package com.forest.forestchat.domain.useCases
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.forest.forestchat.databinding.NavigationDashboardBinding
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.localStorage.database.daos.MessageDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DashboardNavigationView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+@Singleton
+class GetMessagesByConversationUseCase @Inject constructor(
+    private val messageDao: MessageDao
+) {
 
-    private val binding: NavigationDashboardBinding
-
-    init {
-        val layoutInflater = LayoutInflater.from(context)
-        binding = NavigationDashboardBinding.inflate(layoutInflater, this)
-    }
+    suspend operator fun invoke(threadId: Long): List<Message>? =
+        messageDao.getAllByThreadId(threadId)
 
 }
