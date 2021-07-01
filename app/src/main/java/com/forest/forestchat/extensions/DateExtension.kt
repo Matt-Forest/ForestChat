@@ -53,6 +53,15 @@ fun Long.getConversationTimestamp(context: Context): String {
     }.format(this)
 }
 
+fun Long.isSameDayWithOther(other: Long) : Boolean {
+    val firstDate = Calendar.getInstance()
+    firstDate.timeInMillis = this
+    val otherDate = Calendar.getInstance()
+    otherDate.timeInMillis = other
+
+    return firstDate.isSameDay(otherDate)
+}
+
 fun Long.getMessageHours(context: Context): String =
     getFormatter(context, "h:mm a").format(this)
 

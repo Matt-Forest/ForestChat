@@ -28,7 +28,8 @@ class GetMessagesByConversationUseCase @Inject constructor(
     private val messageDao: MessageDao
 ) {
 
-    suspend operator fun invoke(threadId: Long): List<Message>? =
-        messageDao.getAllByThreadId(threadId)
+    suspend operator fun invoke(threadId: Long): List<Message>? = messageDao
+        .getAllByThreadId(threadId)
+        ?.sortedByDescending { it.date }
 
 }

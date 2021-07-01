@@ -21,9 +21,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingVertical="2dp"
-    android:paddingStart="82dp"
+    android:paddingStart="72dp"
     android:paddingEnd="16dp">
 
     <TextView
@@ -37,7 +36,7 @@
         android:textColor="@color/text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem" />
+        tools:text="@tools:sample/lorem/random" />
 
     <TextView
         android:id="@+id/info"

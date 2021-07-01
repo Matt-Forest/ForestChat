@@ -19,6 +19,7 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserMedias
 
 import android.view.ViewGroup
+import android.widget.TableRow
 import coil.load
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserMediaBinding
@@ -48,13 +49,31 @@ class MessageUserMediasHolder(
         val isAlone = medias.size == 1
         val isOnOneRow = medias.size <= maxItemByRow
 
-        val mediasView = mutableListOf<MediaView>()
-
-        medias.forEachIndexed { index, media ->
+        val mediasView = medias.mapIndexed { index, media ->
             when {
-                isAlone -> mediasView.add(toMediaViewAlone(media))
-                isOnOneRow -> mediasView.add(toMediaViewOnOneRow(index, media))
-                else -> mediasView.add(toMediaView(index, medias.size, media))
+                isAlone -> toMediaViewAlone(media)
+                isOnOneRow -> toMediaViewOnOneRow(index, media)
+                else -> toMediaView(index, medias.size, media)
+            }
+        }
+
+        setMediasInTable(mediasView)
+    }
+
+    private fun setMediasInTable(mediasView: List<MediaView>) {
+        mediasView.chunked(3).forEach { mediasRow ->
+            val rowView = TableRow(context)
+            val lp = TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT
+            )
+            rowView.layoutParams = lp
+            mediasRow.forEach { rowView.addView(it) }
+
+            with(binding) {
+                medias.removeAllViews()
+                medias.addView(rowView)
+                medias.invalidate()
             }
         }
     }

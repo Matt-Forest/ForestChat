@@ -21,9 +21,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingVertical="2dp"
-    android:paddingStart="82dp"
+    android:paddingStart="72dp"
     android:paddingEnd="16dp">
 
     <TextView

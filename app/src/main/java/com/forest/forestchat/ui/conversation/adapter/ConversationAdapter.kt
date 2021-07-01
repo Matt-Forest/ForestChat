@@ -30,6 +30,7 @@ import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.extensions.getMessageDate
 import com.forest.forestchat.extensions.getMessageHours
+import com.forest.forestchat.extensions.isSameDayWithOther
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
@@ -92,12 +93,26 @@ class ConversationAdapter(
         val items = mutableListOf<BaseAdapterItem>()
 
         messages.forEachIndexed { index, message ->
-            val previousIsSameSender = when (index - 1 >= 0) {
-                true -> message.compareSender(messages[index - 1])
+            // Show the date only if the next message has an another date or if he is the last message
+            val showDate = when (messages.size > index + 1) {
+                true -> !message.date.isSameDayWithOther(messages[index + 1].date)
+                false -> true
+            }
+
+            // Because the recycler layout is reversed, the previous message is at the bottom and
+            // the next message is on the top
+            val previousIsSameSenderAndDate = when (messages.size > index + 1) {
+                true -> {
+                    val previous = messages[index + 1]
+                    message.compareSender(previous) && message.date.isSameDayWithOther(previous.date)
+                }
                 false -> false
             }
-            val nextIsSameSender = when (messages.size > index + 1) {
-                true -> message.compareSender(messages[index + 1])
+            val nextIsSameSenderAndDate = when (index - 1 >= 0) {
+                true -> {
+                    val next = messages[index - 1]
+                    message.compareSender(next) && message.date.isSameDayWithOther(next.date)
+                }
                 false -> false
             }
 
@@ -106,14 +121,15 @@ class ConversationAdapter(
             when (message.type) {
                 MessageType.Sms -> messageSms(
                     message,
-                    previousIsSameSender,
-                    nextIsSameSender,
-                    recipient
-                ).let { item ->
+                    previousIsSameSenderAndDate,
+                    nextIsSameSenderAndDate,
+                    recipient,
+                    showDate
+                )?.let { item ->
                     items.add(item)
                 }
                 MessageType.Mms -> {
-                    messageMms(message, recipient).let { items.addAll(it) }
+                    messageMms(message, recipient, showDate).let { items.addAll(it) }
                 }
                 MessageType.Unknown -> null
             }
@@ -126,95 +142,112 @@ class ConversationAdapter(
         message: Message,
         previousIsSameSender: Boolean,
         nextIsSameSender: Boolean,
-        recipient: Recipient?
-    ): BaseAdapterItem = when {
-        previousIsSameSender && nextIsSameSender ->
-            when (message.isUser()) {
-                true -> MessageUserMiddleItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context)
-                )
-                false -> MessageRecipientMiddleItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context)
-                )
-            }
-        !previousIsSameSender && nextIsSameSender ->
-            when (message.isUser()) {
-                true -> MessageUserStartItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context),
-                    date = message.date.getMessageDate(context)
-                )
-                false -> MessageRecipientStartItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context),
-                    name = recipient?.getDisplayName() ?: "",
-                    avatarType = buildSingleAvatar(recipient?.contact, false),
-                    date = message.date.getMessageDate(context)
-                )
-            }
-        previousIsSameSender && !nextIsSameSender ->
-            when (message.isUser()) {
-                true -> MessageUserEndItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context)
-                )
-                false -> MessageRecipientEndItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context)
-                )
-            }
-        else ->
-            when (message.isUser()) {
-                true -> MessageUserSingleItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context),
-                    date = message.date.getMessageDate(context)
-                )
-                false -> MessageRecipientSingleItem(
-                    messageId = message.id,
-                    message = message.getText(),
-                    hours = message.date.getMessageHours(context),
-                    name = recipient?.getDisplayName() ?: "",
-                    avatarType = buildSingleAvatar(recipient?.contact, false),
-                    date = message.date.getMessageDate(context)
-                )
-            }
+        recipient: Recipient?,
+        showDate: Boolean,
+    ): BaseAdapterItem? {
+        if (message.getText().isBlank()) {
+            return null
+        }
+        val messageDate = when (showDate) {
+            true -> message.date.getMessageDate(context)
+            false -> null
+        }
+
+        return when {
+            previousIsSameSender && nextIsSameSender ->
+                when (message.isUser()) {
+                    true -> MessageUserMiddleItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context)
+                    )
+                    false -> MessageRecipientMiddleItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context)
+                    )
+                }
+            !previousIsSameSender && nextIsSameSender ->
+                when (message.isUser()) {
+                    true -> MessageUserStartItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context),
+                        date = messageDate
+                    )
+                    false -> MessageRecipientStartItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context),
+                        name = recipient?.getDisplayName() ?: "",
+                        avatarType = buildSingleAvatar(recipient?.contact, false),
+                        date = messageDate
+                    )
+                }
+            previousIsSameSender && !nextIsSameSender ->
+                when (message.isUser()) {
+                    true -> MessageUserEndItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context)
+                    )
+                    false -> MessageRecipientEndItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context)
+                    )
+                }
+            else ->
+                when (message.isUser()) {
+                    true -> MessageUserSingleItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context),
+                        date = messageDate
+                    )
+                    false -> MessageRecipientSingleItem(
+                        messageId = message.id,
+                        message = message.getText(),
+                        hours = message.date.getMessageHours(context),
+                        name = recipient?.getDisplayName() ?: "",
+                        avatarType = buildSingleAvatar(recipient?.contact, false),
+                        date = messageDate
+                    )
+                }
+        }
     }
 
     private fun messageMms(
         message: Message,
-        recipient: Recipient?
+        recipient: Recipient?,
+        showDate: Boolean
     ): List<BaseAdapterItem> {
         val items = mutableListOf<BaseAdapterItem>()
 
         // If there are Text in parts
-        mmsPartText(message, recipient)?.let { items.add(it) }
+        mmsPartText(message, recipient, showDate)?.let { items.add(it) }
 
         // If there are Media (Image and video) in parts
-        mmsPartMedia(message, recipient)?.let { items.add(it) }
+        mmsPartMedia(message, recipient, showDate)?.let { items.add(it) }
 
         // If there are Contact card in parts
-        mmsPartContactCard(message, recipient)?.let { items.addAll(it) }
+        mmsPartContactCard(message, recipient, showDate)?.let { items.addAll(it) }
 
         // If there are Files in parts
-        mmsPartFile(message, recipient)?.let { items.addAll(it) }
+        mmsPartFile(message, recipient, showDate)?.let { items.addAll(it) }
 
         return items
     }
 
     private fun mmsPartText(
         message: Message,
-        recipient: Recipient?
-    ): BaseAdapterItem? = message.mms?.getPartsText()?.let { textParts ->
+        recipient: Recipient?,
+        showDate: Boolean
+    ): BaseAdapterItem? = message.mms?.getPartsText()?.ifEmpty { null }?.let { textParts ->
+        val messageDate = when (showDate) {
+            true -> message.date.getMessageDate(context)
+            false -> null
+        }
         val subject = message.mms.getCleansedSubject()
         val body = textParts
             .mapNotNull { part -> part.text }
@@ -234,12 +267,16 @@ class ConversationAdapter(
             else -> body
         }.toString()
 
+        if (text.isBlank()) {
+            return null
+        }
+
         when (message.isUser()) {
             true -> MessageUserSingleItem(
                 messageId = message.id,
                 message = text,
                 hours = message.date.getMessageHours(context),
-                date = message.date.getMessageDate(context)
+                date = messageDate
             )
             false -> MessageRecipientSingleItem(
                 messageId = message.id,
@@ -247,42 +284,55 @@ class ConversationAdapter(
                 hours = message.date.getMessageHours(context),
                 name = recipient?.getDisplayName() ?: "",
                 avatarType = buildSingleAvatar(recipient?.contact, false),
-                date = message.date.getMessageDate(context)
+                date = messageDate
             )
         }
     }
 
     private fun mmsPartMedia(
         message: Message,
-        recipient: Recipient?
-    ): BaseAdapterItem? = message.mms?.getPartsMedia()?.let { mediaParts ->
-        when (message.isUser()) {
-            true -> MessageUserMediasItem(
-                messageId = message.id,
-                medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo()) },
-                hours = message.date.getMessageHours(context),
-                date = message.date.getMessageDate(context)
-            )
-            false -> MessageRecipientMediasItem(
-                messageId = message.id,
-                medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo()) },
-                hours = message.date.getMessageHours(context),
-                name = recipient?.getDisplayName() ?: "",
-                avatarType = buildSingleAvatar(recipient?.contact, false),
-                date = message.date.getMessageDate(context)
-            )
+        recipient: Recipient?,
+        showDate: Boolean
+    ): BaseAdapterItem? {
+        val messageDate = when (showDate) {
+            true -> message.date.getMessageDate(context)
+            false -> null
+        }
+
+        return message.mms?.getPartsMedia()?.ifEmpty { null }?.let { mediaParts ->
+            when (message.isUser()) {
+                true -> MessageUserMediasItem(
+                    messageId = message.id,
+                    medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo()) },
+                    hours = message.date.getMessageHours(context),
+                    date = messageDate
+                )
+                false -> MessageRecipientMediasItem(
+                    messageId = message.id,
+                    medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo()) },
+                    hours = message.date.getMessageHours(context),
+                    name = recipient?.getDisplayName() ?: "",
+                    avatarType = buildSingleAvatar(recipient?.contact, false),
+                    date = messageDate
+                )
+            }
         }
     }
 
     private fun mmsPartContactCard(
         message: Message,
-        recipient: Recipient?
-    ): List<BaseAdapterItem>? = message.mms?.getPartsContactCard()?.let { contactCardParts ->
+        recipient: Recipient?,
+        showDate: Boolean
+    ): List<BaseAdapterItem>? = message.mms?.getPartsContactCard()?.ifEmpty { null }?.let { contactCardParts ->
         val items = mutableListOf<BaseAdapterItem>()
 
-        contactCardParts.forEach { part ->
+        contactCardParts.forEachIndexed { index, part ->
             context.contentResolver.openInputStream(part.getUri())?.use {
                 val card = Ezvcard.parse(it).first()
+                val messageDate = when (showDate && index == contactCardParts.size - 1) {
+                    true -> message.date.getMessageDate(context)
+                    false -> null
+                }
 
                 items.add(
                     when (message.isUser()) {
@@ -290,7 +340,7 @@ class ConversationAdapter(
                             messageId = message.id,
                             contactName = card.formattedName.value,
                             hours = message.date.getMessageHours(context),
-                            date = message.date.getMessageDate(context)
+                            date = messageDate
                         )
                         false -> MessageRecipientContactItem(
                             messageId = message.id,
@@ -298,7 +348,7 @@ class ConversationAdapter(
                             hours = message.date.getMessageHours(context),
                             name = recipient?.getDisplayName() ?: "",
                             avatarType = buildSingleAvatar(recipient?.contact, false),
-                            date = message.date.getMessageDate(context)
+                            date = messageDate
                         )
                     }
                 )
@@ -310,12 +360,17 @@ class ConversationAdapter(
 
     private fun mmsPartFile(
         message: Message,
-        recipient: Recipient?
-    ): List<BaseAdapterItem>? = message.mms?.getPartsOther()?.let { fileParts ->
+        recipient: Recipient?,
+        showDate: Boolean
+    ): List<BaseAdapterItem>? = message.mms?.getPartsOther()?.ifEmpty { null }?.let { fileParts ->
         val items = mutableListOf<BaseAdapterItem>()
 
-        fileParts.forEach { part ->
+        fileParts.forEachIndexed { index, part ->
             context.contentResolver.openInputStream(part.getUri())?.use {
+                val messageDate = when (showDate && index == fileParts.size - 1) {
+                    true -> message.date.getMessageDate(context)
+                    false -> null
+                }
                 val size = when (val bytes = it.available()) {
                     in 0..999 -> "$bytes B"
                     in 1000..999999 -> "${"%.1f".format(bytes / 1000f)} KB"
@@ -330,7 +385,7 @@ class ConversationAdapter(
                             name = part.name ?: "",
                             size = size,
                             hours = message.date.getMessageHours(context),
-                            date = message.date.getMessageDate(context)
+                            date = messageDate
                         )
                         false -> MessageRecipientFileItem(
                             messageId = message.id,
@@ -339,7 +394,7 @@ class ConversationAdapter(
                             hours = message.date.getMessageHours(context),
                             name = recipient?.getDisplayName() ?: "",
                             avatarType = buildSingleAvatar(recipient?.contact, false),
-                            date = message.date.getMessageDate(context)
+                            date = messageDate
                         )
                     }
                 )

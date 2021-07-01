@@ -22,6 +22,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.forest.forestchat.R
@@ -56,6 +57,11 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         color = R.color.primary.asColor(context)
     }
 
+    init {
+        scaleType = ScaleType.CENTER_CROP
+        adjustViewBounds = true
+    }
+
     fun setStyle(style: RoundedStyle, isVideo: Boolean) {
         this.isVideo = isVideo
         this.style = style
@@ -82,6 +88,26 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 }
             }
         }
+    }
+
+    fun setSize(){
+        val params = layoutParams
+        when (style) {
+            RoundedStyle.Alone -> {
+                params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+            RoundedStyle.Left,
+            RoundedStyle.Right -> {
+                params.width = 144.dp
+                params.height = 144.dp
+            }
+            else -> {
+                params.width = 94.dp
+                params.height = 94.dp
+            }
+        }
+        layoutParams = params
     }
 
     private fun setPath() {
