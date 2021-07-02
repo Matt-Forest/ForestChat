@@ -50,6 +50,8 @@ data class MmsPart(
 
     fun isVideo(): Boolean = type.startsWith("video")
 
+    fun isGif(): Boolean = type == "image/gif"
+
     fun isImage(): Boolean = type.startsWith("image")
 
     fun isContactCard(): Boolean = type == "text/x-vCard"

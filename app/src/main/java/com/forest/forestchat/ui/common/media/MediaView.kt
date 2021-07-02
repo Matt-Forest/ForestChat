@@ -50,6 +50,7 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     private var style = RoundedStyle.Alone
     private var isVideo = false
+    private var isGif = false
     private val path = Path()
     private val radius = 10.dp.toFloat()
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -62,8 +63,9 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         adjustViewBounds = true
     }
 
-    fun setStyle(style: RoundedStyle, isVideo: Boolean) {
+    fun setStyle(style: RoundedStyle, isVideo: Boolean, isGif: Boolean) {
         this.isVideo = isVideo
+        this.isGif = isGif
         this.style = style
         setPath()
         invalidate()
@@ -90,7 +92,7 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
     }
 
-    fun setSize(){
+    fun setSize() {
         val params = layoutParams
         when (style) {
             RoundedStyle.Alone -> {

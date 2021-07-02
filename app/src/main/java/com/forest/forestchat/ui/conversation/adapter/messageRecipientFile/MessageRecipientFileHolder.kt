@@ -19,8 +19,10 @@
 package com.forest.forestchat.ui.conversation.adapter.messageRecipientFile
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientFileBinding
+import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
@@ -40,10 +42,12 @@ class MessageRecipientFileHolder(
             label.text = item.size
 
             name.text = item.name
-            avatar.setAvatar(item.avatarType)
+            name.visibleIf { item.name != null }
+            item.avatarType?.let { avatar.setAvatar(it) }
+            avatar.invisibleIf { item.avatarType == null }
 
             itemView.setOnClickListener {
-                info.visible()
+                info.visibleIf { info.isGone }
             }
         }
     }

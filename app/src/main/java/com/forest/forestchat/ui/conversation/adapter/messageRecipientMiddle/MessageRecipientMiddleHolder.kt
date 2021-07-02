@@ -19,9 +19,11 @@
 package com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientMiddleBinding
 import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class MessageRecipientMiddleHolder(
@@ -36,7 +38,7 @@ class MessageRecipientMiddleHolder(
             info.text = item.hours
 
             itemView.setOnClickListener {
-                info.visible()
+                info.visibleIf { info.isGone }
             }
         }
     }

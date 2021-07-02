@@ -18,8 +18,13 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.messageUserMedias
 
+import android.os.Build
 import android.view.ViewGroup
 import android.widget.TableRow
+import androidx.core.view.isGone
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserMediaBinding
@@ -41,6 +46,10 @@ class MessageUserMediasHolder(
             info.text = item.hours
 
             setMedias(item.medias)
+
+            itemView.setOnClickListener {
+                info.visibleIf { info.isGone }
+            }
         }
     }
 
@@ -61,6 +70,7 @@ class MessageUserMediasHolder(
     }
 
     private fun setMediasInTable(mediasView: List<MediaView>) {
+        binding.medias.removeAllViews()
         mediasView.chunked(3).forEach { mediasRow ->
             val rowView = TableRow(context)
             val lp = TableRow.LayoutParams(
@@ -68,13 +78,12 @@ class MessageUserMediasHolder(
                 TableRow.LayoutParams.WRAP_CONTENT
             )
             rowView.layoutParams = lp
-            mediasRow.forEach { rowView.addView(it) }
-
-            with(binding) {
-                medias.removeAllViews()
-                medias.addView(rowView)
-                medias.invalidate()
+            mediasRow.forEach { mediaView ->
+                rowView.addView(mediaView)
+                mediaView.setSize()
             }
+
+            binding.medias.addView(rowView)
         }
     }
 
@@ -120,8 +129,22 @@ class MessageUserMediasHolder(
 
     private fun buildMediaView(style: MediaView.RoundedStyle, media: Media): MediaView =
         MediaView(context).apply {
-            setStyle(style, media.isVideo)
-            load(media.uri)
+            when (media.isGif) {
+                true -> {
+                    val imageLoader = ImageLoader.Builder(context)
+                        .componentRegistry {
+                            if (Build.VERSION.SDK_INT >= 28) {
+                                add(ImageDecoderDecoder(context))
+                            } else {
+                                add(GifDecoder())
+                            }
+                        }
+                        .build()
+                    load(media.uri, imageLoader)
+                }
+                false -> load(media.uri)
+            }
+            setStyle(style, media.isVideo, media.isGif)
         }
 
 }

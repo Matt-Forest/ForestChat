@@ -26,8 +26,8 @@ class MessageRecipientSingleItem(
     val messageId: Long,
     val message: String,
     val hours: String,
-    val name: String,
-    val avatarType: AvatarType.Single,
+    val name: String?,
+    val avatarType: AvatarType.Single?,
     val date: String?
 ) : BaseAdapterItem() {
 

@@ -19,6 +19,7 @@
 package com.forest.forestchat.domain.useCases
 
 import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.localStorage.database.daos.MessageDao
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,6 +31,13 @@ class GetMessagesByConversationUseCase @Inject constructor(
 
     suspend operator fun invoke(threadId: Long): List<Message>? = messageDao
         .getAllByThreadId(threadId)
+        ?.filter {
+            when (it.type) {
+                MessageType.Sms -> !it.sms?.body.isNullOrBlank()
+                MessageType.Mms -> !it.mms?.parts.isNullOrEmpty()
+                else -> false
+            }
+        }
         ?.sortedByDescending { it.date }
 
 }

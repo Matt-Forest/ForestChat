@@ -19,9 +19,11 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserEnd
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserEndBinding
 import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class MessageUserEndHolder(
@@ -36,7 +38,7 @@ class MessageUserEndHolder(
             info.text = item.hours
 
             itemView.setOnClickListener {
-                info.visible()
+                info.visibleIf { info.isGone }
             }
         }
     }

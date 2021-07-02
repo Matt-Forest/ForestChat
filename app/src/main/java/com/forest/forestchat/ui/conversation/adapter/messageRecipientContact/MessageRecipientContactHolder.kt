@@ -19,9 +19,10 @@
 package com.forest.forestchat.ui.conversation.adapter.messageRecipientContact
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientContactBinding
-import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.avatar.AvatarType
@@ -40,10 +41,12 @@ class MessageRecipientContactHolder(
             contactAvatar.setAvatar(AvatarType.Single.Profile)
             contactName.text = item.contactName
             name.text = item.name
-            avatar.setAvatar(item.avatarType)
+            name.visibleIf { item.name != null }
+            item.avatarType?.let { avatar.setAvatar(it) }
+            avatar.invisibleIf { item.avatarType == null }
 
             itemView.setOnClickListener {
-                info.visible()
+                info.visibleIf { info.isGone }
             }
         }
     }

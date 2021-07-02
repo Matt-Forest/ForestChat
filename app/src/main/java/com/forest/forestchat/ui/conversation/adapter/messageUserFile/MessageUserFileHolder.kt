@@ -19,6 +19,7 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserFile
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserFileBinding
 import com.forest.forestchat.extensions.visibleIf
@@ -37,6 +38,10 @@ class MessageUserFileHolder(
             info.text = item.hours
             name.text = item.name
             label.text = item.size
+
+            itemView.setOnClickListener {
+                info.visibleIf { info.isGone }
+            }
         }
     }
 

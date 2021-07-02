@@ -27,8 +27,8 @@ class MessageRecipientFileItem(
     val fileName: String,
     val size: String,
     val hours: String,
-    val avatarType: AvatarType.Single,
-    val name: String,
+    val avatarType: AvatarType.Single?,
+    val name: String?,
     val date: String?
 ) : BaseAdapterItem() {
 

@@ -25,8 +25,8 @@ import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 class MessageRecipientContactItem(
     val messageId: Long,
     val contactName: String,
-    val avatarType: AvatarType.Single,
-    val name: String,
+    val avatarType: AvatarType.Single?,
+    val name: String?,
     val hours: String,
     val date: String?
 ) : BaseAdapterItem() {

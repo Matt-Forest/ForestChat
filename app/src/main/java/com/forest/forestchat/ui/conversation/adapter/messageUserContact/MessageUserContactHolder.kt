@@ -19,6 +19,7 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserContact
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserContactBinding
 import com.forest.forestchat.extensions.visibleIf
@@ -38,6 +39,10 @@ class MessageUserContactHolder(
             info.text = item.hours
             avatar.setAvatar(AvatarType.Single.Profile)
             name.text = item.contactName
+
+            itemView.setOnClickListener {
+                info.visibleIf { info.isGone }
+            }
         }
     }
 

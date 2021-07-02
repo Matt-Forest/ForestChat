@@ -19,6 +19,7 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserStart
 
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserStartBinding
 import com.forest.forestchat.extensions.visible
@@ -39,7 +40,7 @@ class MessageUserStartHolder(
             info.text = item.hours
 
             itemView.setOnClickListener {
-                info.visible()
+                info.visibleIf { info.isGone }
             }
         }
     }

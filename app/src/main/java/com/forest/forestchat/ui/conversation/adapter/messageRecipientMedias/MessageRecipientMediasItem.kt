@@ -27,8 +27,8 @@ class MessageRecipientMediasItem(
     val messageId: Long,
     val medias: List<Media>,
     val hours: String,
-    val name: String,
-    val avatarType: AvatarType.Single,
+    val name: String?,
+    val avatarType: AvatarType.Single?,
     val date: String?
 ) : BaseAdapterItem() {
 
