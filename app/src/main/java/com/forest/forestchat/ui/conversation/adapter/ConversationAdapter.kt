@@ -43,8 +43,8 @@ import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.Message
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.MessageRecipientEndItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientFile.MessageRecipientFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientFile.MessageRecipientFileItem
-import com.forest.forestchat.ui.conversation.adapter.messageRecipientMedias.MessageRecipientMediasHolder
-import com.forest.forestchat.ui.conversation.adapter.messageRecipientMedias.MessageRecipientMediasItem
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasHolder
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientSingle.MessageRecipientSingleHolder
@@ -57,8 +57,8 @@ import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserE
 import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserEndItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserFile.MessageUserFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserFile.MessageUserFileItem
-import com.forest.forestchat.ui.conversation.adapter.messageUserMedias.MessageUserMediasHolder
-import com.forest.forestchat.ui.conversation.adapter.messageUserMedias.MessageUserMediasItem
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasHolder
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserSingle.MessageUserSingleHolder

@@ -16,25 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter.messageRecipientMedias
+package com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.MessageMediasBaseItem
 
 class MessageRecipientMediasItem(
-    val messageId: Long,
-    val medias: List<Media>,
-    val hours: String,
+    messageId: Long,
+    medias: List<Media>,
+    hours: String,
+    date: String?,
     val name: String?,
-    val avatarType: AvatarType.Single?,
-    val date: String?
-) : BaseAdapterItem() {
+    val avatarType: AvatarType.Single?
+) : MessageMediasBaseItem(messageId, medias, hours, date) {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA
-
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is MessageRecipientMediasItem && oldItem.messageId == messageId
 
 }

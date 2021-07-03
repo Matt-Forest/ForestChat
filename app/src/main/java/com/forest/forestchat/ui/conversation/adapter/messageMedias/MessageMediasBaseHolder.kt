@@ -16,45 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter.messageUserMedias
+package com.forest.forestchat.ui.conversation.adapter.messageMedias
 
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.view.ViewGroup
+import android.widget.TableLayout
 import android.widget.TableRow
-import androidx.core.view.isGone
+import androidx.annotation.LayoutRes
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.load
-import com.forest.forestchat.R
-import com.forest.forestchat.databinding.HolderMessageUserMediaBinding
 import com.forest.forestchat.extensions.dp
-import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.common.media.MediaView
 
-class MessageUserMediasHolder(
-    parent: ViewGroup
-) : BaseHolder<MessageUserMediasItem>(parent, R.layout.holder_message_user_media) {
+abstract class MessageMediasBaseHolder <T>(
+    parent: ViewGroup,
+    @LayoutRes layoutRes: Int
+) : BaseHolder<T>(parent, layoutRes) {
 
-    private val binding = HolderMessageUserMediaBinding.bind(itemView)
-
-    override fun bind(item: MessageUserMediasItem) {
-        with(binding) {
-            date.text = item.date
-            date.visibleIf { item.date != null }
-            info.text = item.hours
-
-            setMedias(item.medias)
-
-            itemView.setOnClickListener {
-                info.visibleIf { info.isGone }
-            }
-        }
-    }
-
-    private fun setMedias(medias: List<Media>) {
+    protected fun setMedias(tableMedias: TableLayout, medias: List<Media>) {
         val maxItemByRow = 3
         val isAlone = medias.size == 1
         val isOnOneRow = medias.size <= maxItemByRow
@@ -67,11 +50,11 @@ class MessageUserMediasHolder(
             }
         }
 
-        setMediasInTable(mediasView)
+        setMediasInTable(tableMedias, mediasView)
     }
 
-    private fun setMediasInTable(mediasView: List<MediaView>) {
-        binding.medias.removeAllViews()
+    private fun setMediasInTable(tableMedias: TableLayout, mediasView: List<MediaView>) {
+        tableMedias.removeAllViews()
         mediasView.chunked(3).forEach { mediasRow ->
             val rowView = TableRow(context)
             val lp = TableRow.LayoutParams(
@@ -84,7 +67,7 @@ class MessageUserMediasHolder(
                 mediaView.setSize()
             }
 
-            binding.medias.addView(rowView)
+            tableMedias.addView(rowView)
         }
     }
 
@@ -137,7 +120,7 @@ class MessageUserMediasHolder(
                 true -> {
                     val imageLoader = ImageLoader.Builder(context)
                         .componentRegistry {
-                            if (Build.VERSION.SDK_INT >= 28) {
+                            if (SDK_INT >= 28) {
                                 add(ImageDecoderDecoder(context))
                             } else {
                                 add(GifDecoder())
