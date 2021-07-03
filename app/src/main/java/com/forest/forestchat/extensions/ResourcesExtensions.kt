@@ -30,6 +30,8 @@ val Int.dp
 val Int.sp
     get() = (this * Resources.getSystem().displayMetrics.scaledDensity).toInt()
 
+fun Int.asDimen(context: Context?) = context?.resources?.getDimension(this)
+
 fun Int.asString(context: Context?) = context?.resources?.getString(this) ?: ""
 
 fun Int.asStringArray(context: Context?) = context?.resources?.getStringArray(this) ?: emptyArray()

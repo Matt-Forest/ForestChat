@@ -25,6 +25,7 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.dp
@@ -51,7 +52,8 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var style = RoundedStyle.Alone
     private var isVideo = false
     private val path = Path()
-    private val radius = 10.dp.toFloat()
+    private val radiusLarge = 10.dp.toFloat()
+    private val radiusSmall = 2.dp.toFloat()
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = R.color.primary.asColor(context)
@@ -59,14 +61,12 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     init {
         scaleType = ScaleType.CENTER_CROP
-        adjustViewBounds = true
+        setPadding(1.dp, 0, 1.dp, 0)
     }
 
     fun setStyle(style: RoundedStyle, isVideo: Boolean) {
         this.isVideo = isVideo
         this.style = style
-        setPath()
-        invalidate()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -90,7 +90,7 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
     }
 
-    fun setSize() {
+    fun setSize(tableWidth: Float, nbItemByRow: Int) {
         val params = layoutParams
         when (style) {
             RoundedStyle.Alone -> {
@@ -99,12 +99,14 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
             RoundedStyle.Left,
             RoundedStyle.Right -> {
-                params.width = 144.dp
-                params.height = 144.dp
+                val size = (tableWidth / nbItemByRow).toInt()
+                params.width = size
+                params.height = size
             }
             else -> {
-                params.width = 94.dp
-                params.height = 94.dp
+                val size = (tableWidth / 3).toInt()
+                params.width = size
+                params.height = size
             }
         }
         layoutParams = params
@@ -116,26 +118,41 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val width = width.toFloat()
         val height = height.toFloat()
 
-        val cornerRect = RectF().apply { set(-radius, -radius, radius, radius) }
+        val cornerRectSmall =
+            RectF().apply { set(-radiusSmall, -radiusSmall, radiusSmall, radiusSmall) }
+        val cornerRectLarge =
+            RectF().apply { set(-radiusLarge, -radiusLarge, radiusLarge, radiusLarge) }
 
         if (style.topLeft) {
-            cornerRect.offsetTo(0f, 0f)
-            path.arcTo(cornerRect, 180f, 90f)
+            cornerRectLarge.offsetTo(0f, 0f)
+            path.arcTo(cornerRectLarge, 180f, 90f)
+        } else {
+            cornerRectSmall.offsetTo(0f, 0f)
+            path.arcTo(cornerRectSmall, 180f, 90f)
         }
 
         if (style.topRight) {
-            cornerRect.offsetTo(width - radius * 2, 0f)
-            path.arcTo(cornerRect, 270f, 90f)
+            cornerRectLarge.offsetTo(width - radiusLarge * 2, 0f)
+            path.arcTo(cornerRectLarge, 270f, 90f)
+        } else {
+            cornerRectSmall.offsetTo(width - radiusSmall * 2, 0f)
+            path.arcTo(cornerRectSmall, 270f, 90f)
         }
 
         if (style.bottomRight) {
-            cornerRect.offsetTo(width - radius * 2, height - radius * 2)
-            path.arcTo(cornerRect, 0f, 90f)
+            cornerRectLarge.offsetTo(width - radiusLarge * 2, height - radiusLarge * 2)
+            path.arcTo(cornerRectLarge, 0f, 90f)
+        } else {
+            cornerRectSmall.offsetTo(width - radiusSmall * 2, height - radiusSmall * 2)
+            path.arcTo(cornerRectSmall, 0f, 90f)
         }
 
         if (style.bottomLeft) {
-            cornerRect.offsetTo(0f, height - radius * 2)
-            path.arcTo(cornerRect, 90f, 90f)
+            cornerRectLarge.offsetTo(0f, height - radiusLarge * 2)
+            path.arcTo(cornerRectLarge, 90f, 90f)
+        } else {
+            cornerRectSmall.offsetTo(0f, height - radiusSmall * 2)
+            path.arcTo(cornerRectSmall, 90f, 90f)
         }
 
         path.close()

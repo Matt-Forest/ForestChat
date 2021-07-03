@@ -21,7 +21,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="16dp"
+    android:paddingHorizontal="@dimen/conversation_item_media_h_padding"
     android:paddingVertical="2dp">
 
     <TextView
@@ -44,8 +44,8 @@
 
     <com.forest.forestchat.ui.common.avatar.AvatarView
         android:id="@+id/avatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/conversation_item_media_recipient_avatar"
+        android:layout_height="@dimen/conversation_item_media_recipient_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name" />
 
@@ -67,10 +67,11 @@
 
     <TableLayout
         android:id="@+id/medias"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginStart="@dimen/conversation_item_media_recipient_margin_start"
+        android:layout_marginEnd="@dimen/conversation_item_media_recipient_margin_end"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/name" />
 

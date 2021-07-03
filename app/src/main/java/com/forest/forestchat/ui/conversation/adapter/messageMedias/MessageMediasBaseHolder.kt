@@ -32,28 +32,31 @@ import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.common.media.MediaView
 
-abstract class MessageMediasBaseHolder <T>(
+abstract class MessageMediasBaseHolder<T>(
     parent: ViewGroup,
     @LayoutRes layoutRes: Int
 ) : BaseHolder<T>(parent, layoutRes) {
 
-    protected fun setMedias(tableMedias: TableLayout, medias: List<Media>) {
-        val maxItemByRow = 3
+    protected fun setMedias(tableMedias: TableLayout, medias: List<Media>, tableWidth: Float) {
         val isAlone = medias.size == 1
-        val isOnOneRow = medias.size <= maxItemByRow
+        val isOnOneRow = medias.size <= 3
 
         val mediasView = medias.mapIndexed { index, media ->
             when {
                 isAlone -> toMediaViewAlone(media)
-                isOnOneRow -> toMediaViewOnOneRow(index, media)
+                isOnOneRow -> toMediaViewOnOneRow(index, media, medias.size == 3)
                 else -> toMediaView(index, medias.size, media)
             }
         }
 
-        setMediasInTable(tableMedias, mediasView)
+        setMediasInTable(tableMedias, mediasView, tableWidth)
     }
 
-    private fun setMediasInTable(tableMedias: TableLayout, mediasView: List<MediaView>) {
+    private fun setMediasInTable(
+        tableMedias: TableLayout,
+        mediasView: List<MediaView>,
+        tableWidth: Float
+    ) {
         tableMedias.removeAllViews()
         mediasView.chunked(3).forEach { mediasRow ->
             val rowView = TableRow(context)
@@ -64,9 +67,9 @@ abstract class MessageMediasBaseHolder <T>(
             rowView.layoutParams = lp
             mediasRow.forEach { mediaView ->
                 rowView.addView(mediaView)
-                mediaView.setSize()
+                mediaView.setSize(tableWidth, mediasRow.size)
             }
-
+            rowView.setPadding(0, 1.dp, 0, 1.dp)
             tableMedias.addView(rowView)
         }
     }
@@ -74,10 +77,16 @@ abstract class MessageMediasBaseHolder <T>(
     private fun toMediaViewAlone(media: Media): MediaView =
         buildMediaView(MediaView.RoundedStyle.Alone, media)
 
-    private fun toMediaViewOnOneRow(index: Int, media: Media): MediaView =
+    private fun toMediaViewOnOneRow(index: Int, media: Media, rowIsFull: Boolean): MediaView =
         when (index) {
             0 -> buildMediaView(MediaView.RoundedStyle.Left, media)
-            1 -> buildMediaView(MediaView.RoundedStyle.Middle, media)
+            1 -> buildMediaView(
+                when (rowIsFull) {
+                    true -> MediaView.RoundedStyle.Middle
+                    false -> MediaView.RoundedStyle.Right
+                },
+                media
+            )
             else -> buildMediaView(MediaView.RoundedStyle.Right, media)
         }
 
@@ -88,23 +97,19 @@ abstract class MessageMediasBaseHolder <T>(
             false -> size % 3
         }
         val isOnLastRow = index > size - numberOfElementOnLastRow - 1
-        val indexOnRow = when (index % 3 == 0) {
-            true -> 3
-            false -> index % 3
-        }
+        val indexOnRow = index % 3
 
         return when {
             isOnFirstRow ->
                 when (indexOnRow) {
-                    1 -> buildMediaView(MediaView.RoundedStyle.TopLeft, media)
-                    2 -> buildMediaView(MediaView.RoundedStyle.Middle, media)
+                    0 -> buildMediaView(MediaView.RoundedStyle.TopLeft, media)
+                    1 -> buildMediaView(MediaView.RoundedStyle.Middle, media)
                     else -> buildMediaView(MediaView.RoundedStyle.TopRight, media)
                 }
-
             isOnLastRow ->
                 when (indexOnRow) {
-                    1 -> buildMediaView(MediaView.RoundedStyle.BottomLeft, media)
-                    2 -> buildMediaView(MediaView.RoundedStyle.Middle, media)
+                    0 -> buildMediaView(MediaView.RoundedStyle.BottomLeft, media)
+                    1 -> buildMediaView(MediaView.RoundedStyle.Middle, media)
                     else -> buildMediaView(MediaView.RoundedStyle.BottomRight, media)
                 }
             else -> buildMediaView(MediaView.RoundedStyle.Middle, media)
@@ -114,26 +119,25 @@ abstract class MessageMediasBaseHolder <T>(
     private fun buildMediaView(
         style: MediaView.RoundedStyle,
         media: Media
-    ): MediaView =
-        MediaView(context).apply {
-            when (media.isGif) {
-                true -> {
-                    val imageLoader = ImageLoader.Builder(context)
-                        .componentRegistry {
-                            if (SDK_INT >= 28) {
-                                add(ImageDecoderDecoder(context))
-                            } else {
-                                add(GifDecoder())
-                            }
+    ): MediaView = MediaView(context).apply {
+        when (media.isGif) {
+            true -> {
+                val imageLoader = ImageLoader.Builder(context)
+                    .componentRegistry {
+                        if (SDK_INT >= 28) {
+                            add(ImageDecoderDecoder(context))
+                        } else {
+                            add(GifDecoder())
                         }
-                        .build()
-                    load(media.uri, imageLoader) {
-                        size(180.dp)
                     }
+                    .build()
+                load(media.uri, imageLoader) {
+                    size(180.dp)
                 }
-                false -> load(media.uri)
             }
-            setStyle(style, media.isVideo)
+            false -> load(media.uri)
         }
+        setStyle(style, media.isVideo)
+    }
 
 }

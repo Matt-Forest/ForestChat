@@ -18,10 +18,14 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient
 
+import android.app.Activity
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientMediaBinding
+import com.forest.forestchat.extensions.asDimen
 import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.conversation.adapter.messageMedias.MessageMediasBaseHolder
@@ -45,12 +49,23 @@ class MessageRecipientMediasHolder(
             item.avatarType?.let { avatar.setAvatar(it) }
             avatar.invisibleIf { item.avatarType == null }
 
-            setMedias(medias, item.medias)
+            setMedias(medias, item.medias, getTableWidth())
 
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }
             }
         }
+    }
+
+    private fun getTableWidth() : Float {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        val screenWidth = displayMetrics.widthPixels.toFloat()
+        val paddingWidth : Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
+        val avatarWidth : Float = R.dimen.conversation_item_media_recipient_avatar.asDimen(context) ?: 0F
+        val marginStart : Float = R.dimen.conversation_item_media_recipient_margin_start.asDimen(context) ?: 0F
+        val marginEnd : Float = R.dimen.conversation_item_media_recipient_margin_end.asDimen(context) ?: 0F
+
+        return screenWidth - paddingWidth * 2 - avatarWidth - marginStart - marginEnd
     }
 
 }
