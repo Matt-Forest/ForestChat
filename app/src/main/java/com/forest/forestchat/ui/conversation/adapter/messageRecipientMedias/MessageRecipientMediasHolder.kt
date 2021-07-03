@@ -28,6 +28,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageRecipientMediaBinding
+import com.forest.forestchat.extensions.dp
 import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
@@ -148,11 +149,13 @@ class MessageRecipientMediasHolder(
                             }
                         }
                         .build()
-                    load(media.uri, imageLoader)
+                    load(media.uri, imageLoader) {
+                        size(180.dp)
+                    }
                 }
                 false -> load(media.uri)
             }
-            setStyle(style, media.isVideo, media.isGif)
+            setStyle(style, media.isVideo)
         }
 
 }

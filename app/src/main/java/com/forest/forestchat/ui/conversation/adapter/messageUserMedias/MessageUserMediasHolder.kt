@@ -28,6 +28,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserMediaBinding
+import com.forest.forestchat.extensions.dp
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.media.Media
@@ -127,7 +128,10 @@ class MessageUserMediasHolder(
         }
     }
 
-    private fun buildMediaView(style: MediaView.RoundedStyle, media: Media): MediaView =
+    private fun buildMediaView(
+        style: MediaView.RoundedStyle,
+        media: Media
+    ): MediaView =
         MediaView(context).apply {
             when (media.isGif) {
                 true -> {
@@ -140,11 +144,13 @@ class MessageUserMediasHolder(
                             }
                         }
                         .build()
-                    load(media.uri, imageLoader)
+                    load(media.uri, imageLoader) {
+                        size(180.dp)
+                    }
                 }
                 false -> load(media.uri)
             }
-            setStyle(style, media.isVideo, media.isGif)
+            setStyle(style, media.isVideo)
         }
 
 }
