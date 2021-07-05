@@ -21,11 +21,15 @@ package com.forest.forestchat.ui.conversation
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
+import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
+import com.forest.forestchat.ui.conversation.dialog.MessageOptionsDialog
 
 class ConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -35,6 +39,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     private val binding: NavigationConversationBinding
 
     lateinit var onMessageEvent: (MessageItemEvent) -> Unit
+    lateinit var optionSelected: (MessageOptionType) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
 
@@ -54,6 +59,11 @@ class ConversationNavigationView @JvmOverloads constructor(
                 ConversationEvent.Loading -> {
 
                 }
+                is ConversationEvent.ShowMessageOptions -> {
+                    MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
+                        .create()
+                        .show()
+                }
                 is ConversationEvent.BaseData -> conversationTitle.text = event.title
                 is ConversationEvent.Data -> {
                     if (recyclerConversation.adapter !== conversationAdapter) {
@@ -62,6 +72,13 @@ class ConversationNavigationView @JvmOverloads constructor(
                     conversationAdapter.apply {
                         setMessages(event.messages, event.recipients, event.subscriptionsInfo)
                     }
+                }
+                is ConversationEvent.ShowMessageDetails -> {
+                    AlertDialog.Builder(context)
+                        .setTitle(R.string.message_details_title)
+                        .setMessage(event.details)
+                        .setCancelable(true)
+                        .show()
                 }
                 else -> null
             }

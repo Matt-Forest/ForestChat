@@ -75,3 +75,7 @@ fun Long.getMessageDate(context: Context): String? {
         false -> getFormatter(context, "MMM d").format(this)
     }
 }
+
+fun Long.getDetailedTimestamp(context: Context): String {
+    return getFormatter(context, "M/d/y, h:mm:ss a").format(this)
+}

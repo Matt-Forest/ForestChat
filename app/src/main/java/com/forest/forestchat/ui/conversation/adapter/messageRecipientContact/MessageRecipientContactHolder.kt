@@ -59,6 +59,10 @@ class MessageRecipientContactHolder(
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }
             }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
+            }
         }
     }
 

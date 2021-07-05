@@ -67,5 +67,20 @@
     <string name="conversation_message_send_hint">Ecrire un message…</string>
 
     <string name="message_card_contact">Carte de contact</string>
+    <string name="message_option_copy">Copier</string>
+    <string name="message_option_details">Détails</string>
+    <string name="message_option_removed">Supprimer</string>
+
+    <string name="message_details_title">Détails du message</string>
+    <string name="message_details_type">Type : %s</string>
+    <string name="message_details_from">De : %s</string>
+    <string name="message_details_to">À : %s</string>
+    <string name="message_details_subject">Objet : %s</string>
+    <string name="message_details_priority">Priorité : %s</string>
+    <string name="message_details_size">Taille : %s</string>
+    <string name="message_details_sent">Envoyé : %s</string>
+    <string name="message_details_received">Reçu : %s</string>
+    <string name="message_details_delivered">Délivré : %s</string>
+    <string name="message_details_error_code">Code erreur : %d</string>
 
 </resources>

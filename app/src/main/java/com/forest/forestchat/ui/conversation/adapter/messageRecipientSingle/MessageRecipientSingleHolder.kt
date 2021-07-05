@@ -26,9 +26,11 @@ import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 class MessageRecipientSingleHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : BaseHolder<MessageRecipientSingleItem>(parent, R.layout.holder_message_recipient_single) {
 
     private val binding = HolderMessageRecipientSingleBinding.bind(itemView)
@@ -46,6 +48,10 @@ class MessageRecipientSingleHolder(
 
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }
+            }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
             }
         }
     }

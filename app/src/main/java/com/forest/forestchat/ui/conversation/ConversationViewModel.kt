@@ -21,6 +21,9 @@ package com.forest.forestchat.ui.conversation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.domain.models.message.MessageType
+import com.forest.forestchat.domain.useCases.DeleteMessageUseCase
 import com.forest.forestchat.domain.useCases.GetMessageByIdUseCase
 import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
 import com.forest.forestchat.domain.useCases.SaveMmsPartUseCase
@@ -28,6 +31,9 @@ import com.forest.forestchat.extensions.getNavigationInput
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
+import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
+import com.forest.forestchat.utils.CopyIntoClipboard
+import com.forest.forestchat.utils.MessageDetailsFormatter
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +48,10 @@ class ConversationViewModel @Inject constructor(
     private val getMessageByIdUseCase: GetMessageByIdUseCase,
     private val subscriptionManagerCompat: SubscriptionManagerCompat,
     private val saveMmsPartUseCase: SaveMmsPartUseCase,
+    private val deleteMessageUseCase: DeleteMessageUseCase,
     private val permissionsManager: PermissionsManager,
+    private val copyIntoClipboard: CopyIntoClipboard,
+    private val messageDetailsFormatter: MessageDetailsFormatter,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -50,25 +59,30 @@ class ConversationViewModel @Inject constructor(
     fun eventSource(): EventSource<ConversationEvent> = eventEmitter
 
     private val conversation = handle.getNavigationInput<ConversationInput>().conversation
+    private var messageSelected: Message? = null
 
     init {
         eventEmitter.emit(ConversationEvent.BaseData(conversation.getTitle()))
         eventEmitter.emit(ConversationEvent.Loading)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val messages = getMessagesByConversationUseCase(conversation.id)
+            updateMessages()
+        }
+    }
 
-            withContext(Dispatchers.Main) {
-                when (messages == null) {
-                    true -> eventEmitter.emit(ConversationEvent.Empty)
-                    false -> eventEmitter.emit(
-                        ConversationEvent.Data(
-                            messages,
-                            conversation.recipients,
-                            subscriptionManagerCompat.activeSubscriptionInfoList
-                        )
+    private suspend fun updateMessages() {
+        val messages = getMessagesByConversationUseCase(conversation.id)
+
+        withContext(Dispatchers.Main) {
+            when (messages == null) {
+                true -> eventEmitter.emit(ConversationEvent.Empty)
+                false -> eventEmitter.emit(
+                    ConversationEvent.Data(
+                        messages,
+                        conversation.recipients,
+                        subscriptionManagerCompat.activeSubscriptionInfoList
                     )
-                }
+                )
             }
         }
     }
@@ -79,6 +93,26 @@ class ConversationViewModel @Inject constructor(
                 event.messageId,
                 event.mmsPartId
             )
+            is MessageItemEvent.MessageSelected -> messageSelected(event.messageId)
+        }
+    }
+
+    fun onMessageOptionSelected(optionSelected: MessageOptionType) {
+        messageSelected?.let { message ->
+            when (optionSelected) {
+                MessageOptionType.Copy -> copyIntoClipboard(message)
+                MessageOptionType.Remove -> {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        deleteMessageUseCase(message.id)
+                        updateMessages()
+                    }
+                }
+                MessageOptionType.Details -> eventEmitter.emit(
+                    ConversationEvent.ShowMessageDetails(
+                        messageDetailsFormatter(message)
+                    )
+                )
+            }
         }
     }
 
@@ -99,6 +133,17 @@ class ConversationViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun messageSelected(messageId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getMessageByIdUseCase(messageId)?.let { message ->
+                messageSelected = message
+                withContext(Dispatchers.Main) {
+                    eventEmitter.emit(ConversationEvent.ShowMessageOptions(message.type == MessageType.Sms))
+                }
+            }
         }
     }
 

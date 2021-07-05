@@ -25,10 +25,12 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserMediaBinding
 import com.forest.forestchat.extensions.asDimen
 import com.forest.forestchat.extensions.visibleIf
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.adapter.messageMedias.MessageMediasBaseHolder
 
 class MessageUserMediasHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : MessageMediasBaseHolder<MessageUserMediasItem>(parent, R.layout.holder_message_user_media) {
 
     private val binding = HolderMessageUserMediaBinding.bind(itemView)
@@ -47,6 +49,10 @@ class MessageUserMediasHolder(
 
             itemView.setOnClickListener {
                 info.container.visibleIf { info.container.isGone }
+            }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
             }
         }
     }

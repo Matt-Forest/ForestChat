@@ -17,5 +17,7 @@ sealed class ConversationEvent {
         val subscriptionsInfo: List<SubscriptionInfo>
     ) : ConversationEvent()
     data class ViewFile(val file: File) : ConversationEvent()
+    data class ShowMessageOptions(val canCopy: Boolean) : ConversationEvent()
+    data class ShowMessageDetails(val details: String) : ConversationEvent()
 
 }

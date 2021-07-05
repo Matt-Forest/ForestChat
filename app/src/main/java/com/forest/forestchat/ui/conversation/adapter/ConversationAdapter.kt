@@ -75,20 +75,20 @@ class ConversationAdapter(
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            ConversationViewTypes.MESSAGE_USER_SINGLE -> MessageUserSingleHolder(parent)
-            ConversationViewTypes.MESSAGE_USER_START -> MessageUserStartHolder(parent)
-            ConversationViewTypes.MESSAGE_USER_END -> MessageUserEndHolder(parent)
-            ConversationViewTypes.MESSAGE_USER_MIDDLE -> MessageUserMiddleHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_SINGLE -> MessageUserSingleHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_USER_START -> MessageUserStartHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_USER_END -> MessageUserEndHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_USER_MIDDLE -> MessageUserMiddleHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_USER_CONTACT -> MessageUserContactHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_USER_FILE -> MessageUserFileHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_USER_MEDIA -> MessageUserMediasHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_MEDIA -> MessageUserMediasHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA -> MessageRecipientMediasHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA -> MessageRecipientMediasHolder(parent, onEvent)
             else -> null
         }
 

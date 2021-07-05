@@ -16,9 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.domain.useCases
 
-sealed class MessageItemEvent {
-    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
-    data class MessageSelected(val messageId: Long) : MessageItemEvent()
+import com.forest.forestchat.localStorage.database.daos.MessageDao
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class DeleteMessageUseCase @Inject constructor(
+    private val messageDao: MessageDao
+) {
+
+    suspend operator fun invoke(id: Long) {
+        messageDao.delete(id)
+    }
+
 }

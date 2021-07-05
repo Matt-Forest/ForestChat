@@ -24,9 +24,11 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserMiddleBinding
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 class MessageUserMiddleHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : BaseHolder<MessageUserMiddleItem>(parent, R.layout.holder_message_user_middle) {
 
     private val binding = HolderMessageUserMiddleBinding.bind(itemView)
@@ -42,6 +44,10 @@ class MessageUserMiddleHolder(
 
             itemView.setOnClickListener {
                 info.container.visibleIf { info.container.isGone }
+            }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
             }
         }
     }

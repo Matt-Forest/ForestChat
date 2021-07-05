@@ -57,6 +57,10 @@ class MessageUserFileHolder(
             itemView.setOnClickListener {
                 info.container.visibleIf { info.container.isGone }
             }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
+            }
         }
     }
 

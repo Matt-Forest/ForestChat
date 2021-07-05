@@ -55,6 +55,7 @@ class ConversationFragment : NavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {
             onMessageEvent = viewModel::onEvent
+            optionSelected = viewModel::onMessageOptionSelected
         }
 
         with(viewModel) {

@@ -18,9 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient
 
-import android.app.Activity
 import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import com.forest.forestchat.R
@@ -28,10 +26,12 @@ import com.forest.forestchat.databinding.HolderMessageRecipientMediaBinding
 import com.forest.forestchat.extensions.asDimen
 import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visibleIf
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.adapter.messageMedias.MessageMediasBaseHolder
 
 class MessageRecipientMediasHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : MessageMediasBaseHolder<MessageRecipientMediasItem>(
     parent,
     R.layout.holder_message_recipient_media
@@ -54,16 +54,23 @@ class MessageRecipientMediasHolder(
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }
             }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
+            }
         }
     }
 
-    private fun getTableWidth() : Float {
+    private fun getTableWidth(): Float {
         val displayMetrics = Resources.getSystem().displayMetrics
         val screenWidth = displayMetrics.widthPixels.toFloat()
-        val paddingWidth : Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
-        val avatarWidth : Float = R.dimen.conversation_item_media_recipient_avatar.asDimen(context) ?: 0F
-        val marginStart : Float = R.dimen.conversation_item_media_recipient_margin_start.asDimen(context) ?: 0F
-        val marginEnd : Float = R.dimen.conversation_item_media_recipient_margin_end.asDimen(context) ?: 0F
+        val paddingWidth: Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
+        val avatarWidth: Float =
+            R.dimen.conversation_item_media_recipient_avatar.asDimen(context) ?: 0F
+        val marginStart: Float =
+            R.dimen.conversation_item_media_recipient_margin_start.asDimen(context) ?: 0F
+        val marginEnd: Float =
+            R.dimen.conversation_item_media_recipient_margin_end.asDimen(context) ?: 0F
 
         return screenWidth - paddingWidth * 2 - avatarWidth - marginStart - marginEnd
     }

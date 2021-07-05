@@ -25,9 +25,11 @@ import com.forest.forestchat.databinding.HolderMessageRecipientEndBinding
 import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 class MessageRecipientEndHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : BaseHolder<MessageRecipientEndItem>(parent, R.layout.holder_message_recipient_end) {
 
     private val binding = HolderMessageRecipientEndBinding.bind(itemView)
@@ -39,6 +41,10 @@ class MessageRecipientEndHolder(
 
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }
+            }
+            itemView.setOnLongClickListener {
+                onEvent(MessageItemEvent.MessageSelected(item.messageId))
+                true
             }
         }
     }
