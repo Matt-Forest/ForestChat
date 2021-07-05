@@ -23,6 +23,7 @@ import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserFileItem(
     val messageId: Long,
+    val partId: Long,
     val name: String,
     val size: String,
     val hours: String,

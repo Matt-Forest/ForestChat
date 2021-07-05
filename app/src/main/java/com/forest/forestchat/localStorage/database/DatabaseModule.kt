@@ -20,7 +20,6 @@ package com.forest.forestchat.localStorage.database
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.migration.Migration
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,8 +38,16 @@ class DatabaseModule {
             .build()
     }
 
-    @Singleton @Provides fun provideMessageDao(database: Database) = database.messageDao()
-    @Singleton @Provides fun provideContactDao(database: Database) = database.contactDao()
-    @Singleton @Provides fun provideConversationDao(database: Database) = database.conversationDao()
+    @Singleton
+    @Provides
+    fun provideMessageDao(database: Database) = database.messageDao()
+
+    @Singleton
+    @Provides
+    fun provideContactDao(database: Database) = database.contactDao()
+
+    @Singleton
+    @Provides
+    fun provideConversationDao(database: Database) = database.conversationDao()
 
 }

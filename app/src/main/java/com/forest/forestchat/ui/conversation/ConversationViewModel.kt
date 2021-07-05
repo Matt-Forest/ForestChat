@@ -21,9 +21,13 @@ package com.forest.forestchat.ui.conversation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forest.forestchat.domain.useCases.GetMessageByIdUseCase
 import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
+import com.forest.forestchat.domain.useCases.SaveMmsPartUseCase
 import com.forest.forestchat.extensions.getNavigationInput
+import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +39,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
     private val getMessagesByConversationUseCase: GetMessagesByConversationUseCase,
+    private val getMessageByIdUseCase: GetMessageByIdUseCase,
     private val subscriptionManagerCompat: SubscriptionManagerCompat,
+    private val saveMmsPartUseCase: SaveMmsPartUseCase,
+    private val permissionsManager: PermissionsManager,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -63,6 +70,35 @@ class ConversationViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun onEvent(event: MessageItemEvent) {
+        when (event) {
+            is MessageItemEvent.AttachmentSelected -> attachmentSelected(
+                event.messageId,
+                event.mmsPartId
+            )
+        }
+    }
+
+    private fun attachmentSelected(messageId: Long, partId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getMessageByIdUseCase(messageId)?.mms?.parts?.firstOrNull { it.id == partId }
+                ?.let { mmsPart ->
+                    if (!mmsPart.isMedia()) {
+                        withContext(Dispatchers.Main) {
+                            when (permissionsManager.hasStorage()) {
+                                true -> saveMmsPartUseCase(mmsPart)?.let {
+                                    eventEmitter.emit(
+                                        ConversationEvent.ViewFile(it)
+                                    )
+                                }
+                                false -> eventEmitter.emit(ConversationEvent.RequestStoragePermission)
+                            }
+                        }
+                    }
+                }
         }
     }
 

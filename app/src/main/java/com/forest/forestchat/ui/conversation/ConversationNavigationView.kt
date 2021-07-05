@@ -25,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 class ConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -33,7 +34,9 @@ class ConversationNavigationView @JvmOverloads constructor(
 
     private val binding: NavigationConversationBinding
 
-    private var conversationAdapter = ConversationAdapter(context)
+    lateinit var onMessageEvent: (MessageItemEvent) -> Unit
+
+    private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -60,6 +63,7 @@ class ConversationNavigationView @JvmOverloads constructor(
                         setMessages(event.messages, event.recipients, event.subscriptionsInfo)
                     }
                 }
+                else -> null
             }
         }
     }

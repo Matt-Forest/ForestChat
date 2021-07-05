@@ -26,9 +26,11 @@ import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 class MessageRecipientContactHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : BaseHolder<MessageRecipientContactItem>(parent, R.layout.holder_message_recipient_contact) {
 
     private val binding = HolderMessageRecipientContactBinding.bind(itemView)
@@ -44,6 +46,15 @@ class MessageRecipientContactHolder(
             name.visibleIf { item.name != null }
             item.avatarType?.let { avatar.setAvatar(it) }
             avatar.invisibleIf { item.avatarType == null }
+
+            card.setOnClickListener {
+                onEvent(
+                    MessageItemEvent.AttachmentSelected(
+                        item.messageId,
+                        item.partId
+                    )
+                )
+            }
 
             itemView.setOnClickListener {
                 info.visibleIf { info.isGone }

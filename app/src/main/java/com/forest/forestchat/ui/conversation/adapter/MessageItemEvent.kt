@@ -16,25 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter.messageRecipientContact
+package com.forest.forestchat.ui.conversation.adapter
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.common.avatar.AvatarType
-import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
-
-class MessageRecipientContactItem(
-    val messageId: Long,
-    val partId: Long,
-    val contactName: String,
-    val avatarType: AvatarType.Single?,
-    val name: String?,
-    val hours: String,
-    val date: String?
-) : BaseAdapterItem() {
-
-    override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT
-
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
-        oldItem is MessageRecipientContactItem && oldItem.messageId == messageId
-
+sealed class MessageItemEvent {
+    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
 }

@@ -18,8 +18,15 @@
  */
 package com.forest.forestchat.ui.conversation
 
+import android.Manifest
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.MimeTypeMap
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
@@ -27,6 +34,7 @@ import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 class ConversationFragment : NavigationFragment() {
 
@@ -35,6 +43,9 @@ class ConversationFragment : NavigationFragment() {
     private val navigationView: ConversationNavigationView
         get() = view as ConversationNavigationView
 
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
     override fun buildNavigationView(): View = ConversationNavigationView(requireContext())
 
     override fun getStatusBarBgColor(): Int = R.color.background
@@ -42,8 +53,17 @@ class ConversationFragment : NavigationFragment() {
     override fun getNavigationBarBgColor(): Int = R.color.background
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(navigationView) {
+            onMessageEvent = viewModel::onEvent
+        }
+
         with(viewModel) {
             eventSource().observe(viewLifecycleOwner) { event ->
+                when (event) {
+                    ConversationEvent.RequestStoragePermission -> requestStoragePermission()
+                    is ConversationEvent.ViewFile -> viewFile(event.file)
+                    else -> null
+                }
                 navigationView.event(event)
             }
         }
@@ -53,6 +73,39 @@ class ConversationFragment : NavigationFragment() {
     @Suppress("unused")
     fun onMessageEvent(event: TransversalBusEvent) {
         // TODO
+    }
+
+    private fun requestStoragePermission() {
+        activity?.let {
+            ActivityCompat.requestPermissions(
+                it,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                0
+            )
+        }
+    }
+
+    private fun viewFile(file: File) {
+        context?.let {
+            val data = FileProvider.getUriForFile(it, "${it.packageName}.fileprovider", file)
+            val type =
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.name.split(".").last())
+            val intent = Intent(Intent.ACTION_VIEW)
+                .setDataAndType(data, type)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            startActivityExternal(intent)
+        }
+    }
+
+    private fun startActivityExternal(intent: Intent) {
+        activity?.let { fActivity ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                resultLauncher.launch(intent)
+            } else {
+                fActivity.startActivity(intent)
+            }
+        }
     }
 
 }

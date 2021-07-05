@@ -24,6 +24,7 @@ import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageRecipientFileItem(
     val messageId: Long,
+    val partId: Long,
     val fileName: String,
     val size: String,
     val hours: String,

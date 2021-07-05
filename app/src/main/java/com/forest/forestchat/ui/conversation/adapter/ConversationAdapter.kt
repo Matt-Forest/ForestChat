@@ -69,7 +69,8 @@ import com.forest.forestchat.ui.conversation.adapter.messageUserStart.MessageUse
 import ezvcard.Ezvcard
 
 class ConversationAdapter(
-    val context: Context
+    val context: Context,
+    private val onEvent: (MessageItemEvent) -> Unit
 ) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
@@ -78,15 +79,15 @@ class ConversationAdapter(
             ConversationViewTypes.MESSAGE_USER_START -> MessageUserStartHolder(parent)
             ConversationViewTypes.MESSAGE_USER_END -> MessageUserEndHolder(parent)
             ConversationViewTypes.MESSAGE_USER_MIDDLE -> MessageUserMiddleHolder(parent)
-            ConversationViewTypes.MESSAGE_USER_CONTACT -> MessageUserContactHolder(parent)
-            ConversationViewTypes.MESSAGE_USER_FILE -> MessageUserFileHolder(parent)
+            ConversationViewTypes.MESSAGE_USER_CONTACT -> MessageUserContactHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_USER_FILE -> MessageUserFileHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_USER_MEDIA -> MessageUserMediasHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent)
             ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(parent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(parent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA -> MessageRecipientMediasHolder(parent)
             else -> null
         }
@@ -394,6 +395,7 @@ class ConversationAdapter(
                         when (message.isUser()) {
                             true -> MessageUserContactItem(
                                 messageId = message.id,
+                                partId = part.id,
                                 contactName = card.formattedName.value,
                                 hours = message.date.getMessageHours(context),
                                 sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
@@ -401,6 +403,7 @@ class ConversationAdapter(
                             )
                             false -> MessageRecipientContactItem(
                                 messageId = message.id,
+                                partId = part.id,
                                 contactName = card.formattedName.value,
                                 hours = message.date.getMessageHours(context),
                                 name = buildRecipientName(recipient, nextIsSameSender),
@@ -441,6 +444,7 @@ class ConversationAdapter(
                     when (message.isUser()) {
                         true -> MessageUserFileItem(
                             messageId = message.id,
+                            partId = part.id,
                             name = part.name ?: "",
                             size = size,
                             hours = message.date.getMessageHours(context),
@@ -449,6 +453,7 @@ class ConversationAdapter(
                         )
                         false -> MessageRecipientFileItem(
                             messageId = message.id,
+                            partId = part.id,
                             fileName = part.name ?: "",
                             size = size,
                             hours = message.date.getMessageHours(context),
