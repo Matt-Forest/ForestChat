@@ -25,6 +25,7 @@ class MessageUserEndItem(
     val messageId: Long,
     val message: String,
     val hours: String,
+    val sim: Int?,
 ) : BaseAdapterItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_END

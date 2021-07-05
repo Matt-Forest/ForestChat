@@ -26,6 +26,7 @@ class MessageUserMediasItem(
     messageId: Long,
     medias: List<Media>,
     hours: String,
+    val sim: Int?,
     date: String?
 ) : MessageMediasBaseItem(messageId, medias, hours, date) {
 

@@ -57,7 +57,7 @@ class ConversationNavigationView @JvmOverloads constructor(
                         recyclerConversation.adapter = conversationAdapter
                     }
                     conversationAdapter.apply {
-                        setMessages(event.messages, event.recipients)
+                        setMessages(event.messages, event.recipients, event.subscriptionsInfo)
                     }
                 }
             }

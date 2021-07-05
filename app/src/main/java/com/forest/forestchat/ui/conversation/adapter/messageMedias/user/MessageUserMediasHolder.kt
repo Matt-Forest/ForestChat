@@ -37,21 +37,26 @@ class MessageUserMediasHolder(
         with(binding) {
             date.text = item.date
             date.visibleIf { item.date != null }
-            info.text = item.hours
+
+            info.hours.text = item.hours
+            info.sim.text = item.sim.toString()
+            info.sim.visibleIf { item.sim != null }
+            info.simCard.visibleIf { item.sim != null }
 
             setMedias(medias, item.medias, getTableWidth())
 
             itemView.setOnClickListener {
-                info.visibleIf { info.isGone }
+                info.container.visibleIf { info.container.isGone }
             }
         }
     }
 
-    private fun getTableWidth() : Float {
+    private fun getTableWidth(): Float {
         val displayMetrics = Resources.getSystem().displayMetrics
         val screenWidth = displayMetrics.widthPixels.toFloat()
-        val paddingWidth : Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
-        val marginStart : Float = R.dimen.conversation_item_media_user_margin_start.asDimen(context) ?: 0F
+        val paddingWidth: Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
+        val marginStart: Float =
+            R.dimen.conversation_item_media_user_margin_start.asDimen(context) ?: 0F
 
         return screenWidth - paddingWidth * 2 - marginStart
     }

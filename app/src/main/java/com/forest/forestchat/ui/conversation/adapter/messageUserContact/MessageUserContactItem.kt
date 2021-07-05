@@ -19,13 +19,13 @@
 package com.forest.forestchat.ui.conversation.adapter.messageUserContact
 
 import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
-import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserContactItem(
     val messageId: Long,
     val contactName: String,
     val hours: String,
+    val sim: Int?,
     val date: String?
 ) : BaseAdapterItem() {
 

@@ -35,12 +35,16 @@ class MessageUserFileHolder(
         with(binding) {
             date.text = item.date
             date.visibleIf { item.date != null }
-            info.text = item.hours
             name.text = item.name
             label.text = item.size
 
+            info.hours.text = item.hours
+            info.sim.text = item.sim.toString()
+            info.sim.visibleIf { item.sim != null }
+            info.simCard.visibleIf { item.sim != null }
+
             itemView.setOnClickListener {
-                info.visibleIf { info.isGone }
+                info.container.visibleIf { info.container.isGone }
             }
         }
     }

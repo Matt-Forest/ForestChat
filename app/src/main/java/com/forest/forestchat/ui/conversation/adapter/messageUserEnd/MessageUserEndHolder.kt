@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserEndBinding
-import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
@@ -35,10 +34,14 @@ class MessageUserEndHolder(
     override fun bind(item: MessageUserEndItem) {
         with(binding) {
             message.text = item.message
-            info.text = item.hours
+
+            info.hours.text = item.hours
+            info.sim.text = item.sim.toString()
+            info.sim.visibleIf { item.sim != null }
+            info.simCard.visibleIf { item.sim != null }
 
             itemView.setOnClickListener {
-                info.visibleIf { info.isGone }
+                info.container.visibleIf { info.container.isGone }
             }
         }
     }

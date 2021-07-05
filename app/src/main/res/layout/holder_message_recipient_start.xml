@@ -85,7 +85,7 @@
 
     <TextView
         android:id="@+id/info"
-        style="@style/Typography.Overline2"
+        style="@style/Typography.Overline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

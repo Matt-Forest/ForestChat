@@ -19,37 +19,44 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="2dp"
-    android:paddingHorizontal="72dp">
+    android:layout_marginTop="2dp"
+    android:paddingHorizontal="10dp">
+
+    <ImageView
+        android:id="@+id/simCard"
+        android:layout_width="14dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_info_file"
+        app:layout_constraintBottom_toBottomOf="@id/sim"
+        app:layout_constraintEnd_toStartOf="@id/sim"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_50" />
 
     <TextView
-        android:id="@+id/message"
-        style="@style/Typography.Caption"
+        android:id="@+id/sim"
+        style="@style/Typography.Overline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_bubble_corner_top_left"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="8dp"
-        android:textColor="@color/text"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/text_50"
+        app:layout_constraintEnd_toStartOf="@id/hours"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem" />
+        tools:ignore="RtlSymmetry"
+        tools:text="1" />
 
     <TextView
-        android:id="@+id/info"
+        android:id="@+id/hours"
         style="@style/Typography.Overline"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="10dp"
         android:maxLines="1"
-        android:paddingHorizontal="10dp"
         android:textColor="@color/text_50"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/message"
-        tools:text="@tools:sample/date/ddmmyy"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

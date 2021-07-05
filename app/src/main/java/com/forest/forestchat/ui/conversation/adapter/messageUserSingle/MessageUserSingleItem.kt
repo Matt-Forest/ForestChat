@@ -25,6 +25,7 @@ class MessageUserSingleItem(
     val messageId: Long,
     val message: String,
     val hours: String,
+    val sim: Int?,
     val date: String?
 ) : BaseAdapterItem() {
 

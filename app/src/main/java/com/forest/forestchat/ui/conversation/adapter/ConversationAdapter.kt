@@ -21,6 +21,7 @@ package com.forest.forestchat.ui.conversation.adapter
 import android.content.Context
 import android.graphics.Typeface
 import android.telephony.PhoneNumberUtils
+import android.telephony.SubscriptionInfo
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
@@ -37,14 +38,16 @@ import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 import com.forest.forestchat.ui.common.media.Media
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasHolder
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasItem
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasHolder
+import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientContact.MessageRecipientContactHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientContact.MessageRecipientContactItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.MessageRecipientEndHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientEnd.MessageRecipientEndItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientFile.MessageRecipientFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientFile.MessageRecipientFileItem
-import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasHolder
-import com.forest.forestchat.ui.conversation.adapter.messageMedias.recipient.MessageRecipientMediasItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientMiddle.MessageRecipientMiddleItem
 import com.forest.forestchat.ui.conversation.adapter.messageRecipientSingle.MessageRecipientSingleHolder
@@ -57,8 +60,6 @@ import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserE
 import com.forest.forestchat.ui.conversation.adapter.messageUserEnd.MessageUserEndItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserFile.MessageUserFileHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserFile.MessageUserFileItem
-import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasHolder
-import com.forest.forestchat.ui.conversation.adapter.messageMedias.user.MessageUserMediasItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.messageUserMiddle.MessageUserMiddleItem
 import com.forest.forestchat.ui.conversation.adapter.messageUserSingle.MessageUserSingleHolder
@@ -90,7 +91,11 @@ class ConversationAdapter(
             else -> null
         }
 
-    fun setMessages(messages: List<Message>, recipients: List<Recipient>) {
+    fun setMessages(
+        messages: List<Message>,
+        recipients: List<Recipient>,
+        subsInfo: List<SubscriptionInfo>
+    ) {
         val items = mutableListOf<BaseAdapterItem>()
 
         messages.forEachIndexed { index, message ->
@@ -125,12 +130,19 @@ class ConversationAdapter(
                     previousIsSameSenderAndDate,
                     nextIsSameSenderAndDate,
                     recipient,
-                    showDate
+                    showDate,
+                    subsInfo
                 ).let { item ->
                     items.add(item)
                 }
                 MessageType.Mms -> {
-                    messageMms(message, recipient, showDate, previousIsSameSenderAndDate).let { items.addAll(it) }
+                    messageMms(
+                        message,
+                        recipient,
+                        showDate,
+                        previousIsSameSenderAndDate,
+                        subsInfo
+                    ).let { items.addAll(it) }
                 }
                 MessageType.Unknown -> null
             }
@@ -145,6 +157,7 @@ class ConversationAdapter(
         nextIsSameSender: Boolean,
         recipient: Recipient?,
         showDate: Boolean,
+        subs: List<SubscriptionInfo>
     ): BaseAdapterItem {
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
@@ -157,7 +170,8 @@ class ConversationAdapter(
                     true -> MessageUserMiddleItem(
                         messageId = message.id,
                         message = message.getText(),
-                        hours = message.date.getMessageHours(context)
+                        hours = message.date.getMessageHours(context),
+                        sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                     )
                     false -> MessageRecipientMiddleItem(
                         messageId = message.id,
@@ -171,6 +185,7 @@ class ConversationAdapter(
                         messageId = message.id,
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
+                        sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                         date = messageDate
                     )
                     false -> MessageRecipientStartItem(
@@ -187,7 +202,8 @@ class ConversationAdapter(
                     true -> MessageUserEndItem(
                         messageId = message.id,
                         message = message.getText(),
-                        hours = message.date.getMessageHours(context)
+                        hours = message.date.getMessageHours(context),
+                        sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                     )
                     false -> MessageRecipientEndItem(
                         messageId = message.id,
@@ -201,6 +217,7 @@ class ConversationAdapter(
                         messageId = message.id,
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
+                        sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                         date = messageDate
                     )
                     false -> MessageRecipientSingleItem(
@@ -220,20 +237,43 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         nextIsSameSenderAndDate: Boolean,
+        subs: List<SubscriptionInfo>
     ): List<BaseAdapterItem> {
         val items = mutableListOf<BaseAdapterItem>()
 
         // If there are Text in parts
-        mmsPartText(message, recipient, showDate, nextIsSameSenderAndDate)?.let { items.add(it) }
+        mmsPartText(
+            message,
+            recipient,
+            showDate,
+            nextIsSameSenderAndDate,
+            subs
+        )?.let { items.add(it) }
 
         // If there are Media (Image and video) in parts
-        mmsPartMedia(message, recipient, showDate, nextIsSameSenderAndDate)?.let { items.add(it) }
+        mmsPartMedia(message, recipient, showDate, nextIsSameSenderAndDate, subs)?.let {
+            items.add(
+                it
+            )
+        }
 
         // If there are Contact card in parts
-        mmsPartContactCard(message, recipient, showDate, nextIsSameSenderAndDate)?.let { items.addAll(it) }
+        mmsPartContactCard(
+            message,
+            recipient,
+            showDate,
+            nextIsSameSenderAndDate,
+            subs
+        )?.let { items.addAll(it) }
 
         // If there are Files in parts
-        mmsPartFile(message, recipient, showDate, nextIsSameSenderAndDate)?.let { items.addAll(it) }
+        mmsPartFile(
+            message,
+            recipient,
+            showDate,
+            nextIsSameSenderAndDate,
+            subs
+        )?.let { items.addAll(it) }
 
         return items
     }
@@ -243,6 +283,7 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         nextIsSameSender: Boolean,
+        subs: List<SubscriptionInfo>
     ): BaseAdapterItem? = message.mms?.getPartsText()?.ifEmpty { null }?.let { textParts ->
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
@@ -272,6 +313,7 @@ class ConversationAdapter(
                 messageId = message.id,
                 message = text,
                 hours = message.date.getMessageHours(context),
+                sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                 date = messageDate
             )
             false -> MessageRecipientSingleItem(
@@ -290,6 +332,7 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         nextIsSameSender: Boolean,
+        subs: List<SubscriptionInfo>
     ): BaseAdapterItem? {
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
@@ -300,13 +343,26 @@ class ConversationAdapter(
             when (message.isUser()) {
                 true -> MessageUserMediasItem(
                     messageId = message.id,
-                    medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo(), part.isGif()) },
+                    medias = mediaParts.map { part ->
+                        Media(
+                            part.getUri(),
+                            part.isVideo(),
+                            part.isGif()
+                        )
+                    },
                     hours = message.date.getMessageHours(context),
+                    sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                     date = messageDate
                 )
                 false -> MessageRecipientMediasItem(
                     messageId = message.id,
-                    medias = mediaParts.map { part -> Media(part.getUri(), part.isVideo(), part.isGif()) },
+                    medias = mediaParts.map { part ->
+                        Media(
+                            part.getUri(),
+                            part.isVideo(),
+                            part.isGif()
+                        )
+                    },
                     hours = message.date.getMessageHours(context),
                     name = buildRecipientName(recipient, nextIsSameSender),
                     avatarType = buildAvatar(recipient, nextIsSameSender),
@@ -321,6 +377,7 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         nextIsSameSender: Boolean,
+        subs: List<SubscriptionInfo>
     ): List<BaseAdapterItem>? =
         message.mms?.getPartsContactCard()?.ifEmpty { null }?.let { contactCardParts ->
             val items = mutableListOf<BaseAdapterItem>()
@@ -339,6 +396,7 @@ class ConversationAdapter(
                                 messageId = message.id,
                                 contactName = card.formattedName.value,
                                 hours = message.date.getMessageHours(context),
+                                sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                                 date = messageDate
                             )
                             false -> MessageRecipientContactItem(
@@ -362,6 +420,7 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         nextIsSameSender: Boolean,
+        subs: List<SubscriptionInfo>
     ): List<BaseAdapterItem>? = message.mms?.getPartsOther()?.ifEmpty { null }?.let { fileParts ->
         val items = mutableListOf<BaseAdapterItem>()
 
@@ -385,6 +444,7 @@ class ConversationAdapter(
                             name = part.name ?: "",
                             size = size,
                             hours = message.date.getMessageHours(context),
+                            sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
                             date = messageDate
                         )
                         false -> MessageRecipientFileItem(
@@ -418,5 +478,10 @@ class ConversationAdapter(
             true -> null
             false -> buildSingleAvatar(recipient?.contact, false)
         }
+
+    private fun getSimSlot(subs: List<SubscriptionInfo>, subId: Int): Int? {
+        val subscription = subs.find { sub -> sub.subscriptionId == subId }
+        return subscription?.simSlotIndex?.plus(1)
+    }
 
 }

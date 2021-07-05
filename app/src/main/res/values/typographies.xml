@@ -63,11 +63,4 @@
         <item name="android:letterSpacing">0.0938</item>
     </style>
 
-    <style name="Typography.Overline2">
-        <item name="fontFamily">@font/mulish_regular</item>
-        <item name="android:textSize">8sp</item>
-        <item name="lineHeight">10.6sp</item>
-        <item name="android:letterSpacing">0.0312</item>
-    </style>
-
 </resources>

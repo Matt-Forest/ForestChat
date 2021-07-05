@@ -57,22 +57,18 @@
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@tools:sample/lorem" />
 
-    <TextView
+    <include
         android:id="@+id/info"
-        style="@style/Typography.Overline2"
+        layout="@layout/message_user_information"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
         android:layout_marginTop="2dp"
-        android:maxLines="1"
         android:paddingHorizontal="10dp"
-        android:textColor="@color/text_50"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/message"
-        tools:text="@tools:sample/date/ddmmyy"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

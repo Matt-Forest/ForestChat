@@ -36,12 +36,16 @@ class MessageUserContactHolder(
         with(binding) {
             date.text = item.date
             date.visibleIf { item.date != null }
-            info.text = item.hours
             avatar.setAvatar(AvatarType.Single.Profile)
             name.text = item.contactName
 
+            info.hours.text = item.hours
+            info.sim.text = item.sim.toString()
+            info.sim.visibleIf { item.sim != null }
+            info.simCard.visibleIf { item.sim != null }
+
             itemView.setOnClickListener {
-                info.visibleIf { info.isGone }
+                info.container.visibleIf { info.container.isGone }
             }
         }
     }

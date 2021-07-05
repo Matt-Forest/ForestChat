@@ -26,6 +26,7 @@ class MessageUserFileItem(
     val name: String,
     val size: String,
     val hours: String,
+    val sim: Int?,
     val date: String?
 ) : BaseAdapterItem() {
 
