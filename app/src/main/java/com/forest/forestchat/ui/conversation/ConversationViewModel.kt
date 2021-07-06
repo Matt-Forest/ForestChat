@@ -23,10 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
-import com.forest.forestchat.domain.useCases.DeleteMessageUseCase
-import com.forest.forestchat.domain.useCases.GetMessageByIdUseCase
-import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
-import com.forest.forestchat.domain.useCases.SaveMmsPartUseCase
+import com.forest.forestchat.domain.useCases.*
 import com.forest.forestchat.extensions.getNavigationInput
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
@@ -49,6 +46,7 @@ class ConversationViewModel @Inject constructor(
     private val subscriptionManagerCompat: SubscriptionManagerCompat,
     private val saveMmsPartUseCase: SaveMmsPartUseCase,
     private val deleteMessageUseCase: DeleteMessageUseCase,
+    private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
     private val permissionsManager: PermissionsManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
@@ -104,6 +102,7 @@ class ConversationViewModel @Inject constructor(
                 MessageOptionType.Remove -> {
                     viewModelScope.launch(Dispatchers.IO) {
                         deleteMessageUseCase(message.id)
+                        updateLastMessageConversationUseCase(conversation)
                         updateMessages()
                     }
                 }
