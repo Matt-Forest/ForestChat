@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.extensions
 
-sealed class MessageItemEvent {
-    // Attachment is for file and contact card.
-    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
-    data class MessageSelected(val messageId: Long) : MessageItemEvent()
-    // Media is for image and video.
-    data class MediaSelected(val partId: Long) : MessageItemEvent()
-}
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+
+
+inline fun <reified T> ViewGroup.getNavigationInput(): T =
+    (findFragment() as Fragment).arguments?.get("input") as T
+        ?: error("input must be defined in navigation graph")

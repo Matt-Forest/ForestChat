@@ -18,14 +18,14 @@
  */
 package com.forest.forestchat.ui.conversations.adapter.nativeAd
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
 
-class NativeAdItem : BaseAdapterItem() {
+class NativeAdItem : BaseItem() {
 
     override fun getViewType(): Int = HomeConversationViewTypes.NATIVE_AD
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is NativeAdItem
 
 }

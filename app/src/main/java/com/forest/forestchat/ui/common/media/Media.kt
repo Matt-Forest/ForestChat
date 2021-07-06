@@ -19,9 +19,13 @@
 package com.forest.forestchat.ui.common.media
 
 import android.net.Uri
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Media(
+    val mediaId: Long,
     val uri: Uri,
     val isVideo: Boolean,
     val isGif: Boolean
-)
+) : Parcelable

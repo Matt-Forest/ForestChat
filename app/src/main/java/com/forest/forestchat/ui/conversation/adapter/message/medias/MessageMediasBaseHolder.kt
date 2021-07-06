@@ -18,22 +18,22 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.medias
 
-import android.os.Build.VERSION.SDK_INT
 import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.annotation.LayoutRes
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.load
+import com.forest.forestchat.extensions.ImageSignatureKeys
 import com.forest.forestchat.extensions.dp
+import com.forest.forestchat.extensions.loadUri
+import com.forest.forestchat.extensions.loadUriGif
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.common.media.MediaView
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 
 abstract class MessageMediasBaseHolder<T>(
     parent: ViewGroup,
+    private val onEvent: (MessageItemEvent) -> Unit,
     @LayoutRes layoutRes: Int
 ) : BaseHolder<T>(parent, layoutRes) {
 
@@ -121,23 +121,12 @@ abstract class MessageMediasBaseHolder<T>(
         media: Media
     ): MediaView = MediaView(context).apply {
         when (media.isGif) {
-            true -> {
-                val imageLoader = ImageLoader.Builder(context)
-                    .componentRegistry {
-                        if (SDK_INT >= 28) {
-                            add(ImageDecoderDecoder(context))
-                        } else {
-                            add(GifDecoder())
-                        }
-                    }
-                    .build()
-                load(media.uri, imageLoader) {
-                    size(180.dp)
-                }
-            }
-            false -> load(media.uri)
+            true -> loadUriGif(media.uri, 180.dp, ImageSignatureKeys.Conversation.Message)
+            false -> loadUri(media.uri, ImageSignatureKeys.Conversation.Message)
         }
         setStyle(style, media.isVideo)
+
+        setOnClickListener { onEvent(MessageItemEvent.MediaSelected(media.mediaId)) }
     }
 
 }

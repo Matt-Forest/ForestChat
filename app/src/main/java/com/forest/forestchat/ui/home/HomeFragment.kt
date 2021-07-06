@@ -106,7 +106,7 @@ class HomeFragment : NavigationFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
-    fun onMessageEvent(event: TransversalBusEvent) {
+    fun onTransversalEvent(event: TransversalBusEvent) {
         when (event) {
             is TransversalBusEvent.DefaultSmsChangedEvent -> homeConversationsViewModel.onDefaultSmsChange(
                 event

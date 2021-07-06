@@ -30,6 +30,7 @@ import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionsDialog
+import com.forest.forestchat.ui.gallery.GalleryInput
 
 class ConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -54,10 +55,10 @@ class ConversationNavigationView @JvmOverloads constructor(
         with(binding) {
             when (event) {
                 ConversationEvent.Empty -> {
-
+                    // TODO
                 }
                 ConversationEvent.Loading -> {
-
+                    // TODO
                 }
                 is ConversationEvent.ShowMessageOptions -> {
                     MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
@@ -79,6 +80,10 @@ class ConversationNavigationView @JvmOverloads constructor(
                         .setMessage(event.details)
                         .setCancelable(true)
                         .show()
+                }
+                is ConversationEvent.ShowGallery -> {
+                    val input = GalleryInput(event.medias, event.mediaSelected)
+                    findNavController().navigate(ConversationFragmentDirections.goToGallery(input))
                 }
                 else -> null
             }

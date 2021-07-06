@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.start.recipient
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
@@ -29,11 +29,11 @@ class MessageRecipientStartItem(
     val name: String?,
     val avatarType: AvatarType.Single?,
     val date: String?
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_START
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageRecipientStartItem && oldItem.messageId == messageId
 
 }

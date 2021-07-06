@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -16,16 +16,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M9,13L5,9M5,9L9,5M5,9H16C17.0609,9 18.0783,9.4214 18.8284,10.1716C19.5786,10.9217 20,11.9391 20,13C20,14.0609 19.5786,15.0783 18.8284,15.8284C18.0783,16.5786 17.0609,17 16,17H15"
-      android:strokeLineJoin="round"
-      android:strokeWidth="1.5"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"
-      android:strokeLineCap="round"/>
-</vector>
+<com.google.android.exoplayer2.ui.PlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

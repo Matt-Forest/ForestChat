@@ -34,6 +34,7 @@ class MessageRecipientMediasHolder(
     private val onEvent: (MessageItemEvent) -> Unit
 ) : MessageMediasBaseHolder<MessageRecipientMediasItem>(
     parent,
+    onEvent,
     R.layout.holder_message_recipient_media
 ) {
 

@@ -16,12 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.extensions
 
-sealed class MessageItemEvent {
-    // Attachment is for file and contact card.
-    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
-    data class MessageSelected(val messageId: Long) : MessageItemEvent()
-    // Media is for image and video.
-    data class MediaSelected(val partId: Long) : MessageItemEvent()
+import android.net.Uri
+
+sealed class ImageSignatureKeys {
+
+    sealed class Conversation : ImageSignatureKeys() {
+        object Gallery : Conversation()
+        object Message : Conversation()
+    }
+
 }
+
+/**
+ * Generate a signature of an image url to have a unique
+ * entry in cache for each usage of image url in the app.
+ *
+ * It should be used when an image url is used in multiple
+ * location, with different width / height.
+ */
+fun ImageSignatureKeys.generateSignature(uri: Uri?) =
+    "[${javaClass.canonicalName}]${uri ?: "BLANK"}"

@@ -19,6 +19,7 @@
 package com.forest.forestchat.extensions
 
 import android.view.View
+import androidx.core.view.updatePadding
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -53,5 +54,42 @@ fun View.goneIf(f: () -> Boolean) {
         gone()
     } else {
         visible()
+    }
+}
+
+/**
+ * Display given view below status bar adding additional padding.
+ */
+fun View.addStatusBarHeightAsPadding() {
+    post {
+        // create a snapshot of the view's top margin
+        val initialPadding = paddingTop
+
+        setOnApplyWindowInsetsListener { _, insets ->
+            // do not forget initial padding to keep padding relative to the status bar
+            val padding = initialPadding + insets.systemWindowInsetTop
+            updatePadding(top = padding)
+            insets
+        }
+
+        requestApplyInsetsWhenAttached()
+    }
+}
+
+private fun View.requestApplyInsetsWhenAttached() {
+    if (isAttachedToWindow) {
+        // We're already attached, just request as normal
+        requestApplyInsets()
+    } else {
+        // We're not attached to the hierarchy, add a listener to
+        // request when we are
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+                v.removeOnAttachStateChangeListener(this)
+                v.requestApplyInsets()
+            }
+
+            override fun onViewDetachedFromWindow(v: View) = Unit
+        })
     }
 }

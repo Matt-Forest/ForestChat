@@ -3,6 +3,7 @@ package com.forest.forestchat.ui.conversation
 import android.telephony.SubscriptionInfo
 import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.ui.common.media.Media
 import java.io.File
 
 sealed class ConversationEvent {
@@ -19,5 +20,6 @@ sealed class ConversationEvent {
     data class ViewFile(val file: File) : ConversationEvent()
     data class ShowMessageOptions(val canCopy: Boolean) : ConversationEvent()
     data class ShowMessageDetails(val details: String) : ConversationEvent()
+    data class ShowGallery(val mediaSelected: Media, val medias: List<Media>) : ConversationEvent()
 
 }

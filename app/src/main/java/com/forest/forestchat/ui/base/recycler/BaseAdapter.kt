@@ -25,10 +25,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
 abstract class BaseAdapter :
-    ListAdapter<BaseAdapterItem, BaseHolder<BaseAdapterItem>>(getItemCallback()) {
+    ListAdapter<BaseItem, BaseHolder<BaseItem>>(getItemCallback()) {
 
     companion object {
-        fun <U : BaseAdapterItem> getItemCallback(): DiffUtil.ItemCallback<U> =
+        fun <U : BaseItem> getItemCallback(): DiffUtil.ItemCallback<U> =
             object : DiffUtil.ItemCallback<U>() {
                 override fun areItemsTheSame(oldItem: U, newItem: U): Boolean =
                     newItem.isItemTheSame(oldItem)
@@ -46,24 +46,24 @@ abstract class BaseAdapter :
     final override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseHolder<BaseAdapterItem> =
-        (buildViewHolder(parent, viewType) as? BaseHolder<BaseAdapterItem>)?.also { holder ->
+    ): BaseHolder<BaseItem> =
+        (buildViewHolder(parent, viewType) as? BaseHolder<BaseItem>)?.also { holder ->
             onViewHolderCreated(holder)
         } ?: error("Wrong view type for ${javaClass.simpleName}: $viewType")
 
     abstract fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>?
 
-    fun indexOfFirst(predicate: (BaseAdapterItem) -> Boolean): Int =
+    fun indexOfFirst(predicate: (BaseItem) -> Boolean): Int =
         currentList.indexOfFirst(predicate)
 
-    open fun onViewHolderCreated(holder: BaseHolder<BaseAdapterItem>) {}
+    open fun onViewHolderCreated(holder: BaseHolder<BaseItem>) {}
 
-    final override fun onBindViewHolder(holder: BaseHolder<BaseAdapterItem>, position: Int) {
+    final override fun onBindViewHolder(holder: BaseHolder<BaseItem>, position: Int) {
         holder.bind(getItem(position))
     }
 
     final override fun onBindViewHolder(
-        holder: BaseHolder<BaseAdapterItem>,
+        holder: BaseHolder<BaseItem>,
         position: Int,
         payloads: MutableList<Any>
     ) {
@@ -85,10 +85,10 @@ abstract class BaseAdapter :
         }
     }
 
-    open fun onPayload(holder: BaseHolder<BaseAdapterItem>, position: Int, payload: Any) {}
+    open fun onPayload(holder: BaseHolder<BaseItem>, position: Int, payload: Any) {}
 
     @CallSuper
-    override fun onViewRecycled(holder: BaseHolder<BaseAdapterItem>) {
+    override fun onViewRecycled(holder: BaseHolder<BaseItem>) {
         holder.onViewRecycled()
     }
 

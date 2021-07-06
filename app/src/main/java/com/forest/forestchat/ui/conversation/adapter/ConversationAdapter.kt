@@ -33,37 +33,37 @@ import com.forest.forestchat.extensions.getMessageDate
 import com.forest.forestchat.extensions.getMessageHours
 import com.forest.forestchat.extensions.isSameDayWithOther
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 import com.forest.forestchat.ui.common.media.Media
+import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactHolder
+import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactItem
+import com.forest.forestchat.ui.conversation.adapter.message.contact.user.MessageUserContactHolder
+import com.forest.forestchat.ui.conversation.adapter.message.contact.user.MessageUserContactItem
+import com.forest.forestchat.ui.conversation.adapter.message.end.recipient.MessageRecipientEndHolder
+import com.forest.forestchat.ui.conversation.adapter.message.end.recipient.MessageRecipientEndItem
+import com.forest.forestchat.ui.conversation.adapter.message.end.user.MessageUserEndHolder
+import com.forest.forestchat.ui.conversation.adapter.message.end.user.MessageUserEndItem
+import com.forest.forestchat.ui.conversation.adapter.message.file.recipient.MessageRecipientFileHolder
+import com.forest.forestchat.ui.conversation.adapter.message.file.recipient.MessageRecipientFileItem
+import com.forest.forestchat.ui.conversation.adapter.message.file.user.MessageUserFileHolder
+import com.forest.forestchat.ui.conversation.adapter.message.file.user.MessageUserFileItem
 import com.forest.forestchat.ui.conversation.adapter.message.medias.recipient.MessageRecipientMediasHolder
 import com.forest.forestchat.ui.conversation.adapter.message.medias.recipient.MessageRecipientMediasItem
 import com.forest.forestchat.ui.conversation.adapter.message.medias.user.MessageUserMediasHolder
 import com.forest.forestchat.ui.conversation.adapter.message.medias.user.MessageUserMediasItem
-import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactHolder
-import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactItem
-import com.forest.forestchat.ui.conversation.adapter.message.end.recipient.MessageRecipientEndHolder
-import com.forest.forestchat.ui.conversation.adapter.message.end.recipient.MessageRecipientEndItem
-import com.forest.forestchat.ui.conversation.adapter.message.file.recipient.MessageRecipientFileHolder
-import com.forest.forestchat.ui.conversation.adapter.message.file.recipient.MessageRecipientFileItem
 import com.forest.forestchat.ui.conversation.adapter.message.middle.recipient.MessageRecipientMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.message.middle.recipient.MessageRecipientMiddleItem
-import com.forest.forestchat.ui.conversation.adapter.message.single.recipient.MessageRecipientSingleHolder
-import com.forest.forestchat.ui.conversation.adapter.message.single.recipient.MessageRecipientSingleItem
-import com.forest.forestchat.ui.conversation.adapter.message.start.recipient.MessageRecipientStartHolder
-import com.forest.forestchat.ui.conversation.adapter.message.start.recipient.MessageRecipientStartItem
-import com.forest.forestchat.ui.conversation.adapter.message.contact.user.MessageUserContactHolder
-import com.forest.forestchat.ui.conversation.adapter.message.contact.user.MessageUserContactItem
-import com.forest.forestchat.ui.conversation.adapter.message.end.user.MessageUserEndHolder
-import com.forest.forestchat.ui.conversation.adapter.message.end.user.MessageUserEndItem
-import com.forest.forestchat.ui.conversation.adapter.message.file.user.MessageUserFileHolder
-import com.forest.forestchat.ui.conversation.adapter.message.file.user.MessageUserFileItem
 import com.forest.forestchat.ui.conversation.adapter.message.middle.user.MessageUserMiddleHolder
 import com.forest.forestchat.ui.conversation.adapter.message.middle.user.MessageUserMiddleItem
+import com.forest.forestchat.ui.conversation.adapter.message.single.recipient.MessageRecipientSingleHolder
+import com.forest.forestchat.ui.conversation.adapter.message.single.recipient.MessageRecipientSingleItem
 import com.forest.forestchat.ui.conversation.adapter.message.single.user.MessageUserSingleHolder
 import com.forest.forestchat.ui.conversation.adapter.message.single.user.MessageUserSingleItem
+import com.forest.forestchat.ui.conversation.adapter.message.start.recipient.MessageRecipientStartHolder
+import com.forest.forestchat.ui.conversation.adapter.message.start.recipient.MessageRecipientStartItem
 import com.forest.forestchat.ui.conversation.adapter.message.start.user.MessageUserStartHolder
 import com.forest.forestchat.ui.conversation.adapter.message.start.user.MessageUserStartItem
 import ezvcard.Ezvcard
@@ -97,7 +97,7 @@ class ConversationAdapter(
         recipients: List<Recipient>,
         subsInfo: List<SubscriptionInfo>
     ) {
-        val items = mutableListOf<BaseAdapterItem>()
+        val items = mutableListOf<BaseItem>()
 
         messages.forEachIndexed { index, message ->
             // Show the date only if the next message has an another date or if he is the last message
@@ -159,7 +159,7 @@ class ConversationAdapter(
         recipient: Recipient?,
         showDate: Boolean,
         subs: List<SubscriptionInfo>
-    ): BaseAdapterItem {
+    ): BaseItem {
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
             false -> null
@@ -239,8 +239,8 @@ class ConversationAdapter(
         showDate: Boolean,
         nextIsSameSenderAndDate: Boolean,
         subs: List<SubscriptionInfo>
-    ): List<BaseAdapterItem> {
-        val items = mutableListOf<BaseAdapterItem>()
+    ): List<BaseItem> {
+        val items = mutableListOf<BaseItem>()
 
         // If there are Text in parts
         mmsPartText(
@@ -285,7 +285,7 @@ class ConversationAdapter(
         showDate: Boolean,
         nextIsSameSender: Boolean,
         subs: List<SubscriptionInfo>
-    ): BaseAdapterItem? = message.mms?.getPartsText()?.ifEmpty { null }?.let { textParts ->
+    ): BaseItem? = message.mms?.getPartsText()?.ifEmpty { null }?.let { textParts ->
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
             false -> null
@@ -334,7 +334,7 @@ class ConversationAdapter(
         showDate: Boolean,
         nextIsSameSender: Boolean,
         subs: List<SubscriptionInfo>
-    ): BaseAdapterItem? {
+    ): BaseItem? {
         val messageDate = when (showDate) {
             true -> message.date.getMessageDate(context)
             false -> null
@@ -346,6 +346,7 @@ class ConversationAdapter(
                     messageId = message.id,
                     medias = mediaParts.map { part ->
                         Media(
+                            part.id,
                             part.getUri(),
                             part.isVideo(),
                             part.isGif()
@@ -359,6 +360,7 @@ class ConversationAdapter(
                     messageId = message.id,
                     medias = mediaParts.map { part ->
                         Media(
+                            part.id,
                             part.getUri(),
                             part.isVideo(),
                             part.isGif()
@@ -379,9 +381,9 @@ class ConversationAdapter(
         showDate: Boolean,
         nextIsSameSender: Boolean,
         subs: List<SubscriptionInfo>
-    ): List<BaseAdapterItem>? =
+    ): List<BaseItem>? =
         message.mms?.getPartsContactCard()?.ifEmpty { null }?.let { contactCardParts ->
-            val items = mutableListOf<BaseAdapterItem>()
+            val items = mutableListOf<BaseItem>()
 
             contactCardParts.forEachIndexed { index, part ->
                 context.contentResolver.openInputStream(part.getUri())?.use {
@@ -424,8 +426,8 @@ class ConversationAdapter(
         showDate: Boolean,
         nextIsSameSender: Boolean,
         subs: List<SubscriptionInfo>
-    ): List<BaseAdapterItem>? = message.mms?.getPartsOther()?.ifEmpty { null }?.let { fileParts ->
-        val items = mutableListOf<BaseAdapterItem>()
+    ): List<BaseItem>? = message.mms?.getPartsOther()?.ifEmpty { null }?.let { fileParts ->
+        val items = mutableListOf<BaseItem>()
 
         fileParts.forEachIndexed { index, part ->
             context.contentResolver.openInputStream(part.getUri())?.use {

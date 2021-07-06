@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.contact.recipient
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
@@ -30,11 +30,11 @@ class MessageRecipientContactItem(
     val name: String?,
     val hours: String,
     val date: String?
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageRecipientContactItem && oldItem.messageId == messageId
 
 }

@@ -27,7 +27,7 @@ import com.forest.forestchat.extensions.asPlurals
 import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactHolder
 import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactItem
@@ -53,7 +53,7 @@ class SearchAdapter : BaseAdapter() {
         conversations: List<SearchConversationResult>,
         contacts: List<Contact>
     ) {
-        val items : MutableList<BaseAdapterItem> = mutableListOf()
+        val items : MutableList<BaseItem> = mutableListOf()
 
         if (conversations.isNotEmpty()) {
             items.add(SearchHeaderItem(R.string.conversations_search_conversation.asString(context)))

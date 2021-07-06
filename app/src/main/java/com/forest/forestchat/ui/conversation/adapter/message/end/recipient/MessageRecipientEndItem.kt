@@ -18,18 +18,18 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.end.recipient
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageRecipientEndItem(
     val messageId: Long,
     val message: String,
     val hours: String,
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_RECIPIENT_END
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageRecipientEndItem && oldItem.messageId == messageId
 
 }

@@ -27,6 +27,7 @@ import com.forest.forestchat.domain.useCases.*
 import com.forest.forestchat.extensions.getNavigationInput
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
+import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.utils.CopyIntoClipboard
@@ -59,7 +60,7 @@ class ConversationViewModel @Inject constructor(
     private val conversation = handle.getNavigationInput<ConversationInput>().conversation
     private var messageSelected: Message? = null
 
-    init {
+    fun getMessages() {
         eventEmitter.emit(ConversationEvent.BaseData(conversation.getTitle()))
         eventEmitter.emit(ConversationEvent.Loading)
 
@@ -92,6 +93,7 @@ class ConversationViewModel @Inject constructor(
                 event.mmsPartId
             )
             is MessageItemEvent.MessageSelected -> messageSelected(event.messageId)
+            is MessageItemEvent.MediaSelected -> prepareGallery(event.partId)
         }
     }
 
@@ -142,6 +144,30 @@ class ConversationViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     eventEmitter.emit(ConversationEvent.ShowMessageOptions(message.type == MessageType.Sms))
                 }
+            }
+        }
+    }
+
+    private fun prepareGallery(partId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val medias = mutableListOf<Media>()
+            getMessagesByConversationUseCase(conversation.id)
+                ?.forEach { message ->
+                    message.mms?.getPartsMedia()?.map { part ->
+                        Media(
+                            part.id,
+                            part.getUri(),
+                            part.isVideo(),
+                            part.isGif()
+                        )
+                    }?.let {
+                        medias.addAll(it)
+                    }
+                }
+
+            val mediaSelected = medias.first { it.mediaId == partId }
+            withContext(Dispatchers.Main) {
+                eventEmitter.emit(ConversationEvent.ShowGallery(mediaSelected, medias))
             }
         }
     }

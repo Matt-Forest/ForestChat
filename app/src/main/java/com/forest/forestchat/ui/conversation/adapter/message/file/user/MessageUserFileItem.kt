@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.file.user
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserFileItem(
@@ -29,11 +29,11 @@ class MessageUserFileItem(
     val hours: String,
     val sim: Int?,
     val date: String?
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_FILE
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageUserFileItem && oldItem.messageId == messageId
 
 }

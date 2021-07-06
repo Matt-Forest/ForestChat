@@ -33,7 +33,7 @@
             app:enterAnim="@anim/nav_slide_from_right"
             app:exitAnim="@anim/nav_slide_to_left"
             app:popEnterAnim="@anim/nav_slide_from_left"
-            app:popExitAnim="@anim/nav_slide_to_right" >
+            app:popExitAnim="@anim/nav_slide_to_right">
 
             <argument
                 android:name="input"
@@ -52,6 +52,33 @@
         <argument
             android:name="input"
             app:argType="com.forest.forestchat.ui.conversation.ConversationInput"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/go_to_gallery"
+            app:destination="@id/gallery_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.gallery.GalleryInput"
+                app:nullable="false" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/gallery_dest"
+        android:name="com.forest.forestchat.ui.gallery.GalleryFragment"
+        tools:layout="@layout/navigation_gallery">
+
+        <argument
+            android:name="input"
+            app:argType="com.forest.forestchat.ui.gallery.GalleryInput"
             app:nullable="false" />
 
     </fragment>

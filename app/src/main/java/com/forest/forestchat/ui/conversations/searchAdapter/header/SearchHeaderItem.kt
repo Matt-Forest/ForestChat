@@ -18,16 +18,16 @@
  */
 package com.forest.forestchat.ui.conversations.searchAdapter.header
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversations.searchAdapter.SearchViewTypes
 
 class SearchHeaderItem(
     val label: String
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = SearchViewTypes.HEADER
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is SearchHeaderItem && oldItem.label == label
 
 }

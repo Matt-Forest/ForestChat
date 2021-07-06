@@ -24,7 +24,7 @@ import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationHolder
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItem
@@ -44,7 +44,7 @@ class HomeConversationsAdapter(
             else -> null
         }
 
-    override fun onPayload(holder: BaseHolder<BaseAdapterItem>, position: Int, payload: Any) {
+    override fun onPayload(holder: BaseHolder<BaseItem>, position: Int, payload: Any) {
         holder as ConversationHolder
         payload as HomeConversationsPayload
 
@@ -52,7 +52,7 @@ class HomeConversationsAdapter(
     }
 
     fun setConversations(context: Context, conversations: List<Conversation>, adsActivated: Boolean) {
-        val items = mutableListOf<BaseAdapterItem>()
+        val items = mutableListOf<BaseItem>()
         conversations.forEachIndexed { index, conversation ->
             if (index > 0 && index % 5 == 0 && adsActivated) {
                 items.add(NativeAdItem())

@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversations.searchAdapter.conversation
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversations.searchAdapter.SearchViewTypes
 import com.forest.forestchat.ui.common.avatar.AvatarType
 
@@ -28,11 +28,11 @@ class SearchConversationItem(
     val message: String,
     val date: String,
     val avatarType: AvatarType
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = SearchViewTypes.CONVERSATION
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is SearchConversationItem && oldItem.id == id
 
 }

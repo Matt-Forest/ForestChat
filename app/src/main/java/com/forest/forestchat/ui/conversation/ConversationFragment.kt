@@ -67,12 +67,14 @@ class ConversationFragment : NavigationFragment() {
                 }
                 navigationView.event(event)
             }
+
+            getMessages()
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
-    fun onMessageEvent(event: TransversalBusEvent) {
+    fun onTransversalEvent(event: TransversalBusEvent) {
         // TODO
     }
 

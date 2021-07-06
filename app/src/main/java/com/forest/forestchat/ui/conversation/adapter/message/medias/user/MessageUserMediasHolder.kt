@@ -31,7 +31,11 @@ import com.forest.forestchat.ui.conversation.adapter.message.medias.MessageMedia
 class MessageUserMediasHolder(
     parent: ViewGroup,
     private val onEvent: (MessageItemEvent) -> Unit
-) : MessageMediasBaseHolder<MessageUserMediasItem>(parent, R.layout.holder_message_user_media) {
+) : MessageMediasBaseHolder<MessageUserMediasItem>(
+    parent,
+    onEvent,
+    R.layout.holder_message_user_media
+) {
 
     private val binding = HolderMessageUserMediaBinding.bind(itemView)
 

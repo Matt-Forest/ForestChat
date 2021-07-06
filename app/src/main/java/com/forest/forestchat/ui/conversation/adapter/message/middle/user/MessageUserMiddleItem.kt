@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.middle.user
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserMiddleItem(
@@ -26,11 +26,11 @@ class MessageUserMiddleItem(
     val message: String,
     val hours: String,
     val sim: Int?,
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_MIDDLE
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageUserMiddleItem && oldItem.messageId == messageId
 
 }

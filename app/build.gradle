@@ -160,6 +160,15 @@ dependencies {
         exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
     }
 
+    // Photo view
+    implementation "com.github.chrisbanes:PhotoView:2.3.0"
+
+    // Exo player
+    implementation "com.google.android.exoplayer:exoplayer:2.14.1"
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.14.1", {
+        exclude group: "com.android.support", module: "support-media-compat"
+    })
+
     // Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

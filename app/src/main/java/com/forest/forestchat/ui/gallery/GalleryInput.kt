@@ -16,19 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.base.recycler
+package com.forest.forestchat.ui.gallery
 
-abstract class BaseAdapterItem {
+import android.os.Parcelable
+import com.forest.forestchat.ui.common.media.Media
+import kotlinx.android.parcel.Parcelize
 
-    /**
-     * Returns view type associated to this item.
-     * If your adapter use only one item type, you can let
-     * this value by default.
-     */
-    open fun getViewType() : Int = 0
-
-    abstract fun isItemTheSame(oldItem: BaseAdapterItem) : Boolean
-
-    open fun getChangePayload(oldItem: BaseAdapterItem) : Any? = null
-
-}
+@Parcelize
+data class GalleryInput(val medias: List<Media>, val mediaSelected: Media) : Parcelable

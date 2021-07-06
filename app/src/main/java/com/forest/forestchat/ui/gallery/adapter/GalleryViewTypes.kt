@@ -16,12 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.ui.gallery.adapter
 
-sealed class MessageItemEvent {
-    // Attachment is for file and contact card.
-    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
-    data class MessageSelected(val messageId: Long) : MessageItemEvent()
-    // Media is for image and video.
-    data class MediaSelected(val partId: Long) : MessageItemEvent()
+object GalleryViewTypes {
+
+    const val GALLERY_IMAGE = 0
+    const val GALLERY_VIDEO = 1
+
 }

@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.medias
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.media.Media
 
 abstract class MessageMediasBaseItem(
@@ -26,9 +26,9 @@ abstract class MessageMediasBaseItem(
     val medias: List<Media>,
     val hours: String,
     val date: String?
-) : BaseAdapterItem() {
+) : BaseItem() {
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageMediasBaseItem && oldItem.messageId == messageId
 
 }

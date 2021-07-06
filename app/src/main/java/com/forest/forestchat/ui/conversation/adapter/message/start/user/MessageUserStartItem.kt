@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.start.user
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
 
 class MessageUserStartItem(
@@ -27,11 +27,11 @@ class MessageUserStartItem(
     val hours: String,
     val sim: Int?,
     val date: String?
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_START
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageUserStartItem && oldItem.messageId == messageId
 
 }

@@ -23,11 +23,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.closeKeyboard
 import com.forest.forestchat.extensions.generateConsistentId
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @AndroidEntryPoint
 abstract class NavigationFragment : Fragment() {

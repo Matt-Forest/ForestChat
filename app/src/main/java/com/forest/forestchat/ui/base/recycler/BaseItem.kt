@@ -16,12 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation.adapter
+package com.forest.forestchat.ui.base.recycler
 
-sealed class MessageItemEvent {
-    // Attachment is for file and contact card.
-    data class AttachmentSelected(val messageId: Long, val mmsPartId: Long) : MessageItemEvent()
-    data class MessageSelected(val messageId: Long) : MessageItemEvent()
-    // Media is for image and video.
-    data class MediaSelected(val partId: Long) : MessageItemEvent()
+abstract class BaseItem {
+
+    /**
+     * Returns view type associated to this item.
+     * If your adapter use only one item type, you can let
+     * this value by default.
+     */
+    open fun getViewType() : Int = 0
+
+    abstract fun isItemTheSame(oldItem: BaseItem) : Boolean
+
+    open fun getChangePayload(oldItem: BaseItem) : Any? = null
+
 }

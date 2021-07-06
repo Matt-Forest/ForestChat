@@ -18,7 +18,7 @@
  */
 package com.forest.forestchat.ui.conversations.adapter.conversation
 
-import com.forest.forestchat.ui.base.recycler.BaseAdapterItem
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
 import com.forest.forestchat.ui.common.avatar.AvatarType
@@ -32,14 +32,14 @@ class ConversationItem(
     val pinned: Boolean,
     val unread: Boolean,
     val draft: Boolean
-) : BaseAdapterItem() {
+) : BaseItem() {
 
     override fun getViewType(): Int = HomeConversationViewTypes.CONVERSATION
 
-    override fun isItemTheSame(oldItem: BaseAdapterItem): Boolean =
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is ConversationItem && oldItem.id == id
 
-    override fun getChangePayload(oldItem: BaseAdapterItem): Any? {
+    override fun getChangePayload(oldItem: BaseItem): Any? {
         oldItem as ConversationItem
 
         return when {
