@@ -26,6 +26,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
+import com.forest.forestchat.extensions.gone
+import com.forest.forestchat.extensions.visible
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
@@ -54,11 +56,16 @@ class ConversationNavigationView @JvmOverloads constructor(
     fun event(event: ConversationEvent) {
         with(binding) {
             when (event) {
-                ConversationEvent.Empty -> {
-                    // TODO
+                is ConversationEvent.Empty -> {
+                    loading.gone()
+                    recyclerConversation.gone()
+                    emptyAvatars.updateAvatars(event.avatarType)
+                    emptyLabel.text = event.title
+                    emptyPhone.text = event.phone
+                    emptyContainer.visible()
                 }
                 ConversationEvent.Loading -> {
-                    // TODO
+                    loading.visible()
                 }
                 is ConversationEvent.ShowMessageOptions -> {
                     MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
@@ -67,6 +74,9 @@ class ConversationNavigationView @JvmOverloads constructor(
                 }
                 is ConversationEvent.BaseData -> conversationTitle.text = event.title
                 is ConversationEvent.Data -> {
+                    emptyContainer.gone()
+                    loading.gone()
+                    recyclerConversation.visible()
                     if (recyclerConversation.adapter !== conversationAdapter) {
                         recyclerConversation.adapter = conversationAdapter
                     }

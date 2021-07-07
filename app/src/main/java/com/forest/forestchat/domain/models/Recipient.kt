@@ -35,4 +35,6 @@ data class Recipient(
         ?: PhoneNumberUtils.formatNumber(address, Locale.getDefault().country)
         ?: address
 
+    fun getNumberPhone() : String? = PhoneNumberUtils.formatNumber(address, Locale.getDefault().country)
+
 }

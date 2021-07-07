@@ -27,6 +27,7 @@ import com.forest.forestchat.domain.useCases.*
 import com.forest.forestchat.extensions.getNavigationInput
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
+import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
@@ -74,7 +75,19 @@ class ConversationViewModel @Inject constructor(
 
         withContext(Dispatchers.Main) {
             when (messages == null) {
-                true -> eventEmitter.emit(ConversationEvent.Empty)
+                true -> {
+                    val phone = when (conversation.recipients.size == 1) {
+                        true -> conversation.recipients[0].getNumberPhone()
+                        false -> null
+                    }
+                    eventEmitter.emit(
+                        ConversationEvent.Empty(
+                            buildAvatar(conversation.recipients),
+                            conversation.getTitle(),
+                            phone
+                        )
+                    )
+                }
                 false -> eventEmitter.emit(
                     ConversationEvent.Data(
                         messages,
