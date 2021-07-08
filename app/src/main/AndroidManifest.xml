@@ -50,7 +50,6 @@
             android:name=".ui.NavigationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:screenOrientation="sensorPortrait"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
