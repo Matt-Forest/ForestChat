@@ -19,22 +19,29 @@
 package com.forest.forestchat.ui.conversations
 
 import android.content.Context
+import android.content.Intent
+import android.provider.ContactsContract
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
-import com.forest.forestchat.R
+import androidx.navigation.findNavController
 import com.forest.forestchat.databinding.NavigationConversationsBinding
 import com.forest.forestchat.extensions.asString
-import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.goneIf
 import com.forest.forestchat.extensions.visibleIf
+import com.forest.forestchat.observer.ContactObserver
+import com.forest.forestchat.ui.conversation.ConversationInput
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
+import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.forest.forestchat.ui.conversations.searchAdapter.SearchAdapter
+import com.forest.forestchat.ui.home.HomeFragmentDirections
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -45,15 +52,17 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs) {
 
     lateinit var requestSmsPermission: () -> Unit
+    lateinit var onContactChanged: () -> Unit
     lateinit var onSearchChange: (String) -> Unit
     lateinit var optionSelected: (ConversationOptionType) -> Unit
     lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
+    lateinit var bannerIsLoad: (Boolean) -> Unit
 
     private val binding: NavigationConversationsBinding
     private var conversationsAdapter = HomeConversationsAdapter { onConversationEvent(it) }
     private val searchAdapter = SearchAdapter()
-    private var bannerLoaded: Boolean = false
+
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -80,18 +89,17 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
         }
     }
 
-    private fun initBanner() {
+    fun initBanner() {
         val adRequest = AdRequest.Builder().build()
         binding.adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                bannerLoaded = true
-                binding.adView.visible()
+                bannerIsLoad(true)
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 // Code to be executed when an ad request fails.
-                bannerLoaded = false
+                bannerIsLoad(false)
             }
 
             override fun onAdOpened() {
@@ -112,63 +120,75 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
     }
 
     fun event(event: HomeConversationEvent) {
-        with(binding) {
-            if (
-                event !is HomeConversationEvent.ShowConversationOptions
-                && event !is HomeConversationEvent.RequestDeleteDialog
-                && event !is HomeConversationEvent.AddContact
-            ) {
-                empty.visibleIf { event is HomeConversationEvent.NoConversationsData || event is HomeConversationEvent.NoSearchData }
-                recyclerChat.visibleIf { event is HomeConversationEvent.ConversationsData || event is HomeConversationEvent.SearchData }
-                loadingData.visibleIf { event is HomeConversationEvent.Loading }
-                requestPermission.visibleIf { event is HomeConversationEvent.RequestPermission }
-                adView.visibleIf { event is HomeConversationEvent.ConversationsData && bannerLoaded }
+        when (event) {
+            is HomeConversationEvent.GoToConversation -> {
+                val input = ConversationInput(event.conversation)
+                findNavController().navigate(HomeFragmentDirections.goToConversation(input))
             }
+            is HomeConversationEvent.ShowConversationOptions -> {
+                ConversationOptionsDialog(
+                    context,
+                    { optionSelected(it) },
+                    event.showAddToContacts,
+                    event.showPin,
+                    event.showPinnedOff,
+                    event.showMarkAsRead
+                ).create().show()
+            }
+            is HomeConversationEvent.RequestDeleteDialog -> {
+                ConversationDeleteDialog(context) { onConversationDeleted(event.id) }
+                    .create()
+                    .show()
+            }
+            is HomeConversationEvent.AddContact -> {
+                val intent = Intent(Intent.ACTION_INSERT)
+                    .setType(ContactsContract.Contacts.CONTENT_TYPE)
+                    .putExtra(ContactsContract.Intents.Insert.PHONE, event.address)
 
-            when (event) {
-                HomeConversationEvent.NoConversationsData -> {
-                    empty.text = R.string.conversations_empty_conversation.asString(context)
+                context?.let {
+                    ContactObserver(it) { onContactChanged() }.start()
+                    it.startActivity(intent)
                 }
-                HomeConversationEvent.NoSearchData -> {
-                    empty.text = R.string.conversations_empty_search.asString(context)
-                }
-                is HomeConversationEvent.ConversationsData -> {
+            }
+            else -> null
+        }
+    }
+
+    fun updateState(state: HomeConversationsState) {
+        with(binding) {
+            empty.visibleIf { state is HomeConversationsState.Empty }
+            recyclerChat.goneIf { state is HomeConversationsState.Empty }
+            requestPermission.visibleIf { state is HomeConversationsState.RequestPermission }
+
+            when (state) {
+                is HomeConversationsState.Empty -> empty.text = state.label.asString(context)
+                is HomeConversationsState.Conversations -> {
                     if (recyclerChat.adapter !== conversationsAdapter) {
                         recyclerChat.adapter = conversationsAdapter
                     }
                     conversationsAdapter.apply {
-                        setConversations(context, event.conversations, event.adsActivated)
+                        setConversations(context, state.conversations)
                     }
                 }
-                is HomeConversationEvent.SearchData -> {
+                is HomeConversationsState.Search -> {
                     if (recyclerChat.adapter !== searchAdapter) {
                         recyclerChat.adapter = searchAdapter
                     }
                     searchAdapter.apply {
-                        setData(context, event.conversations, event.contacts)
+                        setData(context, state.conversations, state.contacts)
                     }
-                }
-                is HomeConversationEvent.ShowConversationOptions -> {
-                    ConversationOptionsDialog(
-                        context,
-                        { optionSelected(it) },
-                        event.showAddToContacts,
-                        event.showPin,
-                        event.showPinnedOff,
-                        event.showMarkAsRead
-                    ).create().show()
-                }
-                is HomeConversationEvent.RequestDeleteDialog -> {
-                    ConversationDeleteDialog(context) { onConversationDeleted(event.id) }
-                        .create()
-                        .show()
-                }
-                HomeConversationEvent.AdsConsentComplete -> {
-                    initBanner()
                 }
                 else -> null
             }
         }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        binding.loadingData.visibleIf { isLoading }
+    }
+
+    fun updateBannerVisibility(isVisible: Boolean) {
+        binding.adView.visibleIf { isVisible }
     }
 
 }

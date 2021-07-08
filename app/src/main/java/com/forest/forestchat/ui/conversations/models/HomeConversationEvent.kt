@@ -16,14 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.home
+package com.forest.forestchat.ui.conversations.models
 
-import com.forest.forestchat.R
+import com.forest.forestchat.domain.models.Conversation
 
-enum class HomeTab(val id: Int) {
+sealed class HomeConversationEvent {
+    object RequestDefaultSms : HomeConversationEvent()
+    object RequestPermission : HomeConversationEvent()
 
-    Conversations(R.id.chats),
+    data class GoToConversation(
+        val conversation: Conversation
+    ) : HomeConversationEvent()
 
-    Dashboard(R.id.dashboard)
+    data class ShowConversationOptions(
+        val showAddToContacts: Boolean,
+        val showPin: Boolean,
+        val showPinnedOff: Boolean,
+        val showMarkAsRead: Boolean
+    ) : HomeConversationEvent()
+
+    data class AddContact(val address: String) : HomeConversationEvent()
+
+    data class RequestDeleteDialog(val id: Long) : HomeConversationEvent()
 
 }

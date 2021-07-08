@@ -20,114 +20,145 @@ package com.forest.forestchat.ui.home
 
 import android.Manifest
 import android.app.role.RoleManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.provider.Telephony
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.observer.ContactObserver
+import com.forest.forestchat.extensions.observe
+import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import com.forest.forestchat.ui.conversation.ConversationInput
-import com.forest.forestchat.ui.conversations.HomeConversationEvent
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
+import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.google.android.gms.ads.MobileAds
-import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
-import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class HomeFragment : NavigationFragment() {
 
-    private val homeConversationsViewModel: HomeConversationsViewModel by viewModels()
+    private val conversationsViewModel: HomeConversationsViewModel by viewModels()
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     private val navigationView: HomeNavigationView
         get() = view as HomeNavigationView
 
-    private var homeTab = HomeTab.Chats
-    private var consentInformation: ConsentInformation? = null
-    private var consentForm: ConsentForm? = null
-
+    private var homeTab = HomeTab.Conversations
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
     override fun buildNavigationView(): View = HomeNavigationView(requireContext())
 
     override fun getStatusBarBgColor(): Int = when (homeTab) {
-        HomeTab.Chats -> R.color.toolbarBackground
+        HomeTab.Conversations -> R.color.toolbarBackground
         HomeTab.Dashboard -> R.color.background
     }
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(navigationView) {
-            requestSmsPermissionChats = { homeConversationsViewModel.getConversations() }
-            onSearchChangedChats = homeConversationsViewModel::onSearchChange
-            optionSelected = homeConversationsViewModel::conversationOptionSelected
-            onConversationEvent = homeConversationsViewModel::onConversationEvent
-            onConversationDeleted = homeConversationsViewModel::removeConversation
-            toggleTab = {
-                homeTab = it
-                updateStatusBarMode()
-                updateNavigationBar()
-            }
+        navigationView.toggleTab = {
+            homeTab = it
+            updateStatusBarMode()
+            updateNavigationBar()
         }
 
-        with(homeConversationsViewModel) {
-            eventSource().observe(viewLifecycleOwner) { event ->
+        with(navigationView.getConversationsView()) {
+            requestSmsPermission = { conversationsViewModel.getConversations() }
+            onSearchChange = conversationsViewModel::onSearchChange
+            optionSelected = conversationsViewModel::conversationOptionSelected
+            onConversationEvent = conversationsViewModel::onConversationEvent
+            onConversationDeleted = conversationsViewModel::removeConversation
+            onContactChanged = conversationsViewModel::onContactChanged
+            bannerIsLoad = conversationsViewModel::bannerIsLoad
+        }
+
+        with(conversationsViewModel) {
+            observe(isLoading()) { navigationView.getConversationsView().setLoading(it) }
+            observe(state()) { navigationView.getConversationsView().updateState(it) }
+            observe(bannerVisible()) {
+                navigationView.getConversationsView().updateBannerVisibility(it)
+            }
+            observeEvents(eventSource()) { event ->
                 when (event) {
-                    HomeConversationEvent.RequestDefaultSms -> showDefaultSmsDialog()
-                    HomeConversationEvent.RequestPermission -> requestPermission()
-                    is HomeConversationEvent.AddContact -> addContact(event.address)
-                    is HomeConversationEvent.GoToConversation -> goToConversationFragment(event.conversation)
+                    is HomeConversationEvent.RequestPermission -> requestPermission()
+                    is HomeConversationEvent.RequestDefaultSms -> requestDefaultSmsDialog()
                     else -> null
                 }
-                navigationView.conversationEvent(event)
+                navigationView.getConversationsView().event(event)
             }
         }
+    }
 
-        homeConversationsViewModel.getConversations()
-        checkConsent()
+    override fun onResume() {
+        super.onResume()
+        checkAdsConsent()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
     fun onTransversalEvent(event: TransversalBusEvent) {
         when (event) {
-            is TransversalBusEvent.DefaultSmsChangedEvent -> homeConversationsViewModel.onDefaultSmsChange(
-                event
-            )
+            is TransversalBusEvent.DefaultSmsChangedEvent ->
+                conversationsViewModel.onDefaultSmsChange(event)
             TransversalBusEvent.MarkAsReadEvent,
             TransversalBusEvent.ReplyEvent,
             TransversalBusEvent.ReceiveSms,
-            TransversalBusEvent.ReceiveMms -> homeConversationsViewModel.getConversations()
+            TransversalBusEvent.ReceiveMms -> conversationsViewModel.getConversations()
         }
     }
 
-    private fun showDefaultSmsDialog() {
-        activity?.let { fActivity ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val roleManager = fActivity.getSystemService(RoleManager::class.java) as RoleManager
-                resultLauncher.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS))
-            } else {
-                val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, fActivity.packageName)
-                fActivity.startActivity(intent)
+    private fun checkAdsConsent() {
+        val consentInformation = UserMessagingPlatform.getConsentInformation(requireContext())
+        consentInformation?.requestConsentInfoUpdate(
+            activity,
+            ConsentRequestParameters.Builder().build(),
+            {
+                // The consent information state was updated.
+                // You are now ready to check if a form is available.
+                if (consentInformation.isConsentFormAvailable) {
+                    loadForm(consentInformation)
+                } else {
+                    init()
+                }
+            },
+            {
+                // Handle the error.
+                init()
+            })
+    }
+
+    private fun loadForm(consentInformation: ConsentInformation) {
+        UserMessagingPlatform.loadConsentForm(
+            context,
+            { consentForm ->
+                if (consentInformation.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+                    consentForm.show(activity) {
+                        // Handle dismissal by reloading form.
+                        loadForm(consentInformation)
+                    }
+                } else {
+                    init()
+                }
             }
+        ) {
+            // Handle the error
+            init()
+        }
+    }
+
+    private fun init() {
+        MobileAds.initialize(requireContext()) {
+            conversationsViewModel.getConversations()
+            navigationView.getConversationsView().initBanner()
         }
     }
 
@@ -143,73 +174,16 @@ class HomeFragment : NavigationFragment() {
         }
     }
 
-    private fun checkConsent() {
-        val params = ConsentRequestParameters.Builder()
-            .setTagForUnderAgeOfConsent(false)
-            .build()
-
-        when (context == null) {
-            true -> homeConversationsViewModel.getConversations()
-            false -> context?.let { ctx ->
-                consentInformation = UserMessagingPlatform.getConsentInformation(context)
-                consentInformation?.requestConsentInfoUpdate(
-                    activity,
-                    params,
-                    {
-                        // The consent information state was updated.
-                        // You are now ready to check if a form is available.
-                        if (consentInformation?.isConsentFormAvailable == true) {
-                            loadForm(ctx)
-                        } else {
-                            init(ctx)
-                        }
-                    },
-                    {
-                        // Handle the error.
-                        init(ctx)
-                    })
-            }
+    private fun requestDefaultSmsDialog() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val roleManager =
+                requireActivity().getSystemService(RoleManager::class.java) as RoleManager
+            resultLauncher.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS))
+        } else {
+            val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, requireActivity().packageName)
+            requireActivity().startActivity(intent)
         }
-    }
-
-    private fun loadForm(context: Context) {
-        UserMessagingPlatform.loadConsentForm(
-            context,
-            { consentForm ->
-                this@HomeFragment.consentForm = consentForm
-                if (consentInformation!!.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
-                    consentForm.show(activity) {
-                        // Handle dismissal by reloading form.
-                        loadForm(context)
-                    }
-                } else {
-                    init(context)
-                }
-            }
-        ) {
-            // Handle the error
-            init(context)
-        }
-    }
-
-    private fun init(context: Context) {
-        MobileAds.initialize(context)
-        navigationView.conversationEvent(HomeConversationEvent.AdsConsentComplete)
-        homeConversationsViewModel.activateAds()
-    }
-
-    private fun addContact(address: String) {
-        val intent = Intent(Intent.ACTION_INSERT)
-            .setType(ContactsContract.Contacts.CONTENT_TYPE)
-            .putExtra(ContactsContract.Intents.Insert.PHONE, address)
-
-        context?.let { ContactObserver(it) { homeConversationsViewModel.onContactChanged() }.start() }
-        activity?.startActivity(intent)
-    }
-
-    private fun goToConversationFragment(conversation: Conversation) {
-        val input = ConversationInput(conversation)
-        findNavController().navigate(HomeFragmentDirections.goToConversation(input))
     }
 
 }

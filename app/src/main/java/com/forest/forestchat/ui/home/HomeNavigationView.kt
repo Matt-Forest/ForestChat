@@ -25,23 +25,15 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
-import com.forest.forestchat.ui.conversations.HomeConversationEvent
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
+import com.forest.forestchat.ui.conversations.HomeConversationsNavigationView
+import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
-
-    // Conversations view
-    lateinit var requestSmsPermissionChats: () -> Unit
-    lateinit var onSearchChangedChats: (String) -> Unit
-    lateinit var optionSelected: (ConversationOptionType) -> Unit
-    lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
-    lateinit var onConversationDeleted: (Long) -> Unit
 
     // Common
     lateinit var toggleTab: (HomeTab) -> Unit
 
-    private var selectedTab: HomeTab = HomeTab.Chats
+    private var selectedTab: HomeTab = HomeTab.Conversations
     private val binding: NavigationHomeBinding
 
     init {
@@ -50,22 +42,11 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
         binding.fab.drawable.setTint(R.color.white.asColor(context))
 
-        setupChatsView()
         setupBottomView()
         toggleViews()
     }
 
-    private fun setupChatsView() {
-        binding.conversationsContainerView.requestSmsPermission = { requestSmsPermissionChats() }
-        binding.conversationsContainerView.onSearchChange = { onSearchChangedChats(it) }
-        binding.conversationsContainerView.optionSelected = { optionSelected(it) }
-        binding.conversationsContainerView.onConversationEvent = { onConversationEvent(it) }
-        binding.conversationsContainerView.onConversationDeleted = { onConversationDeleted(it) }
-    }
-
-    fun conversationEvent(event: HomeConversationEvent) {
-        binding.conversationsContainerView.event(event)
-    }
+    fun getConversationsView(): HomeConversationsNavigationView = binding.conversationsContainerView
 
     private fun setupBottomView() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
@@ -75,8 +56,8 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
             }
 
             when (selectedId) {
-                HomeTab.Chats.id -> {
-                    selectedTab = HomeTab.Chats
+                HomeTab.Conversations.id -> {
+                    selectedTab = HomeTab.Conversations
                     toggleViews()
                 }
                 HomeTab.Dashboard.id -> {
@@ -93,7 +74,7 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
     private fun toggleViews() {
         with(binding) {
             conversationsContainerView.invisibleIf { selectedTab == HomeTab.Dashboard }
-            dashboardContainerView.invisibleIf { selectedTab == HomeTab.Chats }
+            dashboardContainerView.invisibleIf { selectedTab == HomeTab.Conversations }
         }
     }
 

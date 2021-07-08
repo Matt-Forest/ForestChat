@@ -24,14 +24,14 @@ import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationHolder
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItem
+import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdHolder
 import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdItem
-import com.forest.forestchat.ui.common.mappers.buildAvatar
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 
 class HomeConversationsAdapter(
     private val onEvent: (ConversationItemEvent) -> Unit
@@ -51,10 +51,10 @@ class HomeConversationsAdapter(
         holder.onPayload(payload)
     }
 
-    fun setConversations(context: Context, conversations: List<Conversation>, adsActivated: Boolean) {
+    fun setConversations(context: Context, conversations: List<Conversation>) {
         val items = mutableListOf<BaseItem>()
         conversations.forEachIndexed { index, conversation ->
-            if (index > 0 && index % 5 == 0 && adsActivated) {
+            if (index > 0 && index % 5 == 0) {
                 items.add(NativeAdItem())
             }
             items.add(ConversationItem(

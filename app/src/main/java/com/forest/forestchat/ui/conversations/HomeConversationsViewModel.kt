@@ -18,8 +18,11 @@
  */
 package com.forest.forestchat.ui.conversations
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.useCases.*
@@ -30,6 +33,8 @@ import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
+import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,47 +59,55 @@ class HomeConversationsViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
+    private val isLoading = MutableLiveData(true)
+    fun isLoading(): LiveData<Boolean> = isLoading
+
+    private val bannerVisible = MutableLiveData(false)
+    fun bannerVisible(): LiveData<Boolean> = bannerVisible
+
+    private val state = MutableLiveData<HomeConversationsState>()
+    fun state(): LiveData<HomeConversationsState> = state
+
     private val eventEmitter = EventEmitter<HomeConversationEvent>()
     fun eventSource(): EventSource<HomeConversationEvent> = eventEmitter
 
-    private var event: HomeConversationEvent? = null
     private var conversationSelected: Conversation? = null
-    private var adsActivated: Boolean = false
+    private var bannerIsLoad = false
 
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
-            val event = when {
-                !permissionsManager.isDefaultSms() -> HomeConversationEvent.RequestDefaultSms
-                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> HomeConversationEvent.RequestPermission
+            when {
+                !permissionsManager.isDefaultSms() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(HomeConversationEvent.RequestDefaultSms)
+                    }
+                }
+                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(HomeConversationEvent.RequestPermission)
+                        state.value = HomeConversationsState.RequestPermission
+                    }
+                }
                 else -> {
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
-                        withContext(Dispatchers.Main) {
-                            updateEvent(HomeConversationEvent.Loading)
-                        }
+                        isLoading.postValue(true)
                         syncDataUseCase()
                     }
                     val conversations = getConversationsUseCase()
-                    when (conversations == null || conversations.isEmpty()) {
-                        true -> HomeConversationEvent.NoConversationsData
-                        false -> HomeConversationEvent.ConversationsData(conversations, adsActivated)
+                    when (conversations.isNullOrEmpty()) {
+                        true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
+                        false -> state.postValue(HomeConversationsState.Conversations(conversations))
                     }
+                    bannerVisible.postValue(bannerIsLoad)
+                    isLoading.postValue(false)
                 }
-            }
-
-            withContext(Dispatchers.Main) {
-                updateEvent(event)
             }
         }
     }
 
-    private fun updateEvent(newEvent: HomeConversationEvent) {
-        event = newEvent
-        eventEmitter.emit(newEvent)
-    }
-
     fun onDefaultSmsChange(event: TransversalBusEvent.DefaultSmsChangedEvent) = when (event) {
-        TransversalBusEvent.DefaultSmsChangedEvent.Load -> updateEvent(HomeConversationEvent.Loading)
+        TransversalBusEvent.DefaultSmsChangedEvent.Load -> isLoading.value = true
         TransversalBusEvent.DefaultSmsChangedEvent.Complete -> getConversations()
     }
 
@@ -108,15 +121,14 @@ class HomeConversationsViewModel @Inject constructor(
                 val conversations = searchConversationsUseCase(search)
                 val contacts = searchContactsUseCase(search)
 
-                withContext(Dispatchers.Main) {
-                    updateEvent(
-                        when (conversations?.isNullOrEmpty() == true && contacts?.isNullOrEmpty() == true) {
-                            true -> HomeConversationEvent.NoSearchData
-                            false -> HomeConversationEvent.SearchData(
-                                conversations!!,
-                                contacts!!
-                            )
-                        }
+                bannerVisible.postValue(false)
+                when (conversations.isNullOrEmpty() && contacts.isNullOrEmpty()) {
+                    true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_search))
+                    false -> state.postValue(
+                        HomeConversationsState.Search(
+                            conversations!!,
+                            contacts!!
+                        )
                     )
                 }
             }
@@ -138,7 +150,7 @@ class HomeConversationsViewModel @Inject constructor(
         getConversationUseCase(id)?.let { conversation ->
             conversationSelected = conversation
             withContext(Dispatchers.Main) {
-                updateEvent(
+                eventEmitter.emit(
                     HomeConversationEvent.ShowConversationOptions(
                         showAddToContacts = conversation.recipients.first()
                             .takeIf { recipient -> recipient.contact == null } != null,
@@ -154,7 +166,7 @@ class HomeConversationsViewModel @Inject constructor(
     private suspend fun onConversationEventClicked(id: Long) {
         getConversationUseCase(id)?.let { conversation ->
             withContext(Dispatchers.Main) {
-                updateEvent(HomeConversationEvent.GoToConversation(conversation))
+                eventEmitter.emit(HomeConversationEvent.GoToConversation(conversation))
             }
         }
     }
@@ -165,7 +177,7 @@ class HomeConversationsViewModel @Inject constructor(
                 when (type) {
                     ConversationOptionType.AddToContacts -> {
                         withContext(Dispatchers.Main) {
-                            updateEvent(HomeConversationEvent.AddContact(conversation.recipients.first().address))
+                            eventEmitter.emit(HomeConversationEvent.AddContact(conversation.recipients.first().address))
                         }
                     }
                     ConversationOptionType.Pin -> {
@@ -192,7 +204,7 @@ class HomeConversationsViewModel @Inject constructor(
                     }
                     ConversationOptionType.Remove -> {
                         withContext(Dispatchers.Main) {
-                            updateEvent(HomeConversationEvent.RequestDeleteDialog(conversation.id))
+                            eventEmitter.emit(HomeConversationEvent.RequestDeleteDialog(conversation.id))
                         }
                     }
                 }
@@ -216,12 +228,10 @@ class HomeConversationsViewModel @Inject constructor(
         }
     }
 
-    fun activateAds() {
-        adsActivated = true
-        event?.let {
-            if (it is HomeConversationEvent.ConversationsData) {
-                updateEvent(it.copy(adsActivated = true))
-            }
+    fun bannerIsLoad(isLoad: Boolean) {
+        bannerIsLoad = isLoad
+        if (state.value is HomeConversationsState.Conversations) {
+            bannerVisible.value = true
         }
     }
 
