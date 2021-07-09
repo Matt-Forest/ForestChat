@@ -27,8 +27,8 @@ import com.forest.forestchat.domain.useCases.ReceiveSmsUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -49,7 +49,7 @@ class SmsReceiver : BroadcastReceiver() {
         Telephony.Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
             val subscriptionId = intent?.extras?.getInt("subscription", -1) ?: -1
 
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 receiveSmsUseCase(subscriptionId, messages)?.let { conversation ->
 
                     notificationManager.update(conversation.id)

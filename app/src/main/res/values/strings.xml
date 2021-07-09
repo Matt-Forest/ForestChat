@@ -72,6 +72,7 @@
     </string-array>
 
     <string name="conversation_message_send_hint">Write a message…</string>
+    <string name="conversation_sim_toast">SIM %1$d (%2$s) selected</string>
 
     <string name="message_card_contact">Contact card</string>
     <string name="message_option_copy">Copy</string>
@@ -89,5 +90,10 @@
     <string name="message_details_received">Received: %s</string>
     <string name="message_details_delivered">Delivered: %s</string>
     <string name="message_details_error_code">Error code: %d</string>
+
+    <string name="message_attachment_gallery">Gallery</string>
+    <string name="message_attachment_camera">Photo</string>
+    <string name="message_attachment_file">File</string>
+    <string name="message_attachment_contact">Contact</string>
 
 </resources>

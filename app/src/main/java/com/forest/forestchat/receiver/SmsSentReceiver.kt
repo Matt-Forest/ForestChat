@@ -26,8 +26,8 @@ import com.forest.forestchat.domain.useCases.MarkAsFailedUseCase
 import com.forest.forestchat.domain.useCases.MessageSentUseCase
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,7 +49,7 @@ class SmsSentReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getLongExtra(MessageId, 0L)?.let { messageId ->
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 when (resultCode) {
                     Activity.RESULT_OK -> messageSentUseCase(messageId)
                     else -> {

@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.extensions
+package com.forest.forestchat.ui.conversation.models
 
-import android.app.Activity
-import android.content.Context
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-
-
-fun Context.closeKeyboard(view: View?): Boolean {
-    return view?.let {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-    } ?: false
-}
-
-fun Context.makeToast(text: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, text, duration).show()
+enum class AttachmentSelection {
+    Gallery,
+    Camera,
+    File,
+    Contact
 }

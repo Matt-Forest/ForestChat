@@ -22,11 +22,10 @@ import android.content.Intent
 import android.net.Uri
 import android.telephony.TelephonyManager
 import androidx.core.app.JobIntentService
-import com.forest.forestchat.domain.useCases.GetConversationUseCase
 import com.forest.forestchat.domain.useCases.GetOrCreateConversationUseCase
 import com.forest.forestchat.domain.useCases.SendMessageFromNotificationUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,7 +40,7 @@ class SmsSendService : JobIntentService() {
     override fun onHandleWork(intent: Intent) {
         if (intent.action == TelephonyManager.ACTION_RESPOND_VIA_MESSAGE) {
             intent.extras?.getString(Intent.EXTRA_TEXT)?.takeIf { it.isNotBlank() }?.let { body ->
-                GlobalScope.launch(Dispatchers.IO) {
+                CoroutineScope(Dispatchers.IO).launch {
                     val intentUri = intent.data
                     val recipients = intentUri?.let(::getRecipients)?.split(";") ?: return@launch
                     val threadId = getOrCreateConversationUseCase(recipients)?.id ?: 0L

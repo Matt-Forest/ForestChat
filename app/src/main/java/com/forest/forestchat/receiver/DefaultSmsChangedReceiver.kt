@@ -25,8 +25,8 @@ import android.provider.Telephony
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class DefaultSmsChangedReceiver : BroadcastReceiver() {
                 false
             ) == true
         ) {
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Load)
                 syncDataUseCase()
                 EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Complete)

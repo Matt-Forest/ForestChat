@@ -19,10 +19,13 @@
 package com.forest.forestchat.ui.conversation.models
 
 import com.forest.forestchat.ui.common.media.Media
+import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import java.io.File
 
 sealed class ConversationEvent {
 
+    object RequestDefaultSms : ConversationEvent()
+    object RequestSmsPermission : ConversationEvent()
     object RequestStoragePermission : ConversationEvent()
 
     data class ShowFile(val file: File) : ConversationEvent()

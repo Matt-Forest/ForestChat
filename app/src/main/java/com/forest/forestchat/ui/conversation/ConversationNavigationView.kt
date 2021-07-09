@@ -19,20 +19,26 @@
 package com.forest.forestchat.ui.conversation
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.telephony.SubscriptionInfo
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.getSystemService
+import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
-import com.forest.forestchat.extensions.gone
-import com.forest.forestchat.extensions.visible
-import com.forest.forestchat.extensions.visibleIf
+import com.forest.forestchat.extensions.*
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionsDialog
+import com.forest.forestchat.ui.conversation.models.AttachmentSelection
 import com.forest.forestchat.ui.conversation.models.ConversationEvent
 import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.ui.gallery.GalleryInput
@@ -46,6 +52,10 @@ class ConversationNavigationView @JvmOverloads constructor(
 
     lateinit var onMessageEvent: (MessageItemEvent) -> Unit
     lateinit var optionSelected: (MessageOptionType) -> Unit
+    lateinit var onTextToSendChange: (String) -> Unit
+    lateinit var sendOrAddAttachment: () -> Unit
+    lateinit var toggleAddAttachment: () -> Unit
+    lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
 
@@ -53,7 +63,21 @@ class ConversationNavigationView @JvmOverloads constructor(
         val layoutInflater = LayoutInflater.from(context)
         binding = NavigationConversationBinding.inflate(layoutInflater, this)
 
-        binding.back.setOnClickListener { findNavController().popBackStack() }
+        with(binding) {
+            back.setOnClickListener { findNavController().popBackStack() }
+            messageToSend.doAfterTextChanged { text ->
+                onTextToSendChange(text?.toString() ?: "")
+            }
+            sendOrAttachment.setOnClickListener {
+                context.closeKeyboard(binding.messageToSend)
+                sendOrAddAttachment()
+            }
+            addAttachment.setOnClickListener { toggleAddAttachment() }
+            gallery.setOnClickListener { onAttachmentSelected(AttachmentSelection.Gallery) }
+            camera.setOnClickListener { onAttachmentSelected(AttachmentSelection.Camera) }
+            file.setOnClickListener { onAttachmentSelected(AttachmentSelection.File) }
+            contact.setOnClickListener { onAttachmentSelected(AttachmentSelection.Contact) }
+        }
     }
 
     fun event(event: ConversationEvent) {
@@ -108,6 +132,53 @@ class ConversationNavigationView @JvmOverloads constructor(
 
     fun updateTitle(title: String) {
         binding.conversationTitle.text = title
+    }
+
+    fun updateMessageToSend(message: String) {
+        if (message != binding.messageToSend.text?.toString()) {
+            binding.messageToSend.setText(message)
+        }
+    }
+
+    fun updateAttachmentVisibility(isVisible: Boolean) {
+        with(binding) {
+            attachmentButtonContainer.visibleIf { isVisible }
+            if (!addAttachment.isVisible) {
+                sendOrAttachment.animate().rotation(
+                    when (isVisible) {
+                        true -> 45F
+                        false -> 0F
+                    }
+                ).start()
+            }
+        }
+    }
+
+    fun activateSending(activate: Boolean) {
+        binding.sendOrAttachment.setImageDrawable(
+            when (activate) {
+                true -> R.drawable.ic_send
+                false -> R.drawable.ic_add
+            }.asDrawable(context)
+        )
+        binding.addAttachment.visibleIf { activate }
+    }
+
+    fun updateSimInformation(simInfo: SubscriptionInfo?) {
+        // TODO visibility of sim
+        if (simInfo != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.getSystemService<Vibrator>()
+                    ?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
+            context.makeToast(
+                context.getString(
+                    R.string.conversation_sim_toast,
+                    simInfo.simSlotIndex + 1, simInfo.displayName
+                )
+            )
+        }
+        // TODO sim information on the view
     }
 
 }

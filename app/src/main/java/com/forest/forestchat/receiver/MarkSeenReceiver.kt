@@ -23,8 +23,8 @@ import android.content.Context
 import android.content.Intent
 import com.forest.forestchat.domain.useCases.MarkAsSeenUseCase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class MarkSeenReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getLongExtra(MarkReadReceiver.ThreadId, 0)?.let { threadId ->
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 markAsSeenUseCase(threadId)
             }
         }

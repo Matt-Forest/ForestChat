@@ -161,15 +161,13 @@ class HomeFragment : NavigationFragment() {
     }
 
     private fun requestPermission() {
-        activity?.let {
-            ActivityCompat.requestPermissions(
-                it, arrayOf(
-                    Manifest.permission.READ_SMS,
-                    Manifest.permission.SEND_SMS,
-                    Manifest.permission.READ_CONTACTS
-                ), 0
-            )
-        }
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.READ_SMS,
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_CONTACTS
+            ), 0
+        )
     }
 
     private fun requestDefaultSmsDialog() {

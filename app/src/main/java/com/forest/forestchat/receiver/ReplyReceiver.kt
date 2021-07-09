@@ -30,8 +30,8 @@ import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -69,7 +69,7 @@ class ReplyReceiver : BroadcastReceiver() {
         val threadId = bundle.getLong(ThreadId)
         val body = remoteInput.getCharSequence(Body).toString()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             markAsReadUseCase(threadId)
             notificationManager.update(threadId)
             forestChatShortCutManager.updateBadge()

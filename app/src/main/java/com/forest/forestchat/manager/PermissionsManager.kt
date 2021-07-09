@@ -50,6 +50,8 @@ class PermissionsManager @Inject constructor(
 
     fun hasStorage(): Boolean = hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
+    fun hasSendSms(): Boolean = hasPermission(Manifest.permission.SEND_SMS)
+
     private fun hasPermission(permission: String): Boolean =
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 

@@ -28,8 +28,8 @@ import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import com.klinker.android.send_message.MmsSentReceiver
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class MmsSentReceiver : BroadcastReceiver() {
 
             override fun onMessageStatusUpdated(statusIntent: Intent?) {
                 statusIntent?.getStringExtra("content_uri")?.let { uriString ->
-                    GlobalScope.launch(Dispatchers.IO) {
+                    CoroutineScope(Dispatchers.IO).launch {
                         receiverMmsUseCase(Uri.parse(uriString))?.let { conversation ->
                             notificationManager.update(conversation.id)
 

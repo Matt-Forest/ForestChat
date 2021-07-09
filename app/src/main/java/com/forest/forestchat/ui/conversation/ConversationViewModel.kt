@@ -18,6 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation
 
+import android.telephony.SubscriptionInfo
 import androidx.lifecycle.*
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
@@ -29,9 +30,7 @@ import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
-import com.forest.forestchat.ui.conversation.models.ConversationEvent
-import com.forest.forestchat.ui.conversation.models.ConversationInput
-import com.forest.forestchat.ui.conversation.models.ConversationState
+import com.forest.forestchat.ui.conversation.models.*
 import com.forest.forestchat.utils.CopyIntoClipboard
 import com.forest.forestchat.utils.MessageDetailsFormatter
 import com.zhuinden.eventemitter.EventEmitter
@@ -65,8 +64,23 @@ class ConversationViewModel @Inject constructor(
     private val title = MutableLiveData<String>()
     fun title(): LiveData<String> = title
 
+    private val messageToSend = MutableLiveData<String>()
+    fun messageToSend(): LiveData<String> = messageToSend
+
+    private val attachmentVisibility = MutableLiveData(false)
+    fun attachmentVisibility(): LiveData<Boolean> = attachmentVisibility
+
+    private val activateSending = MutableLiveData(false)
+    fun activateSending(): LiveData<Boolean> = activateSending
+
+    private val attachments = MutableLiveData<List<Attachment>>()
+    fun attachments(): LiveData<List<Attachment>> = attachments
+
     private val state = MutableLiveData<ConversationState>()
     fun state(): LiveData<ConversationState> = state
+
+    private val simInfo = MutableLiveData<SubscriptionInfo?>()
+    fun simInfo(): LiveData<SubscriptionInfo?> = simInfo
 
     private val conversation = handle.getNavigationInput<ConversationInput>().conversation
     private var messageSelected: Message? = null
@@ -75,36 +89,49 @@ class ConversationViewModel @Inject constructor(
         title.value = conversation.getTitle()
         isLoading.value = true
 
+        updateMessages()
+        initSimInformation()
+    }
+
+    fun updateMessages() {
         viewModelScope.launch(Dispatchers.IO) {
-            updateMessages()
+            val messages = getMessagesByConversationUseCase(conversation.id)
+
+            when (messages == null) {
+                true -> {
+                    val phone = when (conversation.recipients.size == 1) {
+                        true -> conversation.recipients[0].getNumberPhone()
+                        false -> null
+                    }
+                    state.postValue(
+                        ConversationState.Empty(
+                            buildAvatar(conversation.recipients),
+                            conversation.getTitle(),
+                            phone
+                        )
+                    )
+                }
+                false -> state.postValue(
+                    ConversationState.Data(
+                        messages,
+                        conversation.recipients,
+                        subscriptionManagerCompat.activeSubscriptionInfoList
+                    )
+                )
+            }
             isLoading.postValue(false)
         }
     }
 
-    private suspend fun updateMessages() {
-        val messages = getMessagesByConversationUseCase(conversation.id)
+    private fun initSimInformation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val messages = getMessagesByConversationUseCase(conversation.id)
+            val latestSubId = messages?.lastOrNull()?.subId ?: -1
+            val subs = subscriptionManagerCompat.activeSubscriptionInfoList
+            val sub = if (subs.size > 1) subs.firstOrNull { it.subscriptionId == latestSubId }
+                ?: subs[0] else null
 
-        when (messages == null) {
-            true -> {
-                val phone = when (conversation.recipients.size == 1) {
-                    true -> conversation.recipients[0].getNumberPhone()
-                    false -> null
-                }
-                state.postValue(
-                    ConversationState.Empty(
-                        buildAvatar(conversation.recipients),
-                        conversation.getTitle(),
-                        phone
-                    )
-                )
-            }
-            false -> state.postValue(
-                ConversationState.Data(
-                    messages,
-                    conversation.recipients,
-                    subscriptionManagerCompat.activeSubscriptionInfoList
-                )
-            )
+            simInfo.postValue(sub)
         }
     }
 
@@ -116,6 +143,33 @@ class ConversationViewModel @Inject constructor(
             )
             is MessageItemEvent.MessageSelected -> messageSelected(event.messageId)
             is MessageItemEvent.MediaSelected -> prepareGallery(event.partId)
+        }
+    }
+
+    /**
+     * get all medias from the conversation
+     */
+    private fun prepareGallery(partId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val medias = mutableListOf<Media>()
+            getMessagesByConversationUseCase(conversation.id)
+                ?.forEach { message ->
+                    message.mms?.getPartsMedia()?.map { part ->
+                        Media(
+                            part.id,
+                            part.getUri(),
+                            part.isVideo(),
+                            part.isGif()
+                        )
+                    }?.let {
+                        medias.addAll(it)
+                    }
+                }
+
+            val mediaSelected = medias.first { it.mediaId == partId }
+            withContext(Dispatchers.Main) {
+                eventEmitter.emit(ConversationEvent.ShowGallery(mediaSelected, medias))
+            }
         }
     }
 
@@ -170,28 +224,54 @@ class ConversationViewModel @Inject constructor(
         }
     }
 
-    private fun prepareGallery(partId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val medias = mutableListOf<Media>()
-            getMessagesByConversationUseCase(conversation.id)
-                ?.forEach { message ->
-                    message.mms?.getPartsMedia()?.map { part ->
-                        Media(
-                            part.id,
-                            part.getUri(),
-                            part.isVideo(),
-                            part.isGif()
-                        )
-                    }?.let {
-                        medias.addAll(it)
+    fun onTextToSendChange(newText: String) {
+        if (messageToSend.value != newText) {
+            messageToSend.value = newText
+            activateSending.value = newText.isNotEmpty() // TODO need decision about UX SimSlot and addAttachments
+        }
+    }
+
+    fun sendOrAddAttachment() {
+        when (activateSending.value) {
+            true -> {
+                when {
+                    !permissionsManager.isDefaultSms() -> eventEmitter.emit(ConversationEvent.RequestDefaultSms)
+                    !permissionsManager.hasSendSms() -> eventEmitter.emit(ConversationEvent.RequestSmsPermission)
+                    else -> {
+                        sendNewMessage()
+                        attachments.value = listOf()
+                        onTextToSendChange("")
                     }
                 }
-
-            val mediaSelected = medias.first { it.mediaId == partId }
-            withContext(Dispatchers.Main) {
-                eventEmitter.emit(ConversationEvent.ShowGallery(mediaSelected, medias))
             }
+            false -> toggleAddAttachment()
         }
+    }
+
+    private fun sendNewMessage() {
+        // TODO
+    }
+
+    fun attachmentSelected(attachmentSelection: AttachmentSelection) {
+        //TODO
+    }
+
+    fun toggleAddAttachment() {
+        attachmentVisibility.value?.let { actual ->
+            attachmentVisibility.value = !actual
+        }
+    }
+
+    fun toggleSim() {
+        val subs = subscriptionManagerCompat.activeSubscriptionInfoList
+        val subIndex = subs.indexOfFirst { it.subscriptionId == simInfo.value?.subscriptionId }
+        val subscription = when {
+            subIndex == -1 -> null
+            subIndex < subs.size - 1 -> subs[subIndex + 1]
+            else -> subs[0]
+        }
+
+        simInfo.value = subscription
     }
 
 }

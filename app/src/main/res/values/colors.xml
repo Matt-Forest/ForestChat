@@ -43,8 +43,10 @@
     <color name="background">#FFFFFF</color>
     <color name="bottomNavBackground">#FFFFFF</color>
     <color name="toolbarBackground">#FFFFFF</color>
-    <color name="searchBackground">#EDF2FB</color>
+    <color name="editTextBackground">#EDF2FB</color>
     <color name="bubbleBackground">#EDF2FB</color>
+    <color name="attachmentCardBackground">#EDF2FB</color>
+    <color name="attachmentBackground">#FFFFFF</color>
     <color name="text">#031926</color>
     <color name="text_50">#80031926</color>
     <color name="divider">#1A031926</color>

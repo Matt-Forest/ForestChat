@@ -25,8 +25,8 @@ import android.content.Intent
 import com.forest.forestchat.domain.useCases.MarkAsDeliveredUseCase
 import com.forest.forestchat.domain.useCases.MarkAsDeliveryFailedUseCase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,7 +45,7 @@ class SmsDeliveredReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getLongExtra(SmsSentReceiver.MessageId, 0L)?.let { messageId ->
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 when (resultCode) {
                     Activity.RESULT_OK -> markAsDeliveredUseCase(messageId)
                     Activity.RESULT_CANCELED -> markAsDeliveryFailedUseCase(messageId, resultCode)

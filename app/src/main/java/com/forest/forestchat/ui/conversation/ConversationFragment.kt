@@ -19,9 +19,11 @@
 package com.forest.forestchat.ui.conversation
 
 import android.Manifest
+import android.app.role.RoleManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Telephony
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts
@@ -58,14 +60,24 @@ class ConversationFragment : NavigationFragment() {
         with(navigationView) {
             onMessageEvent = viewModel::onEvent
             optionSelected = viewModel::onMessageOptionSelected
+            onTextToSendChange = viewModel::onTextToSendChange
+            sendOrAddAttachment = viewModel::sendOrAddAttachment
+            onAttachmentSelected = viewModel::attachmentSelected
+            toggleAddAttachment = viewModel::toggleAddAttachment
         }
 
         with(viewModel) {
             observe(isLoading(), navigationView::setLoading)
             observe(title(), navigationView::updateTitle)
             observe(state(), navigationView::updateState)
+            observe(messageToSend(), navigationView::updateMessageToSend)
+            observe(attachmentVisibility(), navigationView::updateAttachmentVisibility)
+            observe(activateSending(), navigationView::activateSending)
+            observe(simInfo(), navigationView::updateSimInformation)
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
+                    ConversationEvent.RequestDefaultSms -> requestDefaultSmsPermission()
+                    ConversationEvent.RequestSmsPermission -> requestSmsPermission()
                     ConversationEvent.RequestStoragePermission -> requestStoragePermission()
                     is ConversationEvent.ShowFile -> showFile(event.file)
                     else -> null
@@ -78,7 +90,7 @@ class ConversationFragment : NavigationFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
     fun onTransversalEvent(event: TransversalBusEvent) {
-        // TODO
+        viewModel.updateMessages()
     }
 
     private fun requestStoragePermission() {
@@ -103,6 +115,27 @@ class ConversationFragment : NavigationFragment() {
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         startActivityExternal(intent)
+    }
+
+    private fun requestDefaultSmsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val roleManager =
+                requireActivity().getSystemService(RoleManager::class.java) as RoleManager
+            resultLauncher.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS))
+        } else {
+            val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, requireActivity().packageName)
+            requireActivity().startActivity(intent)
+        }
+    }
+
+    private fun requestSmsPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.READ_SMS,
+                Manifest.permission.SEND_SMS
+            ), 0
+        )
     }
 
     private fun startActivityExternal(intent: Intent) {

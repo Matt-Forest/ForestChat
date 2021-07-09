@@ -148,6 +148,8 @@
         android:id="@+id/recyclerConversation"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="10dp"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/bottomSendMessageLayout"
@@ -162,56 +164,190 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomSendMessageLayout"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@color/toolbarBackground"
         android:elevation="4dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/newMessageLayout"
+            android:id="@+id/messageLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/bg_edit_text"
+            android:minHeight="48dp"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="8dp"
+            android:paddingVertical="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/sendOrAttachment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/newMessage"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attachmentRecycler"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:autofillHints="@string/conversations_search_hint"
-                android:background="@drawable/bg_edit_text"
-                android:foregroundTint="@color/search_tint_selector"
-                android:hint="@string/conversation_message_send_hint"
-                android:inputType="text"
-                android:paddingEnd="5dp"
-                app:drawableTint="@color/search_tint_selector"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/clearNewMessage"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/addAttachment"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/clearNewMessage"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/messageToSend"
+                style="@style/Typography.Subtitle1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_cancel"
-                android:backgroundTint="@color/text"
+                android:background="@null"
+                android:foregroundTint="@color/edit_text_tint_selector"
+                android:hint="@string/conversation_message_send_hint"
+                android:importantForAutofill="no"
+                android:inputType="textLongMessage|textCapSentences|textMultiLine"
+                android:maxLines="6"
+                app:drawableTint="@color/edit_text_tint_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/addAttachment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/attachmentRecycler"
+                tools:ignore="RtlSymmetry" />
+
+            <ImageView
+                android:id="@+id/addAttachment"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@null"
+                android:padding="4dp"
+                android:src="@drawable/ic_add"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tint="@color/text"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ImageView
+            android:id="@+id/sendOrAttachment"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_primary"
+            android:contentDescription="@null"
+            android:padding="14dp"
+            android:src="@drawable/ic_add"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/messageLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/messageLayout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <GridLayout
+        android:id="@+id/attachmentButtonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_attachment_container"
+        android:columnCount="2"
+        android:padding="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomSendMessageLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/gallery"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_attachment"
+            app:cardBackgroundColor="@color/attachmentCardBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                style="@style/Typography.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/message_attachment_gallery"
+                android:textColor="@color/text"
+                app:drawableTint="@color/text"
+                app:drawableTopCompat="@drawable/ic_image" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/camera"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_attachment"
+            app:cardBackgroundColor="@color/attachmentCardBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                style="@style/Typography.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/message_attachment_camera"
+                android:textColor="@color/text"
+                app:drawableTint="@color/text"
+                app:drawableTopCompat="@drawable/ic_camera" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/file"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_attachment"
+            app:cardBackgroundColor="@color/attachmentCardBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                style="@style/Typography.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/message_attachment_file"
+                android:textColor="@color/text"
+                app:drawableTint="@color/text"
+                app:drawableTopCompat="@drawable/ic_file" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/contact"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_attachment"
+            app:cardBackgroundColor="@color/attachmentCardBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                style="@style/Typography.Subtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/message_attachment_contact"
+                android:textColor="@color/text"
+                app:drawableTint="@color/text"
+                app:drawableTopCompat="@drawable/ic_profile" />
+
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
 
 </merge>

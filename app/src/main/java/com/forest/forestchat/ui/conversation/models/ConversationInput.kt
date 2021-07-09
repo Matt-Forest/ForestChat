@@ -23,4 +23,8 @@ import com.forest.forestchat.domain.models.Conversation
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ConversationInput(val conversation: Conversation) : Parcelable
+data class ConversationInput(
+    val conversation: Conversation,
+    val isNewConversation: Boolean = false,
+    val isGroupConversation: Boolean = false
+) : Parcelable

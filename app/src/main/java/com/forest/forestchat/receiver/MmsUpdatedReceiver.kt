@@ -27,8 +27,8 @@ import com.forest.forestchat.domain.useCases.ReceiveMmsUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -47,7 +47,7 @@ class MmsUpdatedReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getStringExtra("uri")?.let { uriString ->
-            GlobalScope.launch(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 receiverMmsUseCase(Uri.parse(uriString))?.let { conversation ->
                     notificationManager.update(conversation.id)
 
