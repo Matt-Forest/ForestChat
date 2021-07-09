@@ -37,7 +37,7 @@
 
             <argument
                 android:name="input"
-                app:argType="com.forest.forestchat.ui.conversation.ConversationInput"
+                app:argType="com.forest.forestchat.ui.conversation.models.ConversationInput"
                 app:nullable="false" />
 
         </action>
@@ -51,7 +51,7 @@
 
         <argument
             android:name="input"
-            app:argType="com.forest.forestchat.ui.conversation.ConversationInput"
+            app:argType="com.forest.forestchat.ui.conversation.models.ConversationInput"
             app:nullable="false" />
 
         <action

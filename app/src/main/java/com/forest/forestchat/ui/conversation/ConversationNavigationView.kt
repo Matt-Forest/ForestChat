@@ -28,10 +28,13 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.extensions.gone
 import com.forest.forestchat.extensions.visible
+import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionsDialog
+import com.forest.forestchat.ui.conversation.models.ConversationEvent
+import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.ui.gallery.GalleryInput
 
 class ConversationNavigationView @JvmOverloads constructor(
@@ -54,50 +57,57 @@ class ConversationNavigationView @JvmOverloads constructor(
     }
 
     fun event(event: ConversationEvent) {
+        when (event) {
+            is ConversationEvent.ShowMessageOptions -> {
+                MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
+                    .create()
+                    .show()
+            }
+            is ConversationEvent.ShowMessageDetails -> {
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.message_details_title)
+                    .setMessage(event.details)
+                    .setCancelable(true)
+                    .show()
+            }
+            is ConversationEvent.ShowGallery -> {
+                val input = GalleryInput(event.medias, event.mediaSelected)
+                findNavController().navigate(ConversationFragmentDirections.goToGallery(input))
+            }
+            else -> null
+        }
+    }
+
+    fun setLoading(isVisible: Boolean) {
+        binding.loading.visibleIf { isVisible }
+    }
+
+    fun updateState(state: ConversationState) {
         with(binding) {
-            when (event) {
-                is ConversationEvent.Empty -> {
-                    loading.gone()
+            when (state) {
+                is ConversationState.Empty -> {
+                    emptyAvatars.updateAvatars(state.avatarType)
+                    emptyLabel.text = state.title
+                    emptyPhone.text = state.phone
                     recyclerConversation.gone()
-                    emptyAvatars.updateAvatars(event.avatarType)
-                    emptyLabel.text = event.title
-                    emptyPhone.text = event.phone
                     emptyContainer.visible()
                 }
-                ConversationEvent.Loading -> {
-                    loading.visible()
-                }
-                is ConversationEvent.ShowMessageOptions -> {
-                    MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
-                        .create()
-                        .show()
-                }
-                is ConversationEvent.BaseData -> conversationTitle.text = event.title
-                is ConversationEvent.Data -> {
-                    emptyContainer.gone()
-                    loading.gone()
-                    recyclerConversation.visible()
+                is ConversationState.Data -> {
                     if (recyclerConversation.adapter !== conversationAdapter) {
                         recyclerConversation.adapter = conversationAdapter
                     }
                     conversationAdapter.apply {
-                        setMessages(event.messages, event.recipients, event.subscriptionsInfo)
+                        setMessages(state.messages, state.recipients, state.subscriptionsInfo)
                     }
+                    emptyContainer.gone()
+                    recyclerConversation.visible()
                 }
-                is ConversationEvent.ShowMessageDetails -> {
-                    AlertDialog.Builder(context)
-                        .setTitle(R.string.message_details_title)
-                        .setMessage(event.details)
-                        .setCancelable(true)
-                        .show()
-                }
-                is ConversationEvent.ShowGallery -> {
-                    val input = GalleryInput(event.medias, event.mediaSelected)
-                    findNavController().navigate(ConversationFragmentDirections.goToGallery(input))
-                }
-                else -> null
             }
         }
+    }
+
+    fun updateTitle(title: String) {
+        binding.conversationTitle.text = title
     }
 
 }

@@ -18,9 +18,7 @@
  */
 package com.forest.forestchat.ui.conversation
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.useCases.*
@@ -31,6 +29,9 @@ import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
+import com.forest.forestchat.ui.conversation.models.ConversationEvent
+import com.forest.forestchat.ui.conversation.models.ConversationInput
+import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.utils.CopyIntoClipboard
 import com.forest.forestchat.utils.MessageDetailsFormatter
 import com.zhuinden.eventemitter.EventEmitter
@@ -58,44 +59,52 @@ class ConversationViewModel @Inject constructor(
     private val eventEmitter = EventEmitter<ConversationEvent>()
     fun eventSource(): EventSource<ConversationEvent> = eventEmitter
 
+    private val isLoading = MutableLiveData<Boolean>()
+    fun isLoading(): LiveData<Boolean> = isLoading
+
+    private val title = MutableLiveData<String>()
+    fun title(): LiveData<String> = title
+
+    private val state = MutableLiveData<ConversationState>()
+    fun state(): LiveData<ConversationState> = state
+
     private val conversation = handle.getNavigationInput<ConversationInput>().conversation
     private var messageSelected: Message? = null
 
-    fun getMessages() {
-        eventEmitter.emit(ConversationEvent.BaseData(conversation.getTitle()))
-        eventEmitter.emit(ConversationEvent.Loading)
+    init {
+        title.value = conversation.getTitle()
+        isLoading.value = true
 
         viewModelScope.launch(Dispatchers.IO) {
             updateMessages()
+            isLoading.postValue(false)
         }
     }
 
     private suspend fun updateMessages() {
         val messages = getMessagesByConversationUseCase(conversation.id)
 
-        withContext(Dispatchers.Main) {
-            when (messages == null) {
-                true -> {
-                    val phone = when (conversation.recipients.size == 1) {
-                        true -> conversation.recipients[0].getNumberPhone()
-                        false -> null
-                    }
-                    eventEmitter.emit(
-                        ConversationEvent.Empty(
-                            buildAvatar(conversation.recipients),
-                            conversation.getTitle(),
-                            phone
-                        )
-                    )
+        when (messages == null) {
+            true -> {
+                val phone = when (conversation.recipients.size == 1) {
+                    true -> conversation.recipients[0].getNumberPhone()
+                    false -> null
                 }
-                false -> eventEmitter.emit(
-                    ConversationEvent.Data(
-                        messages,
-                        conversation.recipients,
-                        subscriptionManagerCompat.activeSubscriptionInfoList
+                state.postValue(
+                    ConversationState.Empty(
+                        buildAvatar(conversation.recipients),
+                        conversation.getTitle(),
+                        phone
                     )
                 )
             }
+            false -> state.postValue(
+                ConversationState.Data(
+                    messages,
+                    conversation.recipients,
+                    subscriptionManagerCompat.activeSubscriptionInfoList
+                )
+            )
         }
     }
 
@@ -139,7 +148,7 @@ class ConversationViewModel @Inject constructor(
                             when (permissionsManager.hasStorage()) {
                                 true -> saveMmsPartUseCase(mmsPart)?.let {
                                     eventEmitter.emit(
-                                        ConversationEvent.ViewFile(it)
+                                        ConversationEvent.ShowFile(it)
                                     )
                                 }
                                 false -> eventEmitter.emit(ConversationEvent.RequestStoragePermission)

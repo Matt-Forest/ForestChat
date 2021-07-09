@@ -16,11 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversation
+package com.forest.forestchat.ui.conversation.models
 
-import android.os.Parcelable
-import com.forest.forestchat.domain.models.Conversation
-import kotlinx.android.parcel.Parcelize
+import com.forest.forestchat.ui.common.media.Media
+import java.io.File
 
-@Parcelize
-data class ConversationInput(val conversation: Conversation) : Parcelable
+sealed class ConversationEvent {
+
+    object RequestStoragePermission : ConversationEvent()
+
+    data class ShowFile(val file: File) : ConversationEvent()
+    data class ShowMessageOptions(val canCopy: Boolean) : ConversationEvent()
+    data class ShowMessageDetails(val details: String) : ConversationEvent()
+    data class ShowGallery(val mediaSelected: Media, val medias: List<Media>) : ConversationEvent()
+
+}

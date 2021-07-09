@@ -30,7 +30,9 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
+import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.forest.forestchat.ui.conversation.models.ConversationEvent
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -59,16 +61,17 @@ class ConversationFragment : NavigationFragment() {
         }
 
         with(viewModel) {
+            observe(isLoading(), navigationView::setLoading)
+            observe(title(), navigationView::updateTitle)
+            observe(state(), navigationView::updateState)
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     ConversationEvent.RequestStoragePermission -> requestStoragePermission()
-                    is ConversationEvent.ViewFile -> viewFile(event.file)
+                    is ConversationEvent.ShowFile -> showFile(event.file)
                     else -> null
                 }
                 navigationView.event(event)
             }
-
-            getMessages()
         }
     }
 
@@ -79,35 +82,34 @@ class ConversationFragment : NavigationFragment() {
     }
 
     private fun requestStoragePermission() {
-        activity?.let {
-            ActivityCompat.requestPermissions(
-                it,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                0
-            )
-        }
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            0
+        )
     }
 
-    private fun viewFile(file: File) {
-        context?.let {
-            val data = FileProvider.getUriForFile(it, "${it.packageName}.fileprovider", file)
-            val type =
-                MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.name.split(".").last())
-            val intent = Intent(Intent.ACTION_VIEW)
-                .setDataAndType(data, type)
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    private fun showFile(file: File) {
+        val data = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.fileprovider",
+            file
+        )
+        val type = MimeTypeMap
+            .getSingleton()
+            .getMimeTypeFromExtension(file.name.split(".").last())
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setDataAndType(data, type)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-            startActivityExternal(intent)
-        }
+        startActivityExternal(intent)
     }
 
     private fun startActivityExternal(intent: Intent) {
-        activity?.let { fActivity ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                resultLauncher.launch(intent)
-            } else {
-                fActivity.startActivity(intent)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            resultLauncher.launch(intent)
+        } else {
+            requireActivity().startActivity(intent)
         }
     }
 

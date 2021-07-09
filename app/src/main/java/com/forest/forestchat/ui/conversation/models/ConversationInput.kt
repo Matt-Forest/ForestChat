@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.models
+package com.forest.forestchat.ui.conversation.models
 
-import androidx.annotation.StringRes
+import android.os.Parcelable
 import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.SearchConversationResult
-import com.forest.forestchat.domain.models.contact.Contact
+import kotlinx.android.parcel.Parcelize
 
-sealed class HomeConversationsState {
-
-    object RequestPermission : HomeConversationsState()
-
-    data class Empty(@StringRes val label: Int) : HomeConversationsState()
-    data class Conversations(val conversations: List<Conversation>) : HomeConversationsState()
-    data class Search(
-        val conversations: List<SearchConversationResult>,
-        val contacts: List<Contact>
-    ) : HomeConversationsState()
-
-}
+@Parcelize
+data class ConversationInput(val conversation: Conversation) : Parcelable

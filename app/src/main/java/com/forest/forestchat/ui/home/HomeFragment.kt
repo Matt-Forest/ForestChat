@@ -82,11 +82,9 @@ class HomeFragment : NavigationFragment() {
         }
 
         with(conversationsViewModel) {
-            observe(isLoading()) { navigationView.getConversationsView().setLoading(it) }
-            observe(state()) { navigationView.getConversationsView().updateState(it) }
-            observe(bannerVisible()) {
-                navigationView.getConversationsView().updateBannerVisibility(it)
-            }
+            observe(isLoading(), navigationView.getConversationsView()::setLoading)
+            observe(state(), navigationView.getConversationsView()::updateState)
+            observe(bannerVisible(), navigationView.getConversationsView()::updateBannerVisibility)
             observeEvents(eventSource()) { event ->
                 when (event) {
                     is HomeConversationEvent.RequestPermission -> requestPermission()

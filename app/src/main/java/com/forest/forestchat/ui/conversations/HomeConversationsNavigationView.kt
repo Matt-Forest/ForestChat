@@ -32,7 +32,7 @@ import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.goneIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.observer.ContactObserver
-import com.forest.forestchat.ui.conversation.ConversationInput
+import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
@@ -183,8 +183,8 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
         }
     }
 
-    fun setLoading(isLoading: Boolean) {
-        binding.loadingData.visibleIf { isLoading }
+    fun setLoading(isVisible: Boolean) {
+        binding.loadingData.visibleIf { isVisible }
     }
 
     fun updateBannerVisibility(isVisible: Boolean) {

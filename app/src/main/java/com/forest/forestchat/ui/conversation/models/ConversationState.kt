@@ -16,22 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.models
+package com.forest.forestchat.ui.conversation.models
 
-import androidx.annotation.StringRes
-import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.SearchConversationResult
-import com.forest.forestchat.domain.models.contact.Contact
+import android.telephony.SubscriptionInfo
+import com.forest.forestchat.domain.models.Recipient
+import com.forest.forestchat.domain.models.message.Message
+import com.forest.forestchat.ui.common.avatar.AvatarType
 
-sealed class HomeConversationsState {
+sealed class ConversationState {
 
-    object RequestPermission : HomeConversationsState()
+    data class Data(
+        val messages: List<Message>,
+        val recipients: List<Recipient>,
+        val subscriptionsInfo: List<SubscriptionInfo>
+    ) : ConversationState()
 
-    data class Empty(@StringRes val label: Int) : HomeConversationsState()
-    data class Conversations(val conversations: List<Conversation>) : HomeConversationsState()
-    data class Search(
-        val conversations: List<SearchConversationResult>,
-        val contacts: List<Contact>
-    ) : HomeConversationsState()
+    data class Empty(
+        val avatarType: AvatarType,
+        val title: String,
+        val phone: String?
+    ) : ConversationState()
 
 }
