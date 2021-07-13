@@ -20,6 +20,8 @@ package com.forest.forestchat.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -27,11 +29,33 @@ import android.widget.Toast
 
 fun Context.closeKeyboard(view: View?): Boolean {
     return view?.let {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
     } ?: false
 }
 
 fun Context.makeToast(text: String, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, text, duration).show()
+}
+
+fun Context.queryCursor(
+    uri: Uri,
+    projection: Array<String>? = null,
+    selection: String? = null,
+    selectionArgs: Array<String>? = null,
+    sortOrder: String? = null,
+    callback: (cursor: Cursor) -> Unit
+) {
+    try {
+        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        cursor?.use {
+            if (cursor.moveToFirst()) {
+                do {
+                    callback(cursor)
+                } while (cursor.moveToNext())
+            }
+        }
+    } catch (ignore: Exception) {
+    }
 }

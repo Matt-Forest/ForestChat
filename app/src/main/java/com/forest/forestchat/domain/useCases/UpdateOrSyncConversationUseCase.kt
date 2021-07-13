@@ -20,7 +20,6 @@ package com.forest.forestchat.domain.useCases
 
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.message.Message
-import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
 import javax.inject.Inject
 
 class UpdateOrSyncConversationUseCase @Inject constructor(

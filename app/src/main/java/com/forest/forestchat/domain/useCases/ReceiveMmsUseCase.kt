@@ -25,16 +25,28 @@ import javax.inject.Singleton
 
 @Singleton
 class ReceiveMmsUseCase @Inject constructor(
-    private val updateMessageUseCase: UpdateMessageUseCase,
-    private val updateOrSyncConversationUseCase: UpdateOrSyncConversationUseCase,
-    private val syncMessageFromUriUseCase: SyncMessageFromUriUseCase
+    private val syncMessageFromUriUseCase: SyncMessageFromUriUseCase,
+    private val isBlockedNumbersFromProviderUseCase: IsBlockedNumbersFromProviderUseCase,
+    private val markAsReadUseCase: MarkAsReadUseCase,
+    private val getConversationUseCase: GetConversationUseCase,
+    private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase
 ) {
 
     suspend operator fun invoke(uri: Uri): Conversation? =
         syncMessageFromUriUseCase(uri)?.let { message ->
-            updateMessageUseCase(message)
+            var conversation = getConversationUseCase(message.threadId)
+            val isBlocked : Boolean = message.address?.let { isBlockedNumbersFromProviderUseCase(it) } == true
 
-            val conversation = updateOrSyncConversationUseCase(message)
+            if (isBlocked) {
+                markAsReadUseCase(message.threadId)
+            }
+
+            // In case the conversation is one to one. We can block/unblock the conversation
+            if (conversation?.recipients?.size == 1) {
+                conversation = conversation.copy(blocked = isBlocked)
+            }
+
+            conversation?.let { updateLastMessageConversationUseCase(it) }
             return when (conversation?.blocked == true) {
                 true -> null
                 false -> {

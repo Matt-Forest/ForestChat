@@ -16,26 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.useCases.synchronize
+package com.forest.forestchat.extensions
 
-import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
+import android.database.Cursor
 
-@Singleton
-class SyncDataUseCase @Inject constructor(
-    private val syncMessagesUseCase: SyncMessagesUseCase,
-    private val syncContactsUseCase: SyncContactsUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase,
-    private val lastSyncSharedPrefs: LastSyncSharedPrefs
-) {
 
-    suspend operator fun invoke() {
-        syncMessagesUseCase()
-        syncContactsUseCase()
-        syncConversationsUseCase()
-        lastSyncSharedPrefs.set(Date().time)
-    }
+fun Cursor.getStringValue(key: String) = getString(getColumnIndex(key))
 
-}
+fun Cursor.getIntValue(key: String) = getInt(getColumnIndex(key))
+
+fun Cursor.getLongValue(key: String) = getLong(getColumnIndex(key))
+
+fun Cursor.getBlobValue(key: String) = getBlob(getColumnIndex(key))

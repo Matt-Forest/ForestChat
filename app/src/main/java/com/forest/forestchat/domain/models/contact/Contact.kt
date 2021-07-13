@@ -18,7 +18,6 @@
  */
 package com.forest.forestchat.domain.models.contact
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey

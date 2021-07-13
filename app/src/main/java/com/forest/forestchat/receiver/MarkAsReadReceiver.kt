@@ -33,7 +33,7 @@ import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MarkReadReceiver : BroadcastReceiver() {
+class MarkAsReadReceiver : BroadcastReceiver() {
 
     companion object {
         const val ThreadId = "threadId"
@@ -55,7 +55,7 @@ class MarkReadReceiver : BroadcastReceiver() {
 
                 notificationManager.update(threadId)
                 forestChatShortCutManager.updateBadge()
-                EventBus.getDefault().post(TransversalBusEvent.MarkAsReadEvent)
+                EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
             }
         }
     }

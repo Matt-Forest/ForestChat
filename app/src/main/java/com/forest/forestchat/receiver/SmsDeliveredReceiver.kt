@@ -22,19 +22,21 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.MarkAsDeliveredUseCase
 import com.forest.forestchat.domain.useCases.MarkAsDeliveryFailedUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SmsDeliveredReceiver : BroadcastReceiver() {
 
     companion object {
-        val MessageId = "messageId"
+        const val MessageId = "messageId"
     }
 
     @Inject
@@ -50,6 +52,7 @@ class SmsDeliveredReceiver : BroadcastReceiver() {
                     Activity.RESULT_OK -> markAsDeliveredUseCase(messageId)
                     Activity.RESULT_CANCELED -> markAsDeliveryFailedUseCase(messageId, resultCode)
                 }
+                EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
             }
         }
     }

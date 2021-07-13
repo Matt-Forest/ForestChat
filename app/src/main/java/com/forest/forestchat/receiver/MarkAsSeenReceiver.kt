@@ -21,15 +21,17 @@ package com.forest.forestchat.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.MarkAsSeenUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MarkSeenReceiver : BroadcastReceiver() {
+class MarkAsSeenReceiver : BroadcastReceiver() {
 
     companion object {
         const val ThreadId = "threadId"
@@ -39,9 +41,10 @@ class MarkSeenReceiver : BroadcastReceiver() {
     lateinit var markAsSeenUseCase: MarkAsSeenUseCase
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        intent?.getLongExtra(MarkReadReceiver.ThreadId, 0)?.let { threadId ->
+        intent?.getLongExtra(MarkAsReadReceiver.ThreadId, 0)?.let { threadId ->
             CoroutineScope(Dispatchers.IO).launch {
                 markAsSeenUseCase(threadId)
+                EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
             }
         }
     }

@@ -29,8 +29,6 @@ import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
-import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
-import com.forest.forestchat.domain.useCases.synchronize.SyncMessagesUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.receiver.SmsDeliveredReceiver
 import com.forest.forestchat.receiver.SmsSentReceiver
@@ -41,7 +39,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SendMessageFromNotificationUseCase @Inject constructor(
+class SendMessageUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val syncConversationsUseCase: SyncConversationsUseCase,
     private val syncMessagesUseCase: SyncMessagesUseCase,
@@ -50,7 +48,7 @@ class SendMessageFromNotificationUseCase @Inject constructor(
     private val getMessageByThreadIdUseCase: GetMessageByThreadIdUseCase,
     private val markAsFailedUseCase: MarkAsFailedUseCase,
     private val updateMessageUseCase: UpdateMessageUseCase,
-    private val getOrCreateConversationUseCase: GetOrCreateConversationUseCase,
+    private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase,
     private val shortCutManager: ForestChatShortCutManager
 ) {
 
@@ -75,7 +73,7 @@ class SendMessageFromNotificationUseCase @Inject constructor(
             }
 
             id = when (threadId) {
-                0L -> getOrCreateConversationUseCase(addresses)?.id ?: threadId
+                0L -> getOrCreateConversationByAddressesUseCase(addresses)?.id ?: threadId
                 else -> threadId
             }
 

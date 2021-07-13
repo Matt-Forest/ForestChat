@@ -18,7 +18,6 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.provider.Telephony
@@ -58,17 +57,14 @@ class MarkAsReadUseCase @Inject constructor(
             )
         }
 
-        val values = ContentValues().apply {
-            put(Telephony.Sms.SEEN, true)
-            put(Telephony.Sms.READ, true)
-        }
-
-        try {
-            val uri =
-                ContentUris.withAppendedId(Telephony.MmsSms.CONTENT_CONVERSATIONS_URI, threadId)
-            context.contentResolver.update(uri, values, "${Telephony.Sms.READ} = 0", null)
-        } catch (e: Exception) {
-            // Nothing
+        arrayOf(Telephony.Sms.CONTENT_URI, Telephony.Mms.CONTENT_URI).forEach { uri ->
+            val contentValues = ContentValues().apply {
+                put(Telephony.Sms.READ, 1)
+                put(Telephony.Sms.SEEN, 1)
+            }
+            val selection = "${Telephony.Sms.THREAD_ID} = ?"
+            val selectionArgs = arrayOf(threadId.toString())
+            context.contentResolver.update(uri, contentValues, selection, selectionArgs)
         }
     }
 

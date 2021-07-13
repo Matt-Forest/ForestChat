@@ -22,6 +22,7 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.MarkAsFailedUseCase
 import com.forest.forestchat.domain.useCases.MessageSentUseCase
 import com.forest.forestchat.manager.NotificationManager
@@ -29,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,6 +59,7 @@ class SmsSentReceiver : BroadcastReceiver() {
                         notificationManager.notifyFailed(messageId)
                     }
                 }
+                EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
             }
         }
     }

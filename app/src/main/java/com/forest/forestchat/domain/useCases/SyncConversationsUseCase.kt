@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.useCases.synchronize
+package com.forest.forestchat.domain.useCases
 
 import android.content.Context
 import android.net.Uri
@@ -25,6 +25,9 @@ import com.forest.forestchat.domain.mappers.toConversation
 import com.forest.forestchat.domain.mappers.toRecipient
 import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.models.contact.Contact
+import com.forest.forestchat.extensions.getLongValue
+import com.forest.forestchat.extensions.getStringValue
+import com.forest.forestchat.extensions.queryCursor
 import com.forest.forestchat.localStorage.database.daos.ContactDao
 import com.forest.forestchat.localStorage.database.daos.ConversationDao
 import com.forest.forestchat.localStorage.database.daos.MessageDao
@@ -35,6 +38,7 @@ import javax.inject.Singleton
 @Singleton
 class SyncConversationsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val isBlockedNumbersFromProviderUseCase: IsBlockedNumbersFromProviderUseCase,
     private val conversationDao: ConversationDao,
     private val contactDao: ContactDao,
     private val messageDao: MessageDao
@@ -47,7 +51,7 @@ class SyncConversationsUseCase @Inject constructor(
         val messages = messageDao.getAll()
 
         context.contentResolver.query(
-            Uri.parse("content://mms-sms/conversations?simple=true"),
+            Uri.parse("${Telephony.MmsSms.CONTENT_CONVERSATIONS_URI}?simple=true"),
             arrayOf(
                 Telephony.Threads._ID,
                 Telephony.Threads.RECIPIENT_IDS
@@ -57,16 +61,50 @@ class SyncConversationsUseCase @Inject constructor(
             "date desc"
         )?.use { cursor ->
             while (cursor.moveToNext()) {
+                val id = cursor.getLongValue(Telephony.Threads._ID)
+                val persistedConversation = persistedConversationData?.firstOrNull { it.id == id }
+                val recipients = getRecipientByIds(
+                    cursor.getStringValue(Telephony.Threads.RECIPIENT_IDS)
+                        .split(" ")
+                        .filter { it.isNotBlank() },
+                    contacts
+                )
+                // if we have a persisted value so we get it, else we ask to provider
+                val isBlocked = when (persistedConversation) {
+                    null -> recipients.all { isBlockedNumbersFromProviderUseCase(it.address) }
+                    else -> persistedConversation.blocked
+                }
+
                 conversationDao.insert(
-                    cursor.toConversation(
-                        context,
-                        persistedConversationData,
-                        contacts,
+                    toConversation(
+                        id,
+                        persistedConversation,
+                        isBlocked,
+                        recipients,
                         messages
                     )
                 )
             }
         }
+    }
+
+    private fun getRecipientByIds(
+        ids: List<String>,
+        contacts: List<Contact>?
+    ): List<Recipient> {
+        val result = mutableListOf<Recipient>()
+
+        ids.forEach { id ->
+            context.queryCursor(
+                uri = Uri.withAppendedPath(Telephony.MmsSms.CONTENT_URI, "canonical-addresses"),
+                selection = "${Telephony.Mms._ID} = ?",
+                selectionArgs = arrayOf(id)
+            ) { cursor ->
+                result.add(cursor.toRecipient(contacts))
+            }
+        }
+
+        return result
     }
 
 }

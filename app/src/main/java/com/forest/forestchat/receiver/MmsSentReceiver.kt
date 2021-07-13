@@ -18,12 +18,15 @@
  */
 package com.forest.forestchat.receiver
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.useCases.ReceiveMmsUseCase
+import com.forest.forestchat.domain.useCases.GetConversationUseCase
+import com.forest.forestchat.domain.useCases.SyncMessageFromUriUseCase
+import com.forest.forestchat.domain.useCases.UpdateLastMessageConversationUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import com.klinker.android.send_message.MmsSentReceiver
@@ -34,11 +37,12 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
+/**
+ * We need to pass by a BroadcastReceiver instead of MmsReceivedReceiver from klinker because,
+ * Dagger need the onReceiver for the injection.
+ */
 @AndroidEntryPoint
 class MmsSentReceiver : BroadcastReceiver() {
-
-    @Inject
-    lateinit var receiverMmsUseCase: ReceiveMmsUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -46,19 +50,33 @@ class MmsSentReceiver : BroadcastReceiver() {
     @Inject
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
+    @Inject
+    lateinit var syncMessageFromUriUseCase: SyncMessageFromUriUseCase
+
+    @Inject
+    lateinit var getConversationUseCase: GetConversationUseCase
+
+    @Inject
+    lateinit var updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase
+
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Receiver(object : Receiver.MmsSentListener {
 
-            override fun onMessageStatusUpdated(statusIntent: Intent?) {
-                statusIntent?.getStringExtra("content_uri")?.let { uriString ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        receiverMmsUseCase(Uri.parse(uriString))?.let { conversation ->
-                            notificationManager.update(conversation.id)
+            override fun onMessageStatusUpdated(statusIntent: Intent?, resultCode: Int) {
+                if (resultCode == Activity.RESULT_OK) {
+                    statusIntent?.getStringExtra("content_uri")?.let { uriString ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            syncMessageFromUriUseCase(Uri.parse(uriString))?.let { message ->
+                                getConversationUseCase(message.threadId)?.let { conversation ->
+                                    updateLastMessageConversationUseCase(conversation)
+                                    notificationManager.update(conversation.id)
+                                }
+                            }
 
                             forestChatShortCutManager.updateShortcuts()
                             forestChatShortCutManager.updateBadge()
-                            EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
+                            EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
                         }
                     }
                 }
@@ -71,11 +89,11 @@ class MmsSentReceiver : BroadcastReceiver() {
 
         override fun onMessageStatusUpdated(context: Context?, intent: Intent?, resultCode: Int) {
             super.onMessageStatusUpdated(context, intent, resultCode)
-            listener.onMessageStatusUpdated(intent)
+            listener.onMessageStatusUpdated(intent, resultCode)
         }
 
         interface MmsSentListener {
-            fun onMessageStatusUpdated(statusIntent: Intent?)
+            fun onMessageStatusUpdated(statusIntent: Intent?, resultCode: Int)
         }
 
     }

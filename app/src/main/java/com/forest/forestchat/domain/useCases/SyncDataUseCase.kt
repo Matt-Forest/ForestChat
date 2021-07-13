@@ -18,26 +18,24 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetOrCreateConversationByThreadIdUseCase @Inject constructor(
-    private val getConversationUseCase: GetConversationUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase
+class SyncDataUseCase @Inject constructor(
+    private val syncMessagesUseCase: SyncMessagesUseCase,
+    private val syncContactsUseCase: SyncContactsUseCase,
+    private val syncConversationsUseCase: SyncConversationsUseCase,
+    private val lastSyncSharedPrefs: LastSyncSharedPrefs
 ) {
 
-    /**
-     * Get the conversation on Db if exist or sync conversation (content provider to Db)
-     * and after get from Db.
-     */
-    suspend operator fun invoke(threadId: Long): Conversation? =
-        getConversationUseCase(threadId) ?: getConversationFromCp(threadId)
-
-    private suspend fun getConversationFromCp(threadId: Long): Conversation? {
+    suspend operator fun invoke() {
+        syncMessagesUseCase()
+        syncContactsUseCase()
         syncConversationsUseCase()
-        return getConversationUseCase(threadId)
+        lastSyncSharedPrefs.set(Date().time)
     }
 
 }

@@ -54,8 +54,8 @@ import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.asStringArray
 import com.forest.forestchat.extensions.dp
-import com.forest.forestchat.receiver.MarkReadReceiver
-import com.forest.forestchat.receiver.MarkSeenReceiver
+import com.forest.forestchat.receiver.MarkAsReadReceiver
+import com.forest.forestchat.receiver.MarkAsSeenReceiver
 import com.forest.forestchat.receiver.ReplyReceiver
 import com.forest.forestchat.ui.NavigationActivity
 import com.google.android.mms.ContentType
@@ -204,8 +204,8 @@ class NotificationManager @Inject constructor(
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
         // on seen intent
-        val seenIntent = Intent(context, MarkSeenReceiver::class.java).apply {
-            putExtra(MarkSeenReceiver.ThreadId, threadId)
+        val seenIntent = Intent(context, MarkAsSeenReceiver::class.java).apply {
+            putExtra(MarkAsSeenReceiver.ThreadId, threadId)
         }
         val seenPendingIntent = PendingIntent.getBroadcast(
             context,
@@ -301,8 +301,8 @@ class NotificationManager @Inject constructor(
     }
 
     private fun actionRead(threadId: Long): NotificationCompat.Action? {
-        val intent = Intent(context, MarkReadReceiver::class.java).putExtra(
-            MarkReadReceiver.ThreadId,
+        val intent = Intent(context, MarkAsReadReceiver::class.java).putExtra(
+            MarkAsReadReceiver.ThreadId,
             threadId
         )
         val pi = PendingIntent.getBroadcast(
@@ -345,8 +345,8 @@ class NotificationManager @Inject constructor(
     }
 
     private fun getReplyAction(threadId: Long): NotificationCompat.Action {
-        val replyIntent =
-            Intent(context, ReplyReceiver::class.java).putExtra(ReplyReceiver.ThreadId, threadId)
+        val replyIntent = Intent(context, ReplyReceiver::class.java)
+            .putExtra(ReplyReceiver.ThreadId, threadId)
         val replyPI = PendingIntent.getBroadcast(
             context, threadId.toInt(), replyIntent,
             PendingIntent.FLAG_UPDATE_CURRENT

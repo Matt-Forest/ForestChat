@@ -34,6 +34,7 @@ import javax.inject.Singleton
 @Singleton
 class SyncMessageFromUriUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
     private val messageDao: MessageDao
 ) {
 
@@ -48,6 +49,9 @@ class SyncMessageFromUriUseCase @Inject constructor(
         // If we don't have a valid id, return null
         val id = tryOrNull { ContentUris.parseId(uri) } ?: return null
 
+        // Check if the message already exists, so we can reuse the id
+        val existingId = messageDao.getByContentId(id, type)?.id
+
         // The uri might be something like content://mms/inbox/id
         // The box might change though, so we should just use the mms/id uri
         val stableUri = when (type) {
@@ -58,7 +62,16 @@ class SyncMessageFromUriUseCase @Inject constructor(
         return context.contentResolver.query(stableUri, null, null, null, null)?.use { cursor ->
 
             when (cursor.moveToFirst()) {
-                true -> cursor.toMessage(context)
+                true -> {
+                    var message = cursor.toMessage(context)
+                    existingId?.let { message = message.copy(id = it) }
+
+                    // we just want to be sure we have the conversation into the Db if not
+                    // we re-sync the content provider for get all conversation.
+                    getOrCreateConversationByThreadIdUseCase(message.threadId)
+                    messageDao.insert(message)
+                    message
+                }
                 false -> null
             }
         }

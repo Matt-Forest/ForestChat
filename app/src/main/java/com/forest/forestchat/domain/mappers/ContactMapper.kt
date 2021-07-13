@@ -23,23 +23,26 @@ import android.database.Cursor
 import android.provider.ContactsContract
 import com.forest.forestchat.domain.models.contact.Contact
 import com.forest.forestchat.domain.models.contact.PhoneNumber
+import com.forest.forestchat.extensions.getIntValue
+import com.forest.forestchat.extensions.getLongValue
+import com.forest.forestchat.extensions.getStringValue
 
 fun Cursor.toContact(context: Context) = Contact(
-    lookupKey = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)),
+    lookupKey = getStringValue(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY),
     numbers = mutableListOf(
         PhoneNumber(
-            id = getLong(getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)),
-            address = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)),
+            id = getLongValue(ContactsContract.CommonDataKinds.Phone._ID),
+            address = getStringValue(ContactsContract.CommonDataKinds.Phone.NUMBER),
             type = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
                 context.resources,
-                getInt(getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)),
-                getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL))
+                getIntValue(ContactsContract.CommonDataKinds.Phone.TYPE),
+                getStringValue(ContactsContract.CommonDataKinds.Phone.LABEL)
             ).toString(),
             isDefault = false
         )
     ),
-    name = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
-    photoUri = getString(getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI)),
-    starred = getInt(getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED)) != 0,
-    lastUpdate = getLong(getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_LAST_UPDATED_TIMESTAMP)),
+    name = getStringValue(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME),
+    photoUri = getStringValue(ContactsContract.CommonDataKinds.Phone.PHOTO_URI),
+    starred = getIntValue(ContactsContract.CommonDataKinds.Phone.STARRED) != 0,
+    lastUpdate = getLongValue(ContactsContract.CommonDataKinds.Phone.CONTACT_LAST_UPDATED_TIMESTAMP),
 )

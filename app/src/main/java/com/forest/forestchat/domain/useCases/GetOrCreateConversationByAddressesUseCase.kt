@@ -29,7 +29,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetOrCreateConversationUseCase @Inject constructor(
+class GetOrCreateConversationByAddressesUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
     private val conversationDao: ConversationDao

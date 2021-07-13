@@ -34,11 +34,15 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
+/**
+ * We need to pass by a BroadcastReceiver instead of MmsReceivedReceiver from klinker because,
+ * Dagger need the onReceiver for the injection.
+ */
 @AndroidEntryPoint
 class MmsReceivedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var receiverMmsUseCase: ReceiveMmsUseCase
+    lateinit var receiveMmsUseCase: ReceiveMmsUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -53,12 +57,12 @@ class MmsReceivedReceiver : BroadcastReceiver() {
             override fun onMessageReceived(context: Context?, messageUri: Uri?) {
                 messageUri?.let { uri ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        receiverMmsUseCase(uri)?.let { conversation ->
+                        receiveMmsUseCase(uri)?.let { conversation ->
                             notificationManager.update(conversation.id)
 
                             forestChatShortCutManager.updateShortcuts()
                             forestChatShortCutManager.updateBadge()
-                            EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
+                            EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
                         }
                     }
                 }

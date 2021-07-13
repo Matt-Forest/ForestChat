@@ -16,16 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.useCases.synchronize
+package com.forest.forestchat.domain.useCases
 
 import android.content.Context
 import android.net.Uri
 import android.provider.Telephony
 import com.forest.forestchat.domain.mappers.toMessage
-import com.forest.forestchat.domain.mappers.toMmsPart
-import com.forest.forestchat.domain.models.message.mms.MmsPart
 import com.forest.forestchat.localStorage.database.daos.MessageDao
-import com.google.android.mms.pdu_alt.PduHeaders
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

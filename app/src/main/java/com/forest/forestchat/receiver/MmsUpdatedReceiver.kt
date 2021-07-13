@@ -23,7 +23,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.useCases.ReceiveMmsUseCase
+import com.forest.forestchat.domain.useCases.GetConversationUseCase
+import com.forest.forestchat.domain.useCases.SyncMessageFromUriUseCase
+import com.forest.forestchat.domain.useCases.UpdateLastMessageConversationUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,24 +39,34 @@ import javax.inject.Inject
 class MmsUpdatedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var receiverMmsUseCase: ReceiveMmsUseCase
-
-    @Inject
     lateinit var notificationManager: NotificationManager
 
     @Inject
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
+    @Inject
+    lateinit var syncMessageFromUriUseCase: SyncMessageFromUriUseCase
+
+    @Inject
+    lateinit var getConversationUseCase: GetConversationUseCase
+
+    @Inject
+    lateinit var updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase
+
+
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getStringExtra("uri")?.let { uriString ->
             CoroutineScope(Dispatchers.IO).launch {
-                receiverMmsUseCase(Uri.parse(uriString))?.let { conversation ->
-                    notificationManager.update(conversation.id)
-
-                    forestChatShortCutManager.updateShortcuts()
-                    forestChatShortCutManager.updateBadge()
-                    EventBus.getDefault().post(TransversalBusEvent.ReceiveMms)
+                syncMessageFromUriUseCase(Uri.parse(uriString))?.let { message ->
+                    getConversationUseCase(message.threadId)?.let { conversation ->
+                        updateLastMessageConversationUseCase(conversation)
+                        notificationManager.update(conversation.id)
+                    }
                 }
+
+                forestChatShortCutManager.updateShortcuts()
+                forestChatShortCutManager.updateBadge()
+                EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
             }
         }
     }

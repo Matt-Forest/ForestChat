@@ -32,6 +32,7 @@ data class Conversation(
     val archived: Boolean,
     val blocked: Boolean,
     val pinned: Boolean,
+    val grouped: Boolean,
     val recipients: List<Recipient>,
     val lastMessage: Message?,
     val draft: String?,

@@ -18,26 +18,30 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import com.forest.forestchat.domain.models.Conversation
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.forest.forestchat.extensions.trimToComparableNumber
+import com.forest.forestchat.utils.isNougatPlus
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetOrCreateConversationByThreadIdUseCase @Inject constructor(
-    private val getConversationUseCase: GetConversationUseCase,
-    private val syncConversationsUseCase: SyncConversationsUseCase
+class IsBlockedNumbersFromProviderUseCase @Inject constructor(
+    private val getBlockedNumbersFromProviderUseCase: GetBlockedNumbersFromProviderUseCase
 ) {
 
-    /**
-     * Get the conversation on Db if exist or sync conversation (content provider to Db)
-     * and after get from Db.
-     */
-    suspend operator fun invoke(threadId: Long): Conversation? =
-        getConversationUseCase(threadId) ?: getConversationFromCp(threadId)
+    @SuppressLint("NewApi")
+    operator fun invoke(number: String): Boolean = when (isNougatPlus()) {
+        true -> {
+            val blockedNumbers = getBlockedNumbersFromProviderUseCase()
 
-    private suspend fun getConversationFromCp(threadId: Long): Conversation? {
-        syncConversationsUseCase()
-        return getConversationUseCase(threadId)
+            val numberToCompare = number.trimToComparableNumber()
+            blockedNumbers.map { it.numberToCompare }
+                .contains(numberToCompare) || blockedNumbers.map { it.number }
+                .contains(numberToCompare)
+        }
+        false -> false
     }
 
 }

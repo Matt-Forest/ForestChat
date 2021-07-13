@@ -26,9 +26,9 @@ import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.useCases.*
-import com.forest.forestchat.domain.useCases.synchronize.SyncContactsUseCase
-import com.forest.forestchat.domain.useCases.synchronize.SyncConversationsUseCase
-import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
+import com.forest.forestchat.domain.useCases.SyncContactsUseCase
+import com.forest.forestchat.domain.useCases.SyncConversationsUseCase
+import com.forest.forestchat.domain.useCases.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent

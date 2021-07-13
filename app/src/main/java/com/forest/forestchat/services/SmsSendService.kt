@@ -18,36 +18,44 @@
  */
 package com.forest.forestchat.services
 
+import android.app.Service
 import android.content.Intent
 import android.net.Uri
-import android.telephony.TelephonyManager
-import androidx.core.app.JobIntentService
-import com.forest.forestchat.domain.useCases.GetOrCreateConversationUseCase
-import com.forest.forestchat.domain.useCases.SendMessageFromNotificationUseCase
+import android.os.IBinder
+import com.forest.forestchat.domain.useCases.GetOrCreateConversationByAddressesUseCase
+import com.forest.forestchat.domain.useCases.SendMessageUseCase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SmsSendService : JobIntentService() {
+@AndroidEntryPoint
+class SmsSendService : Service() {
 
     @Inject
-    lateinit var getOrCreateConversationUseCase: GetOrCreateConversationUseCase
+    lateinit var getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase
 
     @Inject
-    lateinit var sendMessageFromNotificationUseCase: SendMessageFromNotificationUseCase
+    lateinit var sendMessageUseCase: SendMessageUseCase
 
-    override fun onHandleWork(intent: Intent) {
-        if (intent.action == TelephonyManager.ACTION_RESPOND_VIA_MESSAGE) {
-            intent.extras?.getString(Intent.EXTRA_TEXT)?.takeIf { it.isNotBlank() }?.let { body ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    val intentUri = intent.data
-                    val recipients = intentUri?.let(::getRecipients)?.split(";") ?: return@launch
-                    val threadId = getOrCreateConversationUseCase(recipients)?.id ?: 0L
-                    sendMessageFromNotificationUseCase(-1, threadId, recipients, body)
-                }
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent == null) {
+            return START_NOT_STICKY
+        }
+
+        intent.extras?.getString(Intent.EXTRA_TEXT)?.takeIf { it.isNotBlank() }?.let { body ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val intentUri = intent.data
+                val recipients = intentUri?.let(::getRecipients)?.split(";") ?: return@launch
+                val threadId = getOrCreateConversationByAddressesUseCase(recipients)?.id ?: 0L
+                sendMessageUseCase(-1, threadId, recipients, body)
             }
         }
+
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun getRecipients(uri: Uri): String {

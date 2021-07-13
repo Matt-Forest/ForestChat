@@ -76,6 +76,7 @@
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
                 <data android:mimeType="application/vnd.wap.mms-message" />
+                <data android:mimeType="application/vnd.wap.sic" />
             </intent-filter>
         </receiver>
         <receiver
@@ -85,8 +86,8 @@
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.MarkSeenReceiver" />
-        <receiver android:name=".receiver.MarkReadReceiver" />
+        <receiver android:name=".receiver.MarkAsSeenReceiver" />
+        <receiver android:name=".receiver.MarkAsReadReceiver" />
         <receiver android:name=".receiver.ReplyReceiver" />
         <receiver android:name=".receiver.SmsSentReceiver" />
         <receiver android:name=".receiver.SmsDeliveredReceiver" />
@@ -99,6 +100,11 @@
         <receiver
             android:name=".receiver.MmsReceivedReceiver"
             android:taskAffinity="com.klinker.android.messaging.MMS_RECEIVED" />
+        <receiver android:name=".receiver.SmsProviderChangedReceiver">
+            <intent-filter>
+                <action android:name="android.provider.action.EXTERNAL_PROVIDER_CHANGE" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".services.SmsSendService"

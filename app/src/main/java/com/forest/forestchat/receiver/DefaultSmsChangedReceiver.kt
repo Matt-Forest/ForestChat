@@ -23,7 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
 import com.forest.forestchat.app.TransversalBusEvent
-import com.forest.forestchat.domain.useCases.synchronize.SyncDataUseCase
+import com.forest.forestchat.domain.useCases.SyncDataUseCase
+import com.forest.forestchat.manager.ForestChatShortCutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,9 @@ class DefaultSmsChangedReceiver : BroadcastReceiver() {
     @Inject
     lateinit var syncDataUseCase: SyncDataUseCase
 
+    @Inject
+    lateinit var forestChatShortCutManager: ForestChatShortCutManager
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.getBooleanExtra(
                 Telephony.Sms.Intents.EXTRA_IS_DEFAULT_SMS_APP,
@@ -46,6 +50,7 @@ class DefaultSmsChangedReceiver : BroadcastReceiver() {
             CoroutineScope(Dispatchers.IO).launch {
                 EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Load)
                 syncDataUseCase()
+                forestChatShortCutManager.updateBadge()
                 EventBus.getDefault().post(TransversalBusEvent.DefaultSmsChangedEvent.Complete)
             }
         }

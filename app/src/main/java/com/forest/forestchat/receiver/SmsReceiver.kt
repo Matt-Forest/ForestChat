@@ -56,7 +56,7 @@ class SmsReceiver : BroadcastReceiver() {
 
                     forestChatShortCutManager.updateShortcuts()
                     forestChatShortCutManager.updateBadge()
-                    EventBus.getDefault().post(TransversalBusEvent.ReceiveSms)
+                    EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
                 }
             }
         }

@@ -25,7 +25,7 @@ import androidx.core.app.RemoteInput
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.useCases.GetConversationUseCase
 import com.forest.forestchat.domain.useCases.MarkAsReadUseCase
-import com.forest.forestchat.domain.useCases.SendMessageFromNotificationUseCase
+import com.forest.forestchat.domain.useCases.SendMessageUseCase
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.manager.NotificationManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
@@ -54,7 +54,7 @@ class ReplyReceiver : BroadcastReceiver() {
     lateinit var subscriptionManagerCompat: SubscriptionManagerCompat
 
     @Inject
-    lateinit var sendMessageFromNotificationUseCase: SendMessageFromNotificationUseCase
+    lateinit var sendMessageUseCase: SendMessageUseCase
 
     @Inject
     lateinit var notificationManager: NotificationManager
@@ -63,11 +63,8 @@ class ReplyReceiver : BroadcastReceiver() {
     lateinit var forestChatShortCutManager: ForestChatShortCutManager
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val remoteInput = RemoteInput.getResultsFromIntent(intent) ?: return
-        val bundle = intent?.extras ?: return
-
-        val threadId = bundle.getLong(ThreadId)
-        val body = remoteInput.getCharSequence(Body).toString()
+        val threadId = intent?.getLongExtra(ThreadId, 0L) ?: return
+        val body = RemoteInput.getResultsFromIntent(intent).getCharSequence(Body)?.toString() ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
             markAsReadUseCase(threadId)
@@ -81,8 +78,8 @@ class ReplyReceiver : BroadcastReceiver() {
                 ?.subscriptionId ?: -1
             val addresses = conversation?.recipients?.map { it.address } ?: return@launch
 
-            sendMessageFromNotificationUseCase(subId, threadId, addresses, body)
-            EventBus.getDefault().post(TransversalBusEvent.ReplyEvent)
+            sendMessageUseCase(subId, threadId, addresses, body)
+            EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
         }
     }
 

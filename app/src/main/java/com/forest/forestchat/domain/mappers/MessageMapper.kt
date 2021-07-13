@@ -26,6 +26,10 @@ import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.mms.MmsPart
+import com.forest.forestchat.extensions.getIntValue
+import com.forest.forestchat.extensions.getLongValue
+import com.forest.forestchat.extensions.getStringValue
+import com.forest.forestchat.extensions.queryCursor
 import com.google.android.mms.pdu_alt.PduHeaders
 
 fun Cursor.toMessage(context: Context): Message {
@@ -37,40 +41,40 @@ fun Cursor.toMessage(context: Context): Message {
         getColumnIndex(Telephony.Sms.ADDRESS) != -1 -> "sms"
         else -> null
     }.toMessageType()
-    val contentId = getLong(getColumnIndex(Telephony.MmsSms._ID))
+    val contentId = getLongValue(Telephony.MmsSms._ID)
 
     return Message(
-        threadId = getLong(getColumnIndex(Telephony.Mms.THREAD_ID)),
+        threadId = getLongValue(Telephony.Mms.THREAD_ID),
         contentId = contentId,
         address = when (type) {
-            MessageType.Sms -> getString(getColumnIndex(Telephony.Sms.ADDRESS))
+            MessageType.Sms -> getStringValue(Telephony.Sms.ADDRESS)
             MessageType.Mms -> getMmsAddress(context, contentId)
             else -> null
         },
         box = MessageBox.values().find {
             it.code == when (type) {
-                MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.TYPE))
-                MessageType.Mms -> getInt(getColumnIndex(Telephony.Mms.MESSAGE_BOX))
+                MessageType.Sms -> getIntValue(Telephony.Sms.TYPE)
+                MessageType.Mms -> getIntValue(Telephony.Mms.MESSAGE_BOX)
                 else -> 0
             }
         } ?: MessageBox.All,
         type = type,
-        date = getLong(getColumnIndex(Telephony.Mms.DATE)).toDate(type),
-        dateSent = getLong(getColumnIndex(Telephony.Mms.DATE_SENT)).toDate(type),
-        read = getInt(getColumnIndex(Telephony.Mms.READ)) != 0,
-        seen = getInt(getColumnIndex(Telephony.Mms.SEEN)) != 0,
+        date = getLongValue(Telephony.Mms.DATE).toDate(type),
+        dateSent = getLongValue(Telephony.Mms.DATE_SENT).toDate(type),
+        read = getIntValue(Telephony.Mms.READ) != 0,
+        seen = getIntValue(Telephony.Mms.SEEN) != 0,
         locked = when (type) {
-            MessageType.Sms -> getInt(getColumnIndex(Telephony.Sms.LOCKED)) != 0
-            MessageType.Mms -> getInt(getColumnIndex(Telephony.Mms.LOCKED)) != 0
+            MessageType.Sms -> getIntValue(Telephony.Sms.LOCKED) != 0
+            MessageType.Mms -> getIntValue(Telephony.Mms.LOCKED) != 0
             else -> false
         },
         subId = when (type) {
             MessageType.Sms -> when (getColumnIndex(Telephony.Sms.SUBSCRIPTION_ID) != -1) {
-                true -> getInt(getColumnIndex(Telephony.Sms.SUBSCRIPTION_ID))
+                true -> getIntValue(Telephony.Sms.SUBSCRIPTION_ID)
                 false -> null
             }
             MessageType.Mms -> when (getColumnIndex(Telephony.Mms.SUBSCRIPTION_ID) != -1) {
-                true -> getInt(getColumnIndex(Telephony.Mms.SUBSCRIPTION_ID))
+                true -> getIntValue(Telephony.Mms.SUBSCRIPTION_ID)
                 false -> null
             }
             else -> null
@@ -117,17 +121,13 @@ private fun getMmsAddress(context: Context, messageId: Long): String? {
 
 private fun getMmsPartByMessageId(context: Context, messageId: Long): List<MmsPart> {
     val uri = Uri.parse("content://mms/part")
-    val projection = "${Telephony.Mms.Part.MSG_ID} = ?"
-    val selection = arrayOf(messageId.toString())
+    val selection = "${Telephony.Mms.Part.MSG_ID} = ?"
+    val selectionArgs = arrayOf(messageId.toString())
 
     val result = mutableListOf<MmsPart>()
 
-    context.contentResolver.query(
-        uri, null, projection, selection, null
-    )?.use { cursor ->
-        while (cursor.moveToNext()) {
-            result.add(cursor.toMmsPart())
-        }
+    context.queryCursor(uri = uri, selection = selection, selectionArgs = selectionArgs) { cursor ->
+        result.add(cursor.toMmsPart())
     }
 
     return result
