@@ -51,7 +51,7 @@ class SmsSendService : Service() {
                 val intentUri = intent.data
                 val recipients = intentUri?.let(::getRecipients)?.split(";") ?: return@launch
                 val threadId = getOrCreateConversationByAddressesUseCase(recipients)?.id ?: 0L
-                sendMessageUseCase(-1, threadId, recipients, body)
+                sendMessageUseCase(-1, threadId, recipients, body, listOf())
             }
         }
 

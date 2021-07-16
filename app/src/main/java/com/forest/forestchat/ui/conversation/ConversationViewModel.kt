@@ -33,6 +33,8 @@ import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.models.*
 import com.forest.forestchat.utils.CopyIntoClipboard
 import com.forest.forestchat.utils.MessageDetailsFormatter
+import com.forest.forestchat.utils.TelephonyThread
+import com.forest.forestchat.utils.tryOrNull
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +51,7 @@ class ConversationViewModel @Inject constructor(
     private val saveMmsPartUseCase: SaveMmsPartUseCase,
     private val deleteMessageUseCase: DeleteMessageUseCase,
     private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
     private val permissionsManager: PermissionsManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
@@ -249,7 +252,17 @@ class ConversationViewModel @Inject constructor(
     }
 
     private fun sendNewMessage() {
-        // TODO
+        val subId = simInfo.value?.subscriptionId ?: -1
+        val addresses = conversation.recipients.map { it.address }
+        val body = messageToSend.value ?: ""
+        val attachments = attachments.value ?: listOf()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            when {
+                addresses.size == 1 || conversation.grouped -> sendMessageUseCase(subId, conversation.id, addresses, body, attachments)
+                else -> sendMessageUseCase(subId, 0L, addresses, body, attachments)
+            }
+        }
     }
 
     fun attachmentSelected(attachmentSelection: AttachmentSelection) {

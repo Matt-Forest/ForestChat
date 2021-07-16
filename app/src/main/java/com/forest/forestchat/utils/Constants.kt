@@ -22,3 +22,7 @@ import android.os.Build
 
 
 fun isNougatPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+
+const val MimeTypeContactCard = "text/x-vCard"
+const val MimeTypeJpeg = "image/jpeg"
+const val MimeTypeGif = "image/gif"

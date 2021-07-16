@@ -107,10 +107,7 @@ class HomeFragment : NavigationFragment() {
         when (event) {
             is TransversalBusEvent.DefaultSmsChangedEvent ->
                 conversationsViewModel.onDefaultSmsChange(event)
-            TransversalBusEvent.MarkAsReadEvent,
-            TransversalBusEvent.ReplyEvent,
-            TransversalBusEvent.ReceiveSms,
-            TransversalBusEvent.ReceiveMms -> conversationsViewModel.getConversations()
+            TransversalBusEvent.RefreshMessages -> conversationsViewModel.getConversations()
         }
     }
 

@@ -25,8 +25,6 @@ import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.load
-import coil.size.Precision
-import coil.size.Scale
 import com.forest.forestchat.R
 
 fun ImageView.loadUri(uri: Uri?, imageSignatureKeys: ImageSignatureKeys?) {

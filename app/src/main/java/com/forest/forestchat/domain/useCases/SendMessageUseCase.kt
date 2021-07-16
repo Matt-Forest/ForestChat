@@ -21,9 +21,17 @@ package com.forest.forestchat.domain.useCases
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.provider.Telephony
 import android.telephony.SmsManager
 import androidx.core.content.contentValuesOf
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
@@ -32,8 +40,14 @@ import com.forest.forestchat.domain.models.message.sms.SmsStatus
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.receiver.SmsDeliveredReceiver
 import com.forest.forestchat.receiver.SmsSentReceiver
+import com.forest.forestchat.ui.conversation.models.Attachment
+import com.forest.forestchat.utils.MimeTypeContactCard
+import com.forest.forestchat.utils.MimeTypeGif
+import com.forest.forestchat.utils.MimeTypeJpeg
 import com.forest.forestchat.utils.TelephonyThread
+import com.klinker.android.send_message.Settings
 import com.klinker.android.send_message.SmsManagerFactory
+import com.klinker.android.send_message.Transaction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,13 +56,13 @@ import javax.inject.Singleton
 class SendMessageUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val syncConversationsUseCase: SyncConversationsUseCase,
-    private val syncMessagesUseCase: SyncMessagesUseCase,
     private val getConversationUseCase: GetConversationUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,
     private val getMessageByThreadIdUseCase: GetMessageByThreadIdUseCase,
     private val markAsFailedUseCase: MarkAsFailedUseCase,
     private val updateMessageUseCase: UpdateMessageUseCase,
     private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase,
+    private val syncMessageFromUriUseCase: SyncMessageFromUriUseCase,
     private val shortCutManager: ForestChatShortCutManager
 ) {
 
@@ -57,6 +71,7 @@ class SendMessageUseCase @Inject constructor(
         threadId: Long,
         addresses: List<String>,
         body: String,
+        attachments: List<Attachment>
     ) {
         if (addresses.isNotEmpty()) {
             // If a threadId isn't provided, try to obtain one
@@ -65,7 +80,8 @@ class SendMessageUseCase @Inject constructor(
                 else -> threadId
             }
 
-            sendMessage(subId, id, addresses, body)
+            sendMessage(subId, id, addresses, body, attachments)
+//            sendMessage2(subId, id, addresses, body, attachments)
 
             // Sync data if needed
             if (threadId == 0L) {
@@ -98,15 +114,26 @@ class SendMessageUseCase @Inject constructor(
         threadId: Long,
         addresses: List<String>,
         body: String,
+        attachments: List<Attachment>
     ) {
-        val message = convertToMessage(subId, threadId, addresses, body, System.currentTimeMillis())
-        sendMessageToNativeProvider(message)
+        val smsManager = subId.takeIf { it != -1 }
+            ?.let(SmsManagerFactory::createSmsManager)
+            ?: SmsManager.getDefault()
 
-        if (threadId == 0L) {
-            syncMessagesUseCase()
+        val parts = smsManager.divideMessage(body) ?: arrayListOf()
+        val forceMms = parts.size > 1
+
+        if (addresses.size == 1 && attachments.isEmpty() && !forceMms) {
+            /* ---- SMS ---- */
+            val message = convertToMessage(subId, threadId, addresses, body, System.currentTimeMillis())
+            sendMessageToNativeProvider(message)
+
+            sendSms(message, parts, smsManager)
+        } else {
+            /* ---- MMS ---- */
+
+            val transaction = Transaction(context)
         }
-
-        sendSms(message)
     }
 
     private fun convertToMessage(
@@ -150,23 +177,21 @@ class SendMessageUseCase @Inject constructor(
 
         val uri = context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
 
+        // We do this after inserting the message because it might be slow, and we want the message
+        // to be inserted into Db immediately. We don't need to do this after receiving one
         uri?.lastPathSegment?.toLong()?.let { id ->
             updateMessageUseCase(message.copy(contentId = id))
         }
+
+        // On some devices, we can't obtain a threadId until after the first message is sent in a
+        // conversation. In this case, we need to update the message's threadId after it gets added
+        // to the native ContentProvider
+        if (message.threadId == 0L) {
+            uri?.let { syncMessageFromUriUseCase(it) }
+        }
     }
 
-    private suspend fun sendSms(message: Message) {
-        val smsManager = message.subId.takeIf { it != -1 }
-            ?.let(SmsManagerFactory::createSmsManager)
-            ?: SmsManager.getDefault()
-
-        val parts = when (val body = message.sms?.body) {
-            null -> arrayListOf()
-            else -> smsManager
-                .divideMessage(body)
-                ?: arrayListOf()
-        }
-
+    private suspend fun sendSms(message: Message, parts: ArrayList<String>, smsManager: SmsManager) {
         val sentIntents = parts.map {
             val intent = Intent(context, SmsSentReceiver::class.java).putExtra(
                 SmsSentReceiver.MessageId,
@@ -205,6 +230,48 @@ class SendMessageUseCase @Inject constructor(
         } catch (e: IllegalArgumentException) {
             markAsFailedUseCase(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
         }
+    }
+
+    private fun sendMessage2(
+        subId: Int,
+        threadId: Long,
+        addresses: List<String>,
+        body: String,
+        attachments: List<Attachment>
+    ) {
+        val settings = Settings()
+        settings.useSystemSending = true
+        settings.deliveryReports = true
+        if (subId == -1) {
+            settings.subscriptionId = subId
+        }
+
+        val transaction = Transaction(context, settings)
+        val message = com.klinker.android.send_message.Message(body, addresses.toTypedArray())
+
+        attachments.forEach { attachment ->
+            when (attachment) {
+                is Attachment.Contact -> {
+                    message.addMedia(attachment.vCard.toByteArray(), MimeTypeContactCard, "contact")
+                }
+                is Attachment.Image -> {
+                    val uri = attachment.getUri()
+                    uri?.let {
+                        when (attachment.isGif(context)) {
+                            true -> message.addMedia(context.contentResolver.openInputStream(it)?.readBytes(), MimeTypeGif, "gif")
+                            false -> message.addMedia(context.contentResolver.openInputStream(it)?.readBytes(), MimeTypeJpeg, "image")
+                        }
+                    }
+                }
+            }
+        }
+
+        val smsSentIntent = Intent(context, SmsSentReceiver::class.java)
+        val deliveredIntent = Intent(context, SmsDeliveredReceiver::class.java)
+
+        transaction.setExplicitBroadcastForSentSms(smsSentIntent)
+        transaction.setExplicitBroadcastForDeliveredSms(deliveredIntent)
+        transaction.sendNewMessage(message, threadId)
     }
 
 }

@@ -22,6 +22,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import androidx.core.view.inputmethod.InputContentInfoCompat
+import com.forest.forestchat.utils.MimeTypeGif
 
 sealed class Attachment {
 
@@ -40,9 +41,9 @@ sealed class Attachment {
 
         fun isGif(context: Context): Boolean {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && inputContent != null) {
-                inputContent.description.hasMimeType("image/gif")
+                inputContent.description.hasMimeType(MimeTypeGif)
             } else {
-                uri?.let(context.contentResolver::getType) == "image/gif"
+                uri?.let(context.contentResolver::getType) == MimeTypeGif
             }
         }
     }

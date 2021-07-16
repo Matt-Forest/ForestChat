@@ -22,6 +22,8 @@ import android.os.Parcelable
 import androidx.core.net.toUri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.forest.forestchat.utils.MimeTypeContactCard
+import com.forest.forestchat.utils.MimeTypeGif
 import kotlinx.android.parcel.Parcelize
 
 @Entity
@@ -50,11 +52,11 @@ data class MmsPart(
 
     fun isVideo(): Boolean = type.startsWith("video")
 
-    fun isGif(): Boolean = type == "image/gif"
+    fun isGif(): Boolean = type == MimeTypeGif
 
     fun isImage(): Boolean = type.startsWith("image")
 
-    fun isContactCard(): Boolean = type == "text/x-vCard"
+    fun isContactCard(): Boolean = type == MimeTypeContactCard
 
     fun isMedia(): Boolean = isImage() || isVideo()
 

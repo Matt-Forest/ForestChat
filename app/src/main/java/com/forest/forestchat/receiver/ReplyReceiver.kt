@@ -78,7 +78,7 @@ class ReplyReceiver : BroadcastReceiver() {
                 ?.subscriptionId ?: -1
             val addresses = conversation?.recipients?.map { it.address } ?: return@launch
 
-            sendMessageUseCase(subId, threadId, addresses, body)
+            sendMessageUseCase(subId, threadId, addresses, body, listOf())
             EventBus.getDefault().post(TransversalBusEvent.RefreshMessages)
         }
     }
