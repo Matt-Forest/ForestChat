@@ -16,27 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.extensions
+package com.forest.forestchat.ui.conversation.attachmentsAdapter.image
 
-import android.net.Uri
+import android.view.ViewGroup
+import com.forest.forestchat.R
+import com.forest.forestchat.databinding.HolderAttachmentImageBinding
+import com.forest.forestchat.extensions.ImageSignatureKeys
+import com.forest.forestchat.extensions.loadUri
+import com.forest.forestchat.ui.base.recycler.BaseHolder
 
-sealed class ImageSignatureKeys {
+class AttachmentImageHolder(
+    parent: ViewGroup,
+) : BaseHolder<AttachmentImageItem>(parent, R.layout.holder_attachment_image) {
 
-    sealed class Conversation : ImageSignatureKeys() {
-        object Gallery : Conversation()
-        object Message : Conversation()
+    private val binding = HolderAttachmentImageBinding.bind(itemView)
+
+    override fun bind(item: AttachmentImageItem) {
+        with(binding) {
+            image.loadUri(item.uri, ImageSignatureKeys.AttachmentImage)
+        }
     }
 
-    object AttachmentImage : Conversation()
-
 }
-
-/**
- * Generate a signature of an image url to have a unique
- * entry in cache for each usage of image url in the app.
- *
- * It should be used when an image url is used in multiple
- * location, with different width / height.
- */
-fun ImageSignatureKeys.generateSignature(uri: Uri?) =
-    "[${javaClass.canonicalName}]${uri ?: "BLANK"}"

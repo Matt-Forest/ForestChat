@@ -16,27 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.extensions
+package com.forest.forestchat.ui.conversation.attachmentsAdapter.contact
 
-import android.net.Uri
+import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.conversation.attachmentsAdapter.AttachmentsViewTypes
 
-sealed class ImageSignatureKeys {
+class AttachmentContactItem(val contactName: String) : BaseItem() {
 
-    sealed class Conversation : ImageSignatureKeys() {
-        object Gallery : Conversation()
-        object Message : Conversation()
-    }
+    override fun getViewType(): Int = AttachmentsViewTypes.ATTACHMENT_CONTACT
 
-    object AttachmentImage : Conversation()
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
+        oldItem is AttachmentContactItem && oldItem.contactName == contactName
 
 }
-
-/**
- * Generate a signature of an image url to have a unique
- * entry in cache for each usage of image url in the app.
- *
- * It should be used when an image url is used in multiple
- * location, with different width / height.
- */
-fun ImageSignatureKeys.generateSignature(uri: Uri?) =
-    "[${javaClass.canonicalName}]${uri ?: "BLANK"}"

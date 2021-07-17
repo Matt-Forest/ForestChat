@@ -22,6 +22,8 @@
     <string name="bottom_nav_dashboard">Tableau de bord</string>
     <string name="bottom_nav_add">Ajout</string>
 
+    <string name="content_describe_remove">supprimer</string>
+
     <string name="conversations_search_hint">Recherche</string>
     <string name="conversations_change_permission">Changer</string>
     <string name="conversations_empty_conversation">Aucune conversation pour le moment.\nEnvoyer un message pour commencer.</string>

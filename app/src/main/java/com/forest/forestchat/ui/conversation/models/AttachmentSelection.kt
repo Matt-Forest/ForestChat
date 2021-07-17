@@ -21,6 +21,5 @@ package com.forest.forestchat.ui.conversation.models
 enum class AttachmentSelection {
     Gallery,
     Camera,
-    File,
     Contact
 }

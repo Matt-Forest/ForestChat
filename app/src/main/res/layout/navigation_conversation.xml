@@ -182,9 +182,9 @@
             android:background="@drawable/bg_edit_text"
             android:minHeight="48dp"
             android:orientation="horizontal"
+            android:paddingVertical="8dp"
             android:paddingStart="20dp"
             android:paddingEnd="8dp"
-            android:paddingVertical="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/sendOrAttachment"
             app:layout_constraintStart_toStartOf="parent"
@@ -193,12 +193,15 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachmentRecycler"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
+                android:layout_height="100dp"
                 android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toStartOf="@id/addAttachment"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="2"
+                tools:listitem="@layout/holder_attachment_contact"
+                tools:visibility="visible" />
 
             <EditText
                 android:id="@+id/messageToSend"
@@ -301,28 +304,6 @@
                 android:textColor="@color/text"
                 app:drawableTint="@color/text"
                 app:drawableTopCompat="@drawable/ic_camera" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/file"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/bg_attachment"
-            app:cardBackgroundColor="@color/attachmentCardBackground"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
-
-            <TextView
-                style="@style/Typography.Subtitle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/message_attachment_file"
-                android:textColor="@color/text"
-                app:drawableTint="@color/text"
-                app:drawableTopCompat="@drawable/ic_file" />
 
         </androidx.cardview.widget.CardView>
 

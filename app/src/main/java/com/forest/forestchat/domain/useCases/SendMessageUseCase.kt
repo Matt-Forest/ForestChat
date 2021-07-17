@@ -21,20 +21,13 @@ package com.forest.forestchat.domain.useCases
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.os.Build
 import android.provider.Telephony
 import android.telephony.SmsManager
 import androidx.core.content.contentValuesOf
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.request.ImageRequest
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
+import com.forest.forestchat.domain.models.message.mms.MessageMms
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
 import com.forest.forestchat.manager.ForestChatShortCutManager
@@ -131,8 +124,7 @@ class SendMessageUseCase @Inject constructor(
             sendSms(message, parts, smsManager)
         } else {
             /* ---- MMS ---- */
-
-            val transaction = Transaction(context)
+            sendMms(subId, threadId, addresses, body, attachments)
         }
     }
 
@@ -232,7 +224,7 @@ class SendMessageUseCase @Inject constructor(
         }
     }
 
-    private fun sendMessage2(
+    private fun sendMms(
         subId: Int,
         threadId: Long,
         addresses: List<String>,
@@ -242,7 +234,7 @@ class SendMessageUseCase @Inject constructor(
         val settings = Settings()
         settings.useSystemSending = true
         settings.deliveryReports = true
-        if (subId == -1) {
+        if (subId != -1) {
             settings.subscriptionId = subId
         }
 
@@ -255,22 +247,14 @@ class SendMessageUseCase @Inject constructor(
                     message.addMedia(attachment.vCard.toByteArray(), MimeTypeContactCard, "contact")
                 }
                 is Attachment.Image -> {
-                    val uri = attachment.getUri()
-                    uri?.let {
-                        when (attachment.isGif(context)) {
-                            true -> message.addMedia(context.contentResolver.openInputStream(it)?.readBytes(), MimeTypeGif, "gif")
-                            false -> message.addMedia(context.contentResolver.openInputStream(it)?.readBytes(), MimeTypeJpeg, "image")
-                        }
+                    when (attachment.isGif(context)) {
+                        true -> message.addMedia(context.contentResolver.openInputStream(attachment.uri)?.readBytes(), MimeTypeGif, "gif")
+                        false -> message.addMedia(context.contentResolver.openInputStream(attachment.uri)?.readBytes(), MimeTypeJpeg, "image")
                     }
                 }
             }
         }
 
-        val smsSentIntent = Intent(context, SmsSentReceiver::class.java)
-        val deliveredIntent = Intent(context, SmsDeliveredReceiver::class.java)
-
-        transaction.setExplicitBroadcastForSentSms(smsSentIntent)
-        transaction.setExplicitBroadcastForDeliveredSms(deliveredIntent)
         transaction.sendNewMessage(message, threadId)
     }
 

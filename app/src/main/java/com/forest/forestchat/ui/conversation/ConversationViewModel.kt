@@ -18,6 +18,8 @@
  */
 package com.forest.forestchat.ui.conversation
 
+import android.net.Uri
+import android.provider.ContactsContract
 import android.telephony.SubscriptionInfo
 import androidx.lifecycle.*
 import com.forest.forestchat.domain.models.message.Message
@@ -33,8 +35,6 @@ import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.models.*
 import com.forest.forestchat.utils.CopyIntoClipboard
 import com.forest.forestchat.utils.MessageDetailsFormatter
-import com.forest.forestchat.utils.TelephonyThread
-import com.forest.forestchat.utils.tryOrNull
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,8 +76,8 @@ class ConversationViewModel @Inject constructor(
     private val activateSending = MutableLiveData(false)
     fun activateSending(): LiveData<Boolean> = activateSending
 
-    private val attachments = MutableLiveData<List<Attachment>>()
-    fun attachments(): LiveData<List<Attachment>> = attachments
+    private val attachments = MutableLiveData<MutableList<Attachment>>()
+    fun attachments(): LiveData<MutableList<Attachment>> = attachments
 
     private val state = MutableLiveData<ConversationState>()
     fun state(): LiveData<ConversationState> = state
@@ -242,7 +242,7 @@ class ConversationViewModel @Inject constructor(
                     !permissionsManager.hasSendSms() -> eventEmitter.emit(ConversationEvent.RequestSmsPermission)
                     else -> {
                         sendNewMessage()
-                        attachments.value = listOf()
+                        attachments.value = mutableListOf()
                         onTextToSendChange("")
                     }
                 }
@@ -266,7 +266,18 @@ class ConversationViewModel @Inject constructor(
     }
 
     fun attachmentSelected(attachmentSelection: AttachmentSelection) {
-        //TODO
+        attachmentVisibility.value = false
+        when (attachmentSelection) {
+            AttachmentSelection.Camera -> {
+                if (permissionsManager.hasStorage()) {
+                    eventEmitter.emit(ConversationEvent.RequestCamera)
+                } else {
+                    eventEmitter.emit(ConversationEvent.RequestStoragePermission)
+                }
+            }
+            AttachmentSelection.Gallery -> eventEmitter.emit(ConversationEvent.RequestGallery)
+            AttachmentSelection.Contact -> eventEmitter.emit(ConversationEvent.RequestContact)
+        }
     }
 
     fun toggleAddAttachment() {
@@ -285,6 +296,24 @@ class ConversationViewModel @Inject constructor(
         }
 
         simInfo.value = subscription
+    }
+
+    fun addImageAttachment(uris: List<Uri>) {
+        var attachments = attachments.value
+        if (attachments == null) {
+            attachments = mutableListOf()
+        }
+        attachments.addAll(uris.map { Attachment.Image(uri = it) })
+        this.attachments.value = attachments
+    }
+
+    fun addContactAttachment(vCard: String) {
+        var attachments = attachments.value
+        if (attachments == null) {
+            attachments = mutableListOf()
+        }
+        attachments.add(Attachment.Contact(vCard))
+        this.attachments.value = attachments
     }
 
 }

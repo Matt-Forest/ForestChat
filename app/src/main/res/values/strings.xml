@@ -23,6 +23,8 @@
     <string name="bottom_nav_dashboard">Dashboard</string>
     <string name="bottom_nav_add">Add</string>
 
+    <string name="content_describe_remove">remove</string>
+
     <string name="conversations_search_hint">Search</string>
     <string name="conversations_change_permission">Change</string>
     <string name="conversations_empty_conversation">No conversation yet.\nSend a message to get started.</string>

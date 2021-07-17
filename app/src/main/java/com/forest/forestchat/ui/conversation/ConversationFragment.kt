@@ -20,9 +20,13 @@ package com.forest.forestchat.ui.conversation
 
 import android.Manifest
 import android.app.role.RoleManager
+import android.content.ContentValues
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.provider.Telephony
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -39,8 +43,14 @@ import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ConversationFragment : NavigationFragment() {
+
+    companion object {
+        private const val CameraDestinationKey = "camera_destination"
+    }
 
     private val viewModel: ConversationViewModel by viewModels()
 
@@ -49,6 +59,23 @@ class ConversationFragment : NavigationFragment() {
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+
+    private var cameraDestination: Uri? = null
+
+    private val getCameraPicture =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) {
+            cameraDestination?.let { viewModel.addImageAttachment(listOf(it)) }
+        }
+
+    private val getGalleryPicture =
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+            viewModel.addImageAttachment(uris)
+        }
+
+    private val getContact =
+        registerForActivityResult(ActivityResultContracts.PickContact()) { uri ->
+            getVCard(uri)?.let { viewModel.addContactAttachment(it) }
+        }
 
     override fun buildNavigationView(): View = ConversationNavigationView(requireContext())
 
@@ -74,11 +101,15 @@ class ConversationFragment : NavigationFragment() {
             observe(attachmentVisibility(), navigationView::updateAttachmentVisibility)
             observe(activateSending(), navigationView::activateSending)
             observe(simInfo(), navigationView::updateSimInformation)
+            observe(attachments(), navigationView::updateAttachments)
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     ConversationEvent.RequestDefaultSms -> requestDefaultSmsPermission()
                     ConversationEvent.RequestSmsPermission -> requestSmsPermission()
                     ConversationEvent.RequestStoragePermission -> requestStoragePermission()
+                    ConversationEvent.RequestCamera -> requestCamera()
+                    ConversationEvent.RequestGallery -> requestGallery()
+                    ConversationEvent.RequestContact -> requestContact()
                     is ConversationEvent.ShowFile -> showFile(event.file)
                     else -> null
                 }
@@ -117,6 +148,33 @@ class ConversationFragment : NavigationFragment() {
         startActivityExternal(intent)
     }
 
+    private fun requestCamera() {
+        cameraDestination = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            .let { timestamp ->
+                ContentValues().apply {
+                    put(
+                        MediaStore.Images.Media.TITLE,
+                        timestamp
+                    )
+                }
+            }
+            .let { cv ->
+                context?.contentResolver?.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    cv
+                )
+            }
+        getCameraPicture.launch(cameraDestination)
+    }
+
+    private fun requestGallery() {
+        getGalleryPicture.launch("image/*")
+    }
+
+    private fun requestContact() {
+        getContact.launch(null)
+    }
+
     private fun requestDefaultSmsPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val roleManager =
@@ -144,6 +202,29 @@ class ConversationFragment : NavigationFragment() {
         } else {
             requireActivity().startActivity(intent)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(CameraDestinationKey, cameraDestination)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        cameraDestination = savedInstanceState?.getParcelable(CameraDestinationKey)
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    private fun getVCard(contactData: Uri): String? {
+        val lookupKey = context?.contentResolver?.query(contactData, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+        }
+
+        val vCardUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
+        return context?.contentResolver?.openAssetFileDescriptor(vCardUri, "r")
+            ?.createInputStream()
+            ?.readBytes()
+            ?.let { bytes -> String(bytes) }
     }
 
 }

@@ -36,8 +36,10 @@ import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.extensions.*
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
+import com.forest.forestchat.ui.conversation.attachmentsAdapter.AttachmentsAdapter
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionType
 import com.forest.forestchat.ui.conversation.dialog.MessageOptionsDialog
+import com.forest.forestchat.ui.conversation.models.Attachment
 import com.forest.forestchat.ui.conversation.models.AttachmentSelection
 import com.forest.forestchat.ui.conversation.models.ConversationEvent
 import com.forest.forestchat.ui.conversation.models.ConversationState
@@ -58,6 +60,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
+    private var attachmentsAdapter = AttachmentsAdapter()
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -75,7 +78,6 @@ class ConversationNavigationView @JvmOverloads constructor(
             addAttachment.setOnClickListener { toggleAddAttachment() }
             gallery.setOnClickListener { onAttachmentSelected(AttachmentSelection.Gallery) }
             camera.setOnClickListener { onAttachmentSelected(AttachmentSelection.Camera) }
-            file.setOnClickListener { onAttachmentSelected(AttachmentSelection.File) }
             contact.setOnClickListener { onAttachmentSelected(AttachmentSelection.Contact) }
         }
     }
@@ -179,6 +181,19 @@ class ConversationNavigationView @JvmOverloads constructor(
             )
         }
         // TODO sim information on the view
+    }
+
+    fun updateAttachments(attachments: List<Attachment>) {
+        with(binding.attachmentRecycler) {
+            if (adapter !== attachmentsAdapter) {
+                adapter = attachmentsAdapter
+            }
+            attachmentsAdapter.apply {
+                setAttachments(attachments)
+            }
+
+            visibleIf { attachments.isNotEmpty() }
+        }
     }
 
 }

@@ -27,6 +27,9 @@ sealed class ConversationEvent {
     object RequestDefaultSms : ConversationEvent()
     object RequestSmsPermission : ConversationEvent()
     object RequestStoragePermission : ConversationEvent()
+    object RequestCamera : ConversationEvent()
+    object RequestGallery : ConversationEvent()
+    object RequestContact : ConversationEvent()
 
     data class ShowFile(val file: File) : ConversationEvent()
     data class ShowMessageOptions(val canCopy: Boolean) : ConversationEvent()
