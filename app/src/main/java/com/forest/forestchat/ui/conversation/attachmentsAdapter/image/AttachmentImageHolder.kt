@@ -33,7 +33,7 @@ class AttachmentImageHolder(
 
     override fun bind(item: AttachmentImageItem) {
         with(binding) {
-            image.loadUri(item.uri, ImageSignatureKeys.AttachmentImage)
+            image.loadUri(uri = item.uri, imageSignatureKeys = ImageSignatureKeys.AttachmentImage)
         }
     }
 

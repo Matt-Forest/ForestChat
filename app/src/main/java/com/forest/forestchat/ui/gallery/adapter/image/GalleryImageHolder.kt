@@ -19,12 +19,12 @@
 package com.forest.forestchat.ui.gallery.adapter.image
 
 import android.view.ViewGroup
+import coil.size.PixelSize
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderImageGalleryBinding
 import com.forest.forestchat.extensions.ImageSignatureKeys
 import com.forest.forestchat.extensions.dp
 import com.forest.forestchat.extensions.loadUri
-import com.forest.forestchat.extensions.loadUriGif
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class GalleryImageHolder(parent: ViewGroup) :
@@ -34,14 +34,14 @@ class GalleryImageHolder(parent: ViewGroup) :
 
     override fun bind(item: GalleryImageItem) {
         when (item.media.isGif) {
-            true -> binding.photoView.loadUriGif(
-                item.media.uri,
-                180.dp,
-                ImageSignatureKeys.Conversation.Gallery
+            true -> binding.photoView.loadUri(
+                uri = item.media.uri,
+                size = PixelSize(180.dp, 180.dp),
+                imageSignatureKeys = ImageSignatureKeys.Conversation.Gallery
             )
             false -> binding.photoView.loadUri(
-                item.media.uri,
-                ImageSignatureKeys.Conversation.Gallery
+                uri = item.media.uri,
+                imageSignatureKeys = ImageSignatureKeys.Conversation.Gallery
             )
         }
     }

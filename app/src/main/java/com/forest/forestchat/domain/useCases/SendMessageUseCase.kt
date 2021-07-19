@@ -21,34 +21,42 @@ package com.forest.forestchat.domain.useCases
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.provider.Telephony
+import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
 import androidx.core.content.contentValuesOf
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.size.PixelSize
+import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
-import com.forest.forestchat.domain.models.message.mms.MessageMms
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
+import com.forest.forestchat.extensions.sp
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.receiver.SmsDeliveredReceiver
 import com.forest.forestchat.receiver.SmsSentReceiver
 import com.forest.forestchat.ui.conversation.models.Attachment
-import com.forest.forestchat.utils.MimeTypeContactCard
-import com.forest.forestchat.utils.MimeTypeGif
-import com.forest.forestchat.utils.MimeTypeJpeg
-import com.forest.forestchat.utils.TelephonyThread
+import com.forest.forestchat.utils.*
 import com.klinker.android.send_message.Settings
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.Transaction
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.sqrt
+
 
 @Singleton
 class SendMessageUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val syncConversationsUseCase: SyncConversationsUseCase,
     private val getConversationUseCase: GetConversationUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,
     private val getMessageByThreadIdUseCase: GetMessageByThreadIdUseCase,
@@ -61,6 +69,37 @@ class SendMessageUseCase @Inject constructor(
 
     suspend operator fun invoke(
         subId: Int,
+        conversation: Conversation,
+        body: String,
+        attachments: List<Attachment>
+    ) {
+        val addresses = conversation.recipients.map { it.address }
+        when {
+            addresses.size == 1 || conversation.grouped -> {
+                // sending to one person or sending to a group of people
+                this(subId, conversation.id, addresses, body, attachments)
+            }
+            else -> {
+                // sending to a diffusion list
+                addresses.forEach { address ->
+                    val threadId = tryOrNull {
+                        TelephonyThread.getOrCreateThreadId(context, listOf(address))
+                    } ?: 0
+                    val sendAddress = listOf(
+                        getConversationUseCase(threadId)
+                            ?.recipients
+                            ?.firstOrNull()
+                            ?.address
+                            ?: address
+                    )
+                    this(subId, threadId, sendAddress, body, attachments)
+                }
+            }
+        }
+    }
+
+    suspend operator fun invoke(
+        subId: Int,
         threadId: Long,
         addresses: List<String>,
         body: String,
@@ -68,26 +107,20 @@ class SendMessageUseCase @Inject constructor(
     ) {
         if (addresses.isNotEmpty()) {
             // If a threadId isn't provided, try to obtain one
-            var id = when (threadId) {
+            val id = when (threadId) {
                 0L -> TelephonyThread.getOrCreateThreadId(context, addresses.toSet())
                 else -> threadId
             }
 
             sendMessage(subId, id, addresses, body, attachments)
-//            sendMessage2(subId, id, addresses, body, attachments)
 
-            // Sync data if needed
-            if (threadId == 0L) {
-                syncConversationsUseCase()
-            }
-
-            id = when (threadId) {
+            val newThreadId = when (threadId) {
                 0L -> getOrCreateConversationByAddressesUseCase(addresses)?.id ?: threadId
                 else -> threadId
             }
 
             // Update Db
-            getConversationUseCase(id)?.let { conversation ->
+            getConversationUseCase(newThreadId)?.let { conversation ->
                 getMessageByThreadIdUseCase(conversation.id)?.let { message ->
                     updateConversationUseCase(
                         conversation.copy(
@@ -118,13 +151,14 @@ class SendMessageUseCase @Inject constructor(
 
         if (addresses.size == 1 && attachments.isEmpty() && !forceMms) {
             /* ---- SMS ---- */
-            val message = convertToMessage(subId, threadId, addresses, body, System.currentTimeMillis())
+            val message =
+                convertToMessage(subId, threadId, addresses, body, System.currentTimeMillis())
             sendMessageToNativeProvider(message)
 
             sendSms(message, parts, smsManager)
         } else {
             /* ---- MMS ---- */
-            sendMms(subId, threadId, addresses, body, attachments)
+            sendMms(subId, threadId, addresses, body, attachments, smsManager)
         }
     }
 
@@ -145,7 +179,6 @@ class SendMessageUseCase @Inject constructor(
             dateSent = 0L,
             read = true,
             seen = true,
-            locked = false,
             subId = subId,
             sms = MessageSms(
                 body = body,
@@ -183,7 +216,11 @@ class SendMessageUseCase @Inject constructor(
         }
     }
 
-    private suspend fun sendSms(message: Message, parts: ArrayList<String>, smsManager: SmsManager) {
+    private suspend fun sendSms(
+        message: Message,
+        parts: ArrayList<String>,
+        smsManager: SmsManager
+    ) {
         val sentIntents = parts.map {
             val intent = Intent(context, SmsSentReceiver::class.java).putExtra(
                 SmsSentReceiver.MessageId,
@@ -224,13 +261,19 @@ class SendMessageUseCase @Inject constructor(
         }
     }
 
-    private fun sendMms(
+    private suspend fun sendMms(
         subId: Int,
         threadId: Long,
         addresses: List<String>,
         body: String,
-        attachments: List<Attachment>
+        attachments: List<Attachment>,
+        smsManager: SmsManager
     ) {
+        // 0.9 --> buys us a bit of wiggle room
+        var remainingBytes =
+            smsManager.carrierConfigValues.getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE) * 0.9
+        remainingBytes -= body.toByteArray().size
+
         val settings = Settings()
         settings.useSystemSending = true
         settings.deliveryReports = true
@@ -239,23 +282,96 @@ class SendMessageUseCase @Inject constructor(
         }
 
         val transaction = Transaction(context, settings)
-        val message = com.klinker.android.send_message.Message(body, addresses.toTypedArray())
+        val recipients = addresses.map(PhoneNumberUtils::normalizeNumber)
+        val message = com.klinker.android.send_message.Message(body, recipients.toTypedArray())
 
-        attachments.forEach { attachment ->
-            when (attachment) {
-                is Attachment.Contact -> {
-                    message.addMedia(attachment.vCard.toByteArray(), MimeTypeContactCard, "contact")
-                }
-                is Attachment.Image -> {
-                    when (attachment.isGif(context)) {
-                        true -> message.addMedia(context.contentResolver.openInputStream(attachment.uri)?.readBytes(), MimeTypeGif, "gif")
-                        false -> message.addMedia(context.contentResolver.openInputStream(attachment.uri)?.readBytes(), MimeTypeJpeg, "image")
+        attachments.mapNotNull { attachment -> attachment as? Attachment.Contact }
+            .map { attachment -> attachment.vCard.toByteArray() }
+            .forEach { vCard ->
+                remainingBytes -= vCard.size
+                message.addMedia(vCard, MimeTypeContactCard, "contact")
+            }
+
+        val imageBytesByAttachment = attachments
+            .mapNotNull { attachment -> attachment as? Attachment.Image }
+            .associateWith { attachment ->
+                reduceMedia(attachment.uri, null)
+            }
+            .toMutableMap()
+
+        val imageByteCount = imageBytesByAttachment.values.sumOf { byteArray -> byteArray.size }
+        if (imageByteCount > remainingBytes) {
+            imageBytesByAttachment.forEach { (attachment, originalBytes) ->
+                val uri = attachment.uri
+                val maxBytes = originalBytes.size / imageByteCount.toFloat() * remainingBytes
+
+                // Get the image dimensions
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeStream(
+                    context.contentResolver.openInputStream(uri),
+                    null,
+                    options
+                )
+                val width = options.outWidth
+                val height = options.outHeight
+                val aspectRatio = width.toFloat() / height.toFloat()
+
+                var attempts = 0
+                var scaledBytes = originalBytes
+
+                while (scaledBytes.size > maxBytes) {
+                    // Estimate how much we need to scale the image down by. If it's still too big, we'll need to
+                    // try smaller and smaller values
+                    val scale = maxBytes / originalBytes.size * (0.9 - attempts * 0.2)
+                    if (scale <= 0) {
+                        // fail to compress
+                        return@forEach
                     }
+
+                    val newArea = scale * width * height
+                    val newWidth = sqrt(newArea * aspectRatio).toInt()
+                    val newHeight = (newWidth / aspectRatio).toInt()
+
+                    attempts++
+                    scaledBytes = reduceMedia(uri, PixelSize(newWidth, newHeight))
                 }
+
+                imageBytesByAttachment[attachment] = scaledBytes
+            }
+        }
+
+        imageBytesByAttachment.forEach { (attachment, bytes) ->
+            when (attachment.isGif(context)) {
+                true -> message.addMedia(
+                    bytes,
+                    MimeTypeGif,
+                    "gif"
+                )
+                false -> message.addMedia(
+                    bytes,
+                    MimeTypeJpeg,
+                    "image"
+                )
             }
         }
 
         transaction.sendNewMessage(message, threadId)
+    }
+
+    private suspend fun reduceMedia(uri: Uri, size: PixelSize?): ByteArray {
+        val request = ImageRequest.Builder(context).apply {
+            data(uri)
+            size?.let { size(it) }
+        }.build()
+
+        val drawable = context.imageLoader.execute(request).drawable
+        return convertBitmapToByteArray((drawable as BitmapDrawable).bitmap)
+    }
+
+    private fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        return stream.toByteArray()
     }
 
 }

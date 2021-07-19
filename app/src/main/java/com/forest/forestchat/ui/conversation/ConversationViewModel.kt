@@ -230,8 +230,13 @@ class ConversationViewModel @Inject constructor(
     fun onTextToSendChange(newText: String) {
         if (messageToSend.value != newText) {
             messageToSend.value = newText
-            activateSending.value = newText.isNotEmpty() // TODO need decision about UX SimSlot and addAttachments
+            checkSendingState()
         }
+    }
+
+    private fun checkSendingState() {
+        val canSendingElement = !messageToSend.value.isNullOrEmpty() || !attachments.value.isNullOrEmpty()
+        activateSending.value = canSendingElement
     }
 
     fun sendOrAddAttachment() {
@@ -253,15 +258,11 @@ class ConversationViewModel @Inject constructor(
 
     private fun sendNewMessage() {
         val subId = simInfo.value?.subscriptionId ?: -1
-        val addresses = conversation.recipients.map { it.address }
         val body = messageToSend.value ?: ""
         val attachments = attachments.value ?: listOf()
 
         viewModelScope.launch(Dispatchers.IO) {
-            when {
-                addresses.size == 1 || conversation.grouped -> sendMessageUseCase(subId, conversation.id, addresses, body, attachments)
-                else -> sendMessageUseCase(subId, 0L, addresses, body, attachments)
-            }
+            sendMessageUseCase(subId, conversation, body, attachments)
         }
     }
 
@@ -305,6 +306,7 @@ class ConversationViewModel @Inject constructor(
         }
         attachments.addAll(uris.map { Attachment.Image(uri = it) })
         this.attachments.value = attachments
+        checkSendingState()
     }
 
     fun addContactAttachment(vCard: String) {
@@ -314,6 +316,12 @@ class ConversationViewModel @Inject constructor(
         }
         attachments.add(Attachment.Contact(vCard))
         this.attachments.value = attachments
+        checkSendingState()
+    }
+
+    fun removeAttachment() {
+        // TODO remove and refresh
+        checkSendingState()
     }
 
 }

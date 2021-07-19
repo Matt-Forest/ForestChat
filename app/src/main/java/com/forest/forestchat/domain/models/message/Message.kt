@@ -42,7 +42,6 @@ data class Message(
     val dateSent: Long,
     val read: Boolean,
     val seen: Boolean,
-    val locked: Boolean,
     val subId: Int?,
     val sms: MessageSms?,
     val mms: MessageMms?

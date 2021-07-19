@@ -19,7 +19,9 @@
 package com.forest.forestchat.domain.useCases
 
 import android.content.Context
+import android.provider.Telephony
 import android.telephony.SmsMessage
+import androidx.core.content.contentValuesOf
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
@@ -35,15 +37,28 @@ import javax.inject.Singleton
 class ReceiveSmsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val updateMessageUseCase: UpdateMessageUseCase,
-    private val updateOrSyncConversationUseCase: UpdateOrSyncConversationUseCase
+    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase
 ) {
 
     suspend operator fun invoke(subscriptionId: Int, messages: Array<SmsMessage>): Conversation? {
         if (messages.isNotEmpty()) {
-            val message = convertToMessage(subscriptionId, messages)
+            // convert to Db Message
+            var message = convertToMessage(subscriptionId, messages)
+            // insert the new message to the content provider and set the new contentId
+            insertSmsToProvider(message)?.let { contentId ->
+                message = message.copy(contentId = contentId)
+            }
+
+            val conversation = getOrCreateConversationByThreadIdUseCase(message.threadId)
+            if (conversation?.blocked == true) {
+                message = message.copy(
+                    seen = true,
+                    read = true
+                )
+            }
+
             updateMessageUseCase(message)
 
-            val conversation = updateOrSyncConversationUseCase(message)
             return when (conversation?.blocked == true) {
                 true -> null
                 false -> {
@@ -67,7 +82,6 @@ class ReceiveSmsUseCase @Inject constructor(
             dateSent = messages[0].timestampMillis,
             read = false,
             seen = false,
-            locked = false,
             subId = subscriptionId,
             sms = MessageSms(
                 body = messages
@@ -78,6 +92,23 @@ class ReceiveSmsUseCase @Inject constructor(
             ),
             mms = null,
         )
+    }
+
+    /**
+     * Insert the message to the native content provider
+     */
+    private fun insertSmsToProvider(message: Message): Long? {
+        val values = contentValuesOf(
+            Telephony.Sms.ADDRESS to message.address,
+            Telephony.Sms.BODY to message.sms?.body,
+            Telephony.Sms.DATE_SENT to message.dateSent,
+            Telephony.Sms.SUBSCRIPTION_ID to message.subId
+        )
+
+        return context.contentResolver.insert(
+            Telephony.Sms.Inbox.CONTENT_URI,
+            values
+        )?.lastPathSegment?.toLong()
     }
 
 }

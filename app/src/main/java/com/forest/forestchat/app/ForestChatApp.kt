@@ -19,9 +19,12 @@
 package com.forest.forestchat.app
 
 import android.app.Application
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import coil.Coil
 import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.forest.forestchat.ui.common.coil.ByteArrayFetcher
 import dagger.hilt.android.HiltAndroidApp
 
@@ -39,6 +42,11 @@ class ForestChatApp : Application() {
         val imageLoader = ImageLoader.Builder(this)
             .componentRegistry {
                 add(ByteArrayFetcher())
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder(this@ForestChatApp))
+                } else {
+                    add(GifDecoder())
+                }
             }
             .build()
         Coil.setImageLoader(imageLoader)

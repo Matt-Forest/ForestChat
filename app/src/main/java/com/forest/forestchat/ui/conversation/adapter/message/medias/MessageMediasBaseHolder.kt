@@ -22,10 +22,11 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.annotation.LayoutRes
+import coil.size.PixelSize
+import coil.size.Size
 import com.forest.forestchat.extensions.ImageSignatureKeys
 import com.forest.forestchat.extensions.dp
 import com.forest.forestchat.extensions.loadUri
-import com.forest.forestchat.extensions.loadUriGif
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.common.media.MediaView
@@ -121,8 +122,15 @@ abstract class MessageMediasBaseHolder<T>(
         media: Media
     ): MediaView = MediaView(context).apply {
         when (media.isGif) {
-            true -> loadUriGif(media.uri, 180.dp, ImageSignatureKeys.Conversation.Message)
-            false -> loadUri(media.uri, ImageSignatureKeys.Conversation.Message)
+            true -> loadUri(
+                uri = media.uri,
+                size = PixelSize(180.dp, 180.dp),
+                imageSignatureKeys = ImageSignatureKeys.Conversation.Message
+            )
+            false -> loadUri(
+                uri = media.uri,
+                imageSignatureKeys = ImageSignatureKeys.Conversation.Message
+            )
         }
         setStyle(style, media.isVideo)
 

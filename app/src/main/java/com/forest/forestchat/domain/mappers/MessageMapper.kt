@@ -63,11 +63,6 @@ fun Cursor.toMessage(context: Context): Message {
         dateSent = getLongValue(Telephony.Mms.DATE_SENT).toDate(type),
         read = getIntValue(Telephony.Mms.READ) != 0,
         seen = getIntValue(Telephony.Mms.SEEN) != 0,
-        locked = when (type) {
-            MessageType.Sms -> getIntValue(Telephony.Sms.LOCKED) != 0
-            MessageType.Mms -> getIntValue(Telephony.Mms.LOCKED) != 0
-            else -> false
-        },
         subId = when (type) {
             MessageType.Sms -> when (getColumnIndex(Telephony.Sms.SUBSCRIPTION_ID) != -1) {
                 true -> getIntValue(Telephony.Sms.SUBSCRIPTION_ID)

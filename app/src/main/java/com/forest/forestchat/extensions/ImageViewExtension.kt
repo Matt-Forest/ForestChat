@@ -19,38 +19,14 @@
 package com.forest.forestchat.extensions
 
 import android.net.Uri
-import android.os.Build
 import android.widget.ImageView
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import coil.load
+import coil.size.Size
 import com.forest.forestchat.R
 
-fun ImageView.loadUri(uri: Uri?, imageSignatureKeys: ImageSignatureKeys?) {
+fun ImageView.loadUri(uri: Uri?, size: Size? = null, imageSignatureKeys: ImageSignatureKeys?) {
     load(uri) {
-        imageSignatureKeys?.generateSignature(uri)?.let { key ->
-            memoryCacheKey(key)
-        }
-
-        placeholder(R.drawable.ic_image)
-        error(R.drawable.ic_image)
-        fallback(R.drawable.ic_image)
-    }
-}
-
-fun ImageView.loadUriGif(uri: Uri?, size: Int, imageSignatureKeys: ImageSignatureKeys?) {
-    val imageLoader = ImageLoader.Builder(context)
-        .componentRegistry {
-            if (Build.VERSION.SDK_INT >= 28) {
-                add(ImageDecoderDecoder(context))
-            } else {
-                add(GifDecoder())
-            }
-        }
-        .build()
-    load(uri, imageLoader) {
-        size(size)
+        size?.let { size(it) }
 
         imageSignatureKeys?.generateSignature(uri)?.let { key ->
             memoryCacheKey(key)
