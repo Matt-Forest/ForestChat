@@ -295,14 +295,15 @@ class SendMessageUseCase @Inject constructor(
         val imageBytesByAttachment = attachments
             .mapNotNull { attachment -> attachment as? Attachment.Image }
             .associateWith { attachment ->
-                reduceMedia(attachment.uri, null)
+                val uri = attachment.getUri() ?: return@associateWith byteArrayOf()
+                reduceMedia(uri, null)
             }
             .toMutableMap()
 
         val imageByteCount = imageBytesByAttachment.values.sumOf { byteArray -> byteArray.size }
         if (imageByteCount > remainingBytes) {
             imageBytesByAttachment.forEach { (attachment, originalBytes) ->
-                val uri = attachment.uri
+                val uri = attachment.getUri() ?: return@forEach
                 val maxBytes = originalBytes.size / imageByteCount.toFloat() * remainingBytes
 
                 // Get the image dimensions

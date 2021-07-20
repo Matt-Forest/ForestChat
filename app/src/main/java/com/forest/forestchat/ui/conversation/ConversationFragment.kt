@@ -91,6 +91,7 @@ class ConversationFragment : NavigationFragment() {
             sendOrAddAttachment = viewModel::sendOrAddAttachment
             onAttachmentSelected = viewModel::attachmentSelected
             toggleAddAttachment = viewModel::toggleAddAttachment
+            onInputContentSelected = viewModel::inputContentSelected
         }
 
         with(viewModel) {

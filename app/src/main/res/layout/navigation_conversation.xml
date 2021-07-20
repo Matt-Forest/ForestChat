@@ -203,7 +203,7 @@
                 tools:listitem="@layout/holder_attachment_contact"
                 tools:visibility="visible" />
 
-            <EditText
+            <com.forest.forestchat.ui.common.ForestEditText
                 android:id="@+id/messageToSend"
                 style="@style/Typography.Subtitle1"
                 android:layout_width="0dp"

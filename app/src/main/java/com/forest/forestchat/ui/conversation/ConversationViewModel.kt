@@ -19,8 +19,8 @@
 package com.forest.forestchat.ui.conversation
 
 import android.net.Uri
-import android.provider.ContactsContract
 import android.telephony.SubscriptionInfo
+import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.lifecycle.*
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
@@ -300,21 +300,23 @@ class ConversationViewModel @Inject constructor(
     }
 
     fun addImageAttachment(uris: List<Uri>) {
-        var attachments = attachments.value
-        if (attachments == null) {
-            attachments = mutableListOf()
-        }
-        attachments.addAll(uris.map { Attachment.Image(uri = it) })
-        this.attachments.value = attachments
-        checkSendingState()
+        addAttachments(uris.map { Attachment.Image(uri = it) })
     }
 
     fun addContactAttachment(vCard: String) {
+        addAttachments(listOf(Attachment.Contact(vCard)))
+    }
+
+    fun inputContentSelected(inputContentInfoCompat: InputContentInfoCompat) {
+        addAttachments(listOf(Attachment.Image(inputContent = inputContentInfoCompat)))
+    }
+
+    private fun addAttachments(attach: List<Attachment>) {
         var attachments = attachments.value
         if (attachments == null) {
             attachments = mutableListOf()
         }
-        attachments.add(Attachment.Contact(vCard))
+        attachments.addAll(attach)
         this.attachments.value = attachments
         checkSendingState()
     }

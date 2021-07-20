@@ -39,9 +39,9 @@ class AttachmentsAdapter : BaseAdapter() {
         }
 
     fun setAttachments(attachments: List<Attachment>) {
-        val items: List<BaseItem> = attachments.map { attachment ->
+        val items: List<BaseItem> = attachments.mapNotNull { attachment ->
             when (attachment) {
-                is Attachment.Image -> AttachmentImageItem(attachment.uri)
+                is Attachment.Image -> attachment.getUri()?.let { uri -> AttachmentImageItem(uri) }
                 is Attachment.Contact -> AttachmentContactItem(
                     Ezvcard.parse(attachment.vCard).first().formattedName.value
                 )

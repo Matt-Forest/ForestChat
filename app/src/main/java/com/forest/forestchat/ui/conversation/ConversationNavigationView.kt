@@ -28,12 +28,14 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
+import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.extensions.*
+import com.forest.forestchat.ui.common.ForestEditText
 import com.forest.forestchat.ui.conversation.adapter.ConversationAdapter
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.AttachmentsAdapter
@@ -58,6 +60,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var sendOrAddAttachment: () -> Unit
     lateinit var toggleAddAttachment: () -> Unit
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
+    lateinit var onInputContentSelected: (InputContentInfoCompat) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
     private var attachmentsAdapter = AttachmentsAdapter()
@@ -71,6 +74,11 @@ class ConversationNavigationView @JvmOverloads constructor(
             messageToSend.doAfterTextChanged { text ->
                 onTextToSendChange(text?.toString() ?: "")
             }
+            messageToSend.setListener(object : ForestEditText.Listener{
+                override fun onInputContentSelected(inputContentInfo: InputContentInfoCompat) {
+                    this@ConversationNavigationView.onInputContentSelected(inputContentInfo)
+                }
+            })
             sendOrAttachment.setOnClickListener {
                 context.closeKeyboard(binding.messageToSend)
                 sendOrAddAttachment()
