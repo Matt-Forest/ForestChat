@@ -75,6 +75,7 @@
 
     <string name="conversation_message_send_hint">Write a message…</string>
     <string name="conversation_sim_toast">SIM %1$d (%2$s) selected</string>
+    <string name="conversation_sim_content_describe">%s selected, change SIM card</string>
 
     <string name="message_card_contact">Contact card</string>
     <string name="message_option_copy">Copy</string>

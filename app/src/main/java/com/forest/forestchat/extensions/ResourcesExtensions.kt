@@ -34,7 +34,9 @@ fun Int.asDimen(context: Context?) = context?.resources?.getDimension(this)
 
 fun Int.asString(context: Context?) = context?.resources?.getString(this) ?: ""
 
-fun Int.asStringArray(context: Context?) = context?.resources?.getStringArray(this) ?: emptyArray()
+fun Int.asStringArray(context: Context?): Array<String> = context?.resources?.getStringArray(this) ?: emptyArray()
+
+fun Int.format(context: Context?, vararg args: Any?) = context?.resources?.getString(this)?.format(*args) ?: ""
 
 fun Int.asDrawable(context: Context?) = context?.let { ContextCompat.getDrawable(it, this) }
 

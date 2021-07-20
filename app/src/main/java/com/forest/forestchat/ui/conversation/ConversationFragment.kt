@@ -92,6 +92,7 @@ class ConversationFragment : NavigationFragment() {
             onAttachmentSelected = viewModel::attachmentSelected
             toggleAddAttachment = viewModel::toggleAddAttachment
             onInputContentSelected = viewModel::inputContentSelected
+            toggleSimCard = viewModel::toggleSim
         }
 
         with(viewModel) {
@@ -216,10 +217,11 @@ class ConversationFragment : NavigationFragment() {
     }
 
     private fun getVCard(contactData: Uri): String? {
-        val lookupKey = context?.contentResolver?.query(contactData, null, null, null, null)?.use { cursor ->
-            cursor.moveToFirst()
-            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
-        }
+        val lookupKey =
+            context?.contentResolver?.query(contactData, null, null, null, null)?.use { cursor ->
+                cursor.moveToFirst()
+                cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+            }
 
         val vCardUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
         return context?.contentResolver?.openAssetFileDescriptor(vCardUri, "r")

@@ -140,7 +140,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:importantForAutofill="no"
-                android:background="@drawable/bg_edit_text"
+                android:background="@null"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="10dp"
                 android:foregroundTint="@color/edit_text_tint_selector"

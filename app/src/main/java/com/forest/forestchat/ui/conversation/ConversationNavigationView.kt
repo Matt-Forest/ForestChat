@@ -59,6 +59,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var onTextToSendChange: (String) -> Unit
     lateinit var sendOrAddAttachment: () -> Unit
     lateinit var toggleAddAttachment: () -> Unit
+    lateinit var toggleSimCard: () -> Unit
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
     lateinit var onInputContentSelected: (InputContentInfoCompat) -> Unit
 
@@ -71,10 +72,11 @@ class ConversationNavigationView @JvmOverloads constructor(
 
         with(binding) {
             back.setOnClickListener { findNavController().popBackStack() }
+            simCard.setOnClickListener { toggleSimCard() }
             messageToSend.doAfterTextChanged { text ->
                 onTextToSendChange(text?.toString() ?: "")
             }
-            messageToSend.setListener(object : ForestEditText.Listener{
+            messageToSend.setListener(object : ForestEditText.Listener {
                 override fun onInputContentSelected(inputContentInfo: InputContentInfoCompat) {
                     this@ConversationNavigationView.onInputContentSelected(inputContentInfo)
                 }
@@ -175,20 +177,26 @@ class ConversationNavigationView @JvmOverloads constructor(
     }
 
     fun updateSimInformation(simInfo: SubscriptionInfo?) {
-        // TODO visibility of sim
+        val isNotInit = binding.simCard.isVisible
+        binding.simCard.visibleIf { simInfo != null }
         if (simInfo != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.getSystemService<Vibrator>()
-                    ?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            context.makeToast(
-                context.getString(
-                    R.string.conversation_sim_toast,
-                    simInfo.simSlotIndex + 1, simInfo.displayName
+            binding.simImage.contentDescription = R.string.conversation_sim_content_describe
+                .format(context, simInfo.displayName)
+            binding.simIndex.text = simInfo.simSlotIndex.plus(1).toString()
+
+            if (isNotInit) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.getSystemService<Vibrator>()
+                        ?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
+                }
+                context.makeToast(
+                    context.getString(
+                        R.string.conversation_sim_toast,
+                        simInfo.simSlotIndex + 1, simInfo.displayName
+                    )
                 )
-            )
+            }
         }
-        // TODO sim information on the view
     }
 
     fun updateAttachments(attachments: List<Attachment>) {

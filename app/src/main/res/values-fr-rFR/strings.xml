@@ -68,6 +68,7 @@
 
     <string name="conversation_message_send_hint">Ecrire un message…</string>
     <string name="conversation_sim_toast">SIM %1$d (%2$s) sélectionné</string>
+    <string name="conversation_sim_content_describe">%s sélectionné, changer de carte SIM</string>
 
     <string name="message_card_contact">Carte de contact</string>
     <string name="message_option_copy">Copier</string>
