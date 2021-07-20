@@ -21,35 +21,30 @@ package com.forest.forestchat.app
 import android.app.Application
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import coil.Coil
 import coil.ImageLoader
+import coil.ImageLoaderFactory
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.forest.forestchat.ui.common.coil.ByteArrayFetcher
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class ForestChatApp : Application() {
+class ForestChatApp : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
-
-        setupCoil()
     }
 
-    private fun setupCoil() {
-        val imageLoader = ImageLoader.Builder(this)
-            .componentRegistry {
-                add(ByteArrayFetcher())
-                if (Build.VERSION.SDK_INT >= 28) {
-                    add(ImageDecoderDecoder(this@ForestChatApp))
-                } else {
-                    add(GifDecoder())
-                }
+    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)
+        .componentRegistry {
+            add(ByteArrayFetcher())
+            if (Build.VERSION.SDK_INT >= 28) {
+                add(ImageDecoderDecoder(this@ForestChatApp))
+            } else {
+                add(GifDecoder())
             }
-            .build()
-        Coil.setImageLoader(imageLoader)
-    }
+        }
+        .build()
 
 }

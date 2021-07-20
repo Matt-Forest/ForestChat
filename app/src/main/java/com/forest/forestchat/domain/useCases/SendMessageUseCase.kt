@@ -29,19 +29,21 @@ import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
 import androidx.core.content.contentValuesOf
+import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.PixelSize
+import com.bumptech.glide.Glide
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
-import com.forest.forestchat.extensions.sp
 import com.forest.forestchat.manager.ForestChatShortCutManager
 import com.forest.forestchat.receiver.SmsDeliveredReceiver
 import com.forest.forestchat.receiver.SmsSentReceiver
+import com.forest.forestchat.ui.common.glide.GifEncoder
 import com.forest.forestchat.ui.conversation.models.Attachment
 import com.forest.forestchat.utils.*
 import com.klinker.android.send_message.Settings
@@ -269,9 +271,15 @@ class SendMessageUseCase @Inject constructor(
         attachments: List<Attachment>,
         smsManager: SmsManager
     ) {
+        val maxWidth = smsManager.carrierConfigValues
+            .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_WIDTH)
+
+        val maxHeight = smsManager.carrierConfigValues
+            .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_HEIGHT)
+
         // 0.9 --> buys us a bit of wiggle room
-        var remainingBytes =
-            smsManager.carrierConfigValues.getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE) * 0.9
+        var remainingBytes = smsManager.carrierConfigValues
+            .getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE) * 0.9
         remainingBytes -= body.toByteArray().size
 
         val settings = Settings()
@@ -296,7 +304,10 @@ class SendMessageUseCase @Inject constructor(
             .mapNotNull { attachment -> attachment as? Attachment.Image }
             .associateWith { attachment ->
                 val uri = attachment.getUri() ?: return@associateWith byteArrayOf()
-                reduceMedia(uri, null)
+                when (attachment.isGif(context)) {
+                    true -> reduceGif(uri, maxWidth, maxHeight)
+                    false -> reduceImage(uri, null)
+                }
             }
             .toMutableMap()
 
@@ -334,7 +345,10 @@ class SendMessageUseCase @Inject constructor(
                     val newHeight = (newWidth / aspectRatio).toInt()
 
                     attempts++
-                    scaledBytes = reduceMedia(uri, PixelSize(newWidth, newHeight))
+                    scaledBytes = when (attachment.isGif(context)) {
+                        true -> reduceGif(uri, newWidth, newHeight)
+                        false -> reduceImage(uri, PixelSize(newWidth, newHeight))
+                    }
                 }
 
                 imageBytesByAttachment[attachment] = scaledBytes
@@ -359,7 +373,7 @@ class SendMessageUseCase @Inject constructor(
         transaction.sendNewMessage(message, threadId)
     }
 
-    private suspend fun reduceMedia(uri: Uri, size: PixelSize?): ByteArray {
+    private suspend fun reduceImage(uri: Uri, size: PixelSize?): ByteArray {
         val request = ImageRequest.Builder(context).apply {
             data(uri)
             size?.let { size(it) }
@@ -373,6 +387,22 @@ class SendMessageUseCase @Inject constructor(
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         return stream.toByteArray()
+    }
+
+    private fun reduceGif(uri: Uri, maxWidth: Int, maxHeight: Int): ByteArray {
+        val gif = Glide
+            .with(context)
+            .asGif()
+            .load(uri)
+            .centerInside()
+            .encodeQuality(90)
+            .submit(maxWidth, maxHeight)
+            .get()
+
+        val outputStream = ByteArrayOutputStream()
+        GifEncoder(context, Glide.get(context).bitmapPool)
+            .encodeTransformedToStream(gif, outputStream)
+        return outputStream.toByteArray()
     }
 
 }
