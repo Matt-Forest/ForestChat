@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.contact.AttachmentContactHolder
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.contact.AttachmentContactItem
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.image.AttachmentImageHolder
@@ -29,20 +30,23 @@ import com.forest.forestchat.ui.conversation.attachmentsAdapter.image.Attachment
 import com.forest.forestchat.ui.conversation.models.Attachment
 import ezvcard.Ezvcard
 
-class AttachmentsAdapter : BaseAdapter() {
+class AttachmentsAdapter(
+    private val onRemove: (Int) -> Unit
+) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            AttachmentsViewTypes.ATTACHMENT_IMAGE -> AttachmentImageHolder(parent)
-            AttachmentsViewTypes.ATTACHMENT_CONTACT -> AttachmentContactHolder(parent)
+            AttachmentsViewTypes.ATTACHMENT_IMAGE -> AttachmentImageHolder(parent, onRemove)
+            AttachmentsViewTypes.ATTACHMENT_CONTACT -> AttachmentContactHolder(parent, onRemove)
             else -> null
         }
 
     fun setAttachments(attachments: List<Attachment>) {
-        val items: List<BaseItem> = attachments.mapNotNull { attachment ->
+        val items: List<BaseItem> = attachments.mapIndexedNotNull { index, attachment ->
             when (attachment) {
-                is Attachment.Image -> attachment.getUri()?.let { uri -> AttachmentImageItem(uri) }
+                is Attachment.Image -> attachment.getUri()?.let { uri -> AttachmentImageItem(index, uri) }
                 is Attachment.Contact -> AttachmentContactItem(
+                    index,
                     Ezvcard.parse(attachment.vCard).first().formattedName.value
                 )
             }

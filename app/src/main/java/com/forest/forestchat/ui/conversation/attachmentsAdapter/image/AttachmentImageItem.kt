@@ -22,11 +22,11 @@ import android.net.Uri
 import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.AttachmentsViewTypes
 
-class AttachmentImageItem(val uri: Uri) : BaseItem() {
+class AttachmentImageItem(val index: Int, val uri: Uri) : BaseItem() {
 
     override fun getViewType(): Int = AttachmentsViewTypes.ATTACHMENT_IMAGE
 
     override fun isItemTheSame(oldItem: BaseItem): Boolean =
-        oldItem is AttachmentImageItem && oldItem.uri == uri
+        oldItem is AttachmentImageItem && oldItem.index == index && oldItem.uri == uri
 
 }

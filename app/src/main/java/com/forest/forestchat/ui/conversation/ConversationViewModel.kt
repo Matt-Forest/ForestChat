@@ -324,8 +324,11 @@ class ConversationViewModel @Inject constructor(
         checkSendingState()
     }
 
-    fun removeAttachment() {
-        // TODO remove and refresh
+    fun removeAttachment(index: Int) {
+        val attachments = attachments.value
+        attachments?.removeAt(index)
+        this.attachments.value = attachments
+
         checkSendingState()
     }
 

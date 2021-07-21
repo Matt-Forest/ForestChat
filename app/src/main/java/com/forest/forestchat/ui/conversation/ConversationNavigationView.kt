@@ -63,9 +63,10 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
     lateinit var onInputContentSelected: (InputContentInfoCompat) -> Unit
     lateinit var onCallClick: () -> Unit
+    lateinit var onRemoveAttachment: (Int) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
-    private var attachmentsAdapter = AttachmentsAdapter()
+    private var attachmentsAdapter = AttachmentsAdapter { onRemoveAttachment(it) }
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -189,7 +190,12 @@ class ConversationNavigationView @JvmOverloads constructor(
             if (isNotInit) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.getSystemService<Vibrator>()
-                        ?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
+                        ?.vibrate(
+                            VibrationEffect.createOneShot(
+                                40,
+                                VibrationEffect.DEFAULT_AMPLITUDE
+                            )
+                        )
                 }
                 context.makeToast(
                     context.getString(

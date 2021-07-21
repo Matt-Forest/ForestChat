@@ -26,6 +26,7 @@ import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class AttachmentContactHolder(
     parent: ViewGroup,
+    private val onRemove: (Int) -> Unit
 ) : BaseHolder<AttachmentContactItem>(parent, R.layout.holder_attachment_contact) {
 
     private val binding = HolderAttachmentContactBinding.bind(itemView)
@@ -34,6 +35,7 @@ class AttachmentContactHolder(
         with(binding) {
             contactAvatar.setAvatar(AvatarType.Single.Profile)
             contactName.text = item.contactName
+            remove.setOnClickListener { onRemove(item.index) }
         }
     }
 

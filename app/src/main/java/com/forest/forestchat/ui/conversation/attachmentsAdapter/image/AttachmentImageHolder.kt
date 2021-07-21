@@ -27,6 +27,7 @@ import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class AttachmentImageHolder(
     parent: ViewGroup,
+    private val onRemove: (Int) -> Unit
 ) : BaseHolder<AttachmentImageItem>(parent, R.layout.holder_attachment_image) {
 
     private val binding = HolderAttachmentImageBinding.bind(itemView)
@@ -34,6 +35,7 @@ class AttachmentImageHolder(
     override fun bind(item: AttachmentImageItem) {
         with(binding) {
             image.loadUri(uri = item.uri, imageSignatureKeys = ImageSignatureKeys.AttachmentImage)
+            remove.setOnClickListener { onRemove(item.index) }
         }
     }
 

@@ -21,11 +21,11 @@ package com.forest.forestchat.ui.conversation.attachmentsAdapter.contact
 import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.conversation.attachmentsAdapter.AttachmentsViewTypes
 
-class AttachmentContactItem(val contactName: String) : BaseItem() {
+class AttachmentContactItem(val index: Int, val contactName: String) : BaseItem() {
 
     override fun getViewType(): Int = AttachmentsViewTypes.ATTACHMENT_CONTACT
 
     override fun isItemTheSame(oldItem: BaseItem): Boolean =
-        oldItem is AttachmentContactItem && oldItem.contactName == contactName
+        oldItem is AttachmentContactItem && oldItem.index == index && oldItem.contactName == contactName
 
 }
