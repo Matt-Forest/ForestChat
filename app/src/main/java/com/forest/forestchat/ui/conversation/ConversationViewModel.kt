@@ -248,6 +248,8 @@ class ConversationViewModel @Inject constructor(
                     else -> {
                         sendNewMessage()
                         attachments.value = mutableListOf()
+                        attachmentVisibility.value = false
+                        activateSending.value = false
                         onTextToSendChange("")
                     }
                 }
