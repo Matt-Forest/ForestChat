@@ -32,6 +32,7 @@ import androidx.core.view.inputmethod.InputContentInfoCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationConversationBinding
 import com.forest.forestchat.extensions.*
@@ -92,6 +93,11 @@ class ConversationNavigationView @JvmOverloads constructor(
             gallery.setOnClickListener { onAttachmentSelected(AttachmentSelection.Gallery) }
             camera.setOnClickListener { onAttachmentSelected(AttachmentSelection.Camera) }
             contact.setOnClickListener { onAttachmentSelected(AttachmentSelection.Contact) }
+            attachmentRecycler.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
         }
     }
 

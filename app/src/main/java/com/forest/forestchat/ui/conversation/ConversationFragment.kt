@@ -74,7 +74,7 @@ class ConversationFragment : NavigationFragment() {
 
     private val getContact =
         registerForActivityResult(ActivityResultContracts.PickContact()) { uri ->
-            getVCard(uri)?.let { viewModel.addContactAttachment(it) }
+            uri?.let { getVCard(it) }?.let { viewModel.addContactAttachment(it) }
         }
 
     override fun buildNavigationView(): View = ConversationNavigationView(requireContext())
@@ -220,8 +220,8 @@ class ConversationFragment : NavigationFragment() {
     }
 
     private fun getVCard(contactData: Uri): String? {
-        val lookupKey =
-            context?.contentResolver?.query(contactData, null, null, null, null)?.use { cursor ->
+        val lookupKey = context?.contentResolver
+            ?.query(contactData, null, null, null, null)?.use { cursor ->
                 cursor.moveToFirst()
                 cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
             }

@@ -193,7 +193,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachmentRecycler"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="82dp"
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/messageToSend"
