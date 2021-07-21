@@ -94,8 +94,8 @@ class MediaView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val params = layoutParams
         when (style) {
             RoundedStyle.Alone -> {
-                params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                params.width = 250.dp
+                params.height = 250.dp
             }
             RoundedStyle.Left,
             RoundedStyle.Right -> {

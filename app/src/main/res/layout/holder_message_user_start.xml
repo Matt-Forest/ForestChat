@@ -53,6 +53,7 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="8dp"
         android:textColor="@color/text"
+        android:textColorLink="@color/text"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
