@@ -93,6 +93,7 @@ class ConversationFragment : NavigationFragment() {
             toggleAddAttachment = viewModel::toggleAddAttachment
             onInputContentSelected = viewModel::inputContentSelected
             toggleSimCard = viewModel::toggleSim
+            onCallClick = viewModel::makeACall
         }
 
         with(viewModel) {
@@ -113,6 +114,7 @@ class ConversationFragment : NavigationFragment() {
                     ConversationEvent.RequestGallery -> requestGallery()
                     ConversationEvent.RequestContact -> requestContact()
                     is ConversationEvent.ShowFile -> showFile(event.file)
+                    is ConversationEvent.Call -> call(event.address, event.asPermissionToCall)
                     else -> null
                 }
                 navigationView.event(event)
@@ -228,6 +230,15 @@ class ConversationFragment : NavigationFragment() {
             ?.createInputStream()
             ?.readBytes()
             ?.let { bytes -> String(bytes) }
+    }
+
+    private fun call(address: String, permissionToCall: Boolean) {
+        val action = when (permissionToCall) {
+            true -> Intent.ACTION_CALL
+            false -> Intent.ACTION_DIAL
+        }
+        val intent = Intent(action, Uri.parse("tel:$address"))
+        startActivityExternal(intent)
     }
 
 }

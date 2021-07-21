@@ -62,6 +62,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var toggleSimCard: () -> Unit
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
     lateinit var onInputContentSelected: (InputContentInfoCompat) -> Unit
+    lateinit var onCallClick: () -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
     private var attachmentsAdapter = AttachmentsAdapter()
@@ -73,6 +74,7 @@ class ConversationNavigationView @JvmOverloads constructor(
         with(binding) {
             back.setOnClickListener { findNavController().popBackStack() }
             simCard.setOnClickListener { toggleSimCard() }
+            phone.setOnClickListener { onCallClick() }
             messageToSend.doAfterTextChanged { text ->
                 onTextToSendChange(text?.toString() ?: "")
             }

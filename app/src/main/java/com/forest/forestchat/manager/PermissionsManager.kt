@@ -52,6 +52,8 @@ class PermissionsManager @Inject constructor(
 
     fun hasSendSms(): Boolean = hasPermission(Manifest.permission.SEND_SMS)
 
+    fun hasCalling(): Boolean = hasPermission(Manifest.permission.CALL_PHONE)
+
     private fun hasPermission(permission: String): Boolean =
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 

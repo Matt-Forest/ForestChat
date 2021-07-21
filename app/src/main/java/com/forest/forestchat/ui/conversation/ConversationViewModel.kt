@@ -235,7 +235,8 @@ class ConversationViewModel @Inject constructor(
     }
 
     private fun checkSendingState() {
-        val canSendingElement = !messageToSend.value.isNullOrEmpty() || !attachments.value.isNullOrEmpty()
+        val canSendingElement =
+            !messageToSend.value.isNullOrEmpty() || !attachments.value.isNullOrEmpty()
         activateSending.value = canSendingElement
     }
 
@@ -326,6 +327,12 @@ class ConversationViewModel @Inject constructor(
     fun removeAttachment() {
         // TODO remove and refresh
         checkSendingState()
+    }
+
+    fun makeACall() {
+        conversation.recipients.firstOrNull()?.address?.let { address ->
+            eventEmitter.emit(ConversationEvent.Call(address, permissionsManager.hasCalling()))
+        }
     }
 
 }
