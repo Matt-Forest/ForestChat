@@ -29,7 +29,6 @@ import android.provider.Telephony
 import android.telephony.PhoneNumberUtils
 import android.telephony.SmsManager
 import androidx.core.content.contentValuesOf
-import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.PixelSize
@@ -68,6 +67,10 @@ class SendMessageUseCase @Inject constructor(
     private val syncMessageFromUriUseCase: SyncMessageFromUriUseCase,
     private val shortCutManager: ForestChatShortCutManager
 ) {
+
+    companion object {
+        const val MmsMaxSize = 300
+    }
 
     suspend operator fun invoke(
         subId: Int,
@@ -160,7 +163,7 @@ class SendMessageUseCase @Inject constructor(
             sendSms(message, parts, smsManager)
         } else {
             /* ---- MMS ---- */
-            sendMms(subId, threadId, addresses, body, attachments, smsManager)
+            sendMms(subId, threadId, addresses, body, attachments)
         }
     }
 
@@ -268,18 +271,14 @@ class SendMessageUseCase @Inject constructor(
         threadId: Long,
         addresses: List<String>,
         body: String,
-        attachments: List<Attachment>,
-        smsManager: SmsManager
+        attachments: List<Attachment>
     ) {
-        val maxWidth = smsManager.carrierConfigValues
-            .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_WIDTH)
+        val maxWidth = Int.MAX_VALUE
 
-        val maxHeight = smsManager.carrierConfigValues
-            .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_HEIGHT)
+        val maxHeight = Int.MAX_VALUE
 
         // 0.9 --> buys us a bit of wiggle room
-        var remainingBytes = smsManager.carrierConfigValues
-            .getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE) * 0.9
+        var remainingBytes = (MmsMaxSize * 1024) * 0.9
         remainingBytes -= body.toByteArray().size
 
         val settings = Settings()
