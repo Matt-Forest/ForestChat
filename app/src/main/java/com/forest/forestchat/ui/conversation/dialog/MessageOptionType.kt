@@ -21,5 +21,6 @@ package com.forest.forestchat.ui.conversation.dialog
 enum class MessageOptionType {
     Copy,
     Remove,
-    Details
+    Details,
+    Resend
 }

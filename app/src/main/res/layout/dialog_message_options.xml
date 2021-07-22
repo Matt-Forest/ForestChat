@@ -26,6 +26,33 @@
     tools:background="@drawable/bg_bottom_dialog">
 
     <LinearLayout
+        android:id="@+id/resend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_send"
+            app:tint="@color/text" />
+
+        <TextView
+            style="@style/Typography.Subtitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/message_option_resend"
+            android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/copy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

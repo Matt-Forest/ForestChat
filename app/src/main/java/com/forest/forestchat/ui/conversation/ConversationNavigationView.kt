@@ -104,7 +104,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     fun event(event: ConversationEvent) {
         when (event) {
             is ConversationEvent.ShowMessageOptions -> {
-                MessageOptionsDialog(context, event.canCopy) { optionSelected(it) }
+                MessageOptionsDialog(context, event.canCopy, event.canResend) { optionSelected(it) }
                     .create()
                     .show()
             }

@@ -32,7 +32,7 @@ sealed class ConversationEvent {
     object RequestContact : ConversationEvent()
 
     data class ShowFile(val file: File) : ConversationEvent()
-    data class ShowMessageOptions(val canCopy: Boolean) : ConversationEvent()
+    data class ShowMessageOptions(val canCopy: Boolean, val canResend: Boolean) : ConversationEvent()
     data class ShowMessageDetails(val details: String) : ConversationEvent()
     data class ShowGallery(val mediaSelected: Media, val medias: List<Media>) : ConversationEvent()
     data class Call(val address: String, val asPermissionToCall: Boolean) : ConversationEvent()

@@ -81,6 +81,7 @@
     <string name="message_option_copy">Copy</string>
     <string name="message_option_details">Details</string>
     <string name="message_option_removed">Remove</string>
+    <string name="message_option_resend">Resend</string>
 
     <string name="message_details_title">Message details</string>
     <string name="message_details_type">Type: %s</string>
@@ -94,7 +95,7 @@
     <string name="message_details_delivered">Delivered: %s</string>
     <string name="message_details_error_code">Error code: %d</string>
     <string name="message_status_sending">Sending…</string>
-    <string name="message_status_failed">Failed to send. Long tap to try again</string>
+    <string name="message_status_failed">Failed to send.</string>
 
     <string name="message_attachment_gallery">Gallery</string>
     <string name="message_attachment_camera">Photo</string>

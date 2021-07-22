@@ -74,6 +74,7 @@
     <string name="message_option_copy">Copier</string>
     <string name="message_option_details">Détails</string>
     <string name="message_option_removed">Supprimer</string>
+    <string name="message_option_resend">Renvoyer</string>
 
     <string name="message_details_title">Détails du message</string>
     <string name="message_details_type">Type : %s</string>
@@ -87,7 +88,7 @@
     <string name="message_details_delivered">Délivré : %s</string>
     <string name="message_details_error_code">Code erreur : %d</string>
     <string name="message_status_sending">Envoie…</string>
-    <string name="message_status_failed">Echec de l\'envoie. effectuer un long clique pour réessayer</string>
+    <string name="message_status_failed">Echec de l\'envoie.</string>
 
     <string name="message_attachment_gallery">Galerie</string>
     <string name="message_attachment_camera">Photo</string>

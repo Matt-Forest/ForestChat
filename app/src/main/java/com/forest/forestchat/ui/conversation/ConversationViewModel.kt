@@ -52,6 +52,7 @@ class ConversationViewModel @Inject constructor(
     private val deleteMessageUseCase: DeleteMessageUseCase,
     private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
+    private val resendMessageUseCase: ResendMessageUseCase,
     private val permissionsManager: PermissionsManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
@@ -192,6 +193,11 @@ class ConversationViewModel @Inject constructor(
                         messageDetailsFormatter(message)
                     )
                 )
+                MessageOptionType.Resend -> {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        resendMessageUseCase(message.id)
+                    }
+                }
             }
         }
     }
@@ -221,7 +227,12 @@ class ConversationViewModel @Inject constructor(
             getMessageByIdUseCase(messageId)?.let { message ->
                 messageSelected = message
                 withContext(Dispatchers.Main) {
-                    eventEmitter.emit(ConversationEvent.ShowMessageOptions(message.type == MessageType.Sms))
+                    eventEmitter.emit(
+                        ConversationEvent.ShowMessageOptions(
+                            message.type == MessageType.Sms,
+                            message.isFailed()
+                        )
+                    )
                 }
             }
         }

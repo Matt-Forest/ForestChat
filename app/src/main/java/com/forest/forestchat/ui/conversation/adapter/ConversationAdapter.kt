@@ -202,7 +202,7 @@ class ConversationAdapter(
         }
         val status = when {
             message.isSending() -> StatusUserMessage.Sending
-            message.isFailedMessage() -> StatusUserMessage.Failed
+            message.isFailed() -> StatusUserMessage.Failed
             else -> null
         }
 
@@ -363,7 +363,7 @@ class ConversationAdapter(
                 date = messageDate,
                 status = when {
                     message.isSending() -> StatusUserMessage.Sending
-                    message.isFailedMessage() -> StatusUserMessage.Failed
+                    message.isFailed() -> StatusUserMessage.Failed
                     else -> null
                 }
             )
@@ -407,7 +407,7 @@ class ConversationAdapter(
                     date = messageDate,
                     status = when {
                         message.isSending() -> StatusUserMessage.Sending
-                        message.isFailedMessage() -> StatusUserMessage.Failed
+                        message.isFailed() -> StatusUserMessage.Failed
                         else -> null
                     }
                 )
@@ -459,7 +459,7 @@ class ConversationAdapter(
                                 date = messageDate,
                                 status = when {
                                     message.isSending() -> StatusUserMessage.Sending
-                                    message.isFailedMessage() -> StatusUserMessage.Failed
+                                    message.isFailed() -> StatusUserMessage.Failed
                                     else -> null
                                 }
                             )
@@ -514,7 +514,7 @@ class ConversationAdapter(
                             date = messageDate,
                             status = when {
                                 message.isSending() -> StatusUserMessage.Sending
-                                message.isFailedMessage() -> StatusUserMessage.Failed
+                                message.isFailed() -> StatusUserMessage.Failed
                                 else -> null
                             }
                         )

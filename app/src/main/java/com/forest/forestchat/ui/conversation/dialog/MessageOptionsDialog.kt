@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class MessageOptionsDialog(
     context: Context,
     private val canCopy: Boolean,
+    private val canResend: Boolean,
     private val optionSelected: (MessageOptionType) -> Unit
 ) : BaseBottomDialog(context, true) {
 
@@ -42,10 +43,12 @@ class MessageOptionsDialog(
     override fun onDialogCreated(dialog: BottomSheetDialog) {
         with(binding) {
             copy.visibleIf { canCopy }
+            resend.visibleIf { canResend }
 
             copy.setOnClickListener { select(dialog, MessageOptionType.Copy) }
             details.setOnClickListener { select(dialog, MessageOptionType.Details) }
             remove.setOnClickListener { select(dialog, MessageOptionType.Remove) }
+            resend.setOnClickListener { select(dialog, MessageOptionType.Resend) }
         }
     }
 

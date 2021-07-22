@@ -94,23 +94,15 @@ data class Message(
     }
 
     private fun isOutgoingMessage(): Boolean {
-        val isOutgoingMms = type == MessageType.Mms && box == MessageBox.Outbox
-        val isOutgoingSms = type == MessageType.Sms &&
-                (box == MessageBox.Failed || box == MessageBox.Outbox || box == MessageBox.Queued)
-
-        return isOutgoingMms || isOutgoingSms
+        return when (type) {
+            MessageType.Sms -> box == MessageBox.Failed || box == MessageBox.Outbox || box == MessageBox.Queued
+            MessageType.Mms -> box == MessageBox.Outbox
+            else -> false
+        }
     }
 
     fun isSending(): Boolean {
-        return !isFailedMessage() && isOutgoingMessage()
-    }
-
-    fun isFailedMessage(): Boolean {
-        val isFailedMms = type == MessageType.Mms &&
-                ((mms != null && mms.errorCode >= Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT) ||
-                        box == MessageBox.Failed)
-        val isFailedSms = type == MessageType.Sms && box == MessageBox.Failed
-        return isFailedMms || isFailedSms
+        return !isFailed() && isOutgoingMessage()
     }
 
 }
