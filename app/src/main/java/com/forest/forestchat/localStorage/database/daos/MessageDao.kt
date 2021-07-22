@@ -29,7 +29,7 @@ import com.forest.forestchat.domain.models.message.MessageType
 interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(message: Message)
+    suspend fun insert(message: Message): Long
 
     @Query("SELECT * FROM Message")
     suspend fun getAll(): List<Message>?

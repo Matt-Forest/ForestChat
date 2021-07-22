@@ -86,6 +86,8 @@
     <string name="message_details_received">Reçu : %s</string>
     <string name="message_details_delivered">Délivré : %s</string>
     <string name="message_details_error_code">Code erreur : %d</string>
+    <string name="message_status_sending">Envoie…</string>
+    <string name="message_status_failed">Echec de l\'envoie. effectuer un long clique pour réessayer</string>
 
     <string name="message_attachment_gallery">Galerie</string>
     <string name="message_attachment_camera">Photo</string>

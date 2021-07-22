@@ -156,9 +156,15 @@ class SendMessageUseCase @Inject constructor(
 
         if (addresses.size == 1 && attachments.isEmpty() && !forceMms) {
             /* ---- SMS ---- */
-            val message =
-                convertToMessage(subId, threadId, addresses, body, System.currentTimeMillis())
-            sendMessageToNativeProvider(message)
+            val message = sendMessageToNativeProvider(
+                convertToMessage(
+                    subId,
+                    threadId,
+                    addresses,
+                    body,
+                    System.currentTimeMillis()
+                )
+            )
 
             sendSms(message, parts, smsManager)
         } else {
@@ -193,7 +199,8 @@ class SendMessageUseCase @Inject constructor(
             mms = null,
         )
 
-    private suspend fun sendMessageToNativeProvider(message: Message) {
+    private suspend fun sendMessageToNativeProvider(message: Message): Message {
+        var messageReturn = message
         val values = contentValuesOf(
             Telephony.Sms.ADDRESS to message.address,
             Telephony.Sms.BODY to message.sms?.body,
@@ -209,8 +216,9 @@ class SendMessageUseCase @Inject constructor(
 
         // We do this after inserting the message because it might be slow, and we want the message
         // to be inserted into Db immediately. We don't need to do this after receiving one
-        uri?.lastPathSegment?.toLong()?.let { id ->
-            updateMessageUseCase(message.copy(contentId = id))
+        uri?.lastPathSegment?.toLong()?.let { contentId ->
+            val id = updateMessageUseCase(message.copy(contentId = contentId))
+            messageReturn = message.copy(id = id)
         }
 
         // On some devices, we can't obtain a threadId until after the first message is sent in a
@@ -219,6 +227,8 @@ class SendMessageUseCase @Inject constructor(
         if (message.threadId == 0L) {
             uri?.let { syncMessageFromUriUseCase(it) }
         }
+
+        return messageReturn
     }
 
     private suspend fun sendSms(

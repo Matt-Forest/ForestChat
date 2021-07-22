@@ -88,9 +88,29 @@ data class Message(
         }
 
     fun compareSender(other: Message): Boolean = when {
-        isUser() && other.isUser() -> subId == other.subId
-        !isUser() && !other.isUser() -> subId == other.subId && address == other.address
+        isUser() && other.isUser() -> true
+        !isUser() && !other.isUser() -> address == other.address
         else -> false
+    }
+
+    private fun isOutgoingMessage(): Boolean {
+        val isOutgoingMms = type == MessageType.Mms && box == MessageBox.Outbox
+        val isOutgoingSms = type == MessageType.Sms &&
+                (box == MessageBox.Failed || box == MessageBox.Outbox || box == MessageBox.Queued)
+
+        return isOutgoingMms || isOutgoingSms
+    }
+
+    fun isSending(): Boolean {
+        return !isFailedMessage() && isOutgoingMessage()
+    }
+
+    fun isFailedMessage(): Boolean {
+        val isFailedMms = type == MessageType.Mms &&
+                ((mms != null && mms.errorCode >= Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT) ||
+                        box == MessageBox.Failed)
+        val isFailedSms = type == MessageType.Sms && box == MessageBox.Failed
+        return isFailedMms || isFailedSms
     }
 
 }

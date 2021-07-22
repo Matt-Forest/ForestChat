@@ -22,9 +22,13 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.HolderMessageUserSingleBinding
+import com.forest.forestchat.extensions.asColor
+import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.conversation.adapter.ConversationPayload
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
+import com.forest.forestchat.ui.conversation.adapter.message.StatusUserMessage
 
 class MessageUserSingleHolder(
     parent: ViewGroup,
@@ -44,13 +48,40 @@ class MessageUserSingleHolder(
             info.sim.visibleIf { item.sim != null }
             info.simCard.visibleIf { item.sim != null }
 
+            setupStatusMessage(item.status)
+
             itemView.setOnClickListener {
-                info.container.visibleIf { info.container.isGone }
+                if (item.status == null) {
+                    info.container.visibleIf { info.container.isGone }
+                }
             }
             itemView.setOnLongClickListener {
                 onEvent(MessageItemEvent.MessageSelected(item.messageId))
                 true
             }
+        }
+    }
+
+    private fun setupStatusMessage(statusUserMessage: StatusUserMessage?) {
+        with(binding.info) {
+            status.text = when (statusUserMessage) {
+                StatusUserMessage.Sending -> R.string.message_status_sending.asString(context)
+                StatusUserMessage.Failed -> R.string.message_status_failed.asString(context)
+                else -> null
+            }
+            status.setTextColor(
+                when (statusUserMessage == StatusUserMessage.Failed) {
+                    true -> R.color.error
+                    false -> R.color.text_50
+                }.asColor(context)
+            )
+            container.visibleIf { statusUserMessage != null }
+        }
+    }
+
+    fun onPayload(payload: ConversationPayload) {
+        when (payload) {
+            is ConversationPayload.Status -> setupStatusMessage(payload.newStatus)
         }
     }
 

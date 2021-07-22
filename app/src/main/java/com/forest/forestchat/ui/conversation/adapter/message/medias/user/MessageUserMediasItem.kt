@@ -18,8 +18,11 @@
  */
 package com.forest.forestchat.ui.conversation.adapter.message.medias.user
 
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.media.Media
+import com.forest.forestchat.ui.conversation.adapter.ConversationPayload
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.conversation.adapter.message.StatusUserMessage
 import com.forest.forestchat.ui.conversation.adapter.message.medias.MessageMediasBaseItem
 
 class MessageUserMediasItem(
@@ -27,9 +30,19 @@ class MessageUserMediasItem(
     medias: List<Media>,
     hours: String,
     val sim: Int?,
-    date: String?
+    date: String?,
+    val status: StatusUserMessage?
 ) : MessageMediasBaseItem(messageId, medias, hours, date) {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_MEDIA
+
+    override fun getChangePayload(oldItem: BaseItem): Any? {
+        oldItem as MessageUserMediasItem
+
+        return when {
+            oldItem.status != status -> ConversationPayload.Status(status)
+            else -> null
+        }
+    }
 
 }

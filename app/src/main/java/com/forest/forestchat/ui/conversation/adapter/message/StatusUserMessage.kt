@@ -16,18 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.domain.useCases
+package com.forest.forestchat.ui.conversation.adapter.message
 
-import com.forest.forestchat.domain.models.message.Message
-import com.forest.forestchat.localStorage.database.daos.MessageDao
-import javax.inject.Inject
-import javax.inject.Singleton
+sealed class StatusUserMessage {
 
-@Singleton
-class UpdateMessageUseCase @Inject constructor(
-    private val messageDao: MessageDao
-) {
-
-    suspend operator fun invoke(message: Message): Long = messageDao.insert(message)
+    object Sending : StatusUserMessage()
+    object Failed : StatusUserMessage()
 
 }

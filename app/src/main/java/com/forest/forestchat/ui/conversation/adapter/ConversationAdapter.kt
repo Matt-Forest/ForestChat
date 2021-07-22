@@ -33,11 +33,12 @@ import com.forest.forestchat.extensions.getMessageDate
 import com.forest.forestchat.extensions.getMessageHours
 import com.forest.forestchat.extensions.isSameDayWithOther
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 import com.forest.forestchat.ui.common.media.Media
+import com.forest.forestchat.ui.conversation.adapter.message.StatusUserMessage
 import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactHolder
 import com.forest.forestchat.ui.conversation.adapter.message.contact.recipient.MessageRecipientContactItem
 import com.forest.forestchat.ui.conversation.adapter.message.contact.user.MessageUserContactHolder
@@ -82,15 +83,50 @@ class ConversationAdapter(
             ConversationViewTypes.MESSAGE_USER_CONTACT -> MessageUserContactHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_USER_FILE -> MessageUserFileHolder(parent, onEvent)
             ConversationViewTypes.MESSAGE_USER_MEDIA -> MessageUserMediasHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(parent, onEvent)
-            ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA -> MessageRecipientMediasHolder(parent, onEvent)
+            ConversationViewTypes.MESSAGE_RECIPIENT_START -> MessageRecipientStartHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_SINGLE -> MessageRecipientSingleHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_END -> MessageRecipientEndHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_MIDDLE -> MessageRecipientMiddleHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_CONTACT -> MessageRecipientContactHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_FILE -> MessageRecipientFileHolder(
+                parent,
+                onEvent
+            )
+            ConversationViewTypes.MESSAGE_RECIPIENT_MEDIA -> MessageRecipientMediasHolder(
+                parent,
+                onEvent
+            )
             else -> null
         }
+
+    override fun onPayload(holder: BaseHolder<BaseItem>, position: Int, payload: Any) {
+        payload as ConversationPayload
+        // we need to cast because Kotlin does not like generic parameters
+        when (val holder = holder as BaseHolder<*>) {
+            is MessageUserSingleHolder -> holder.onPayload(payload)
+            is MessageUserStartHolder -> holder.onPayload(payload)
+            is MessageUserEndHolder -> holder.onPayload(payload)
+            is MessageUserMiddleHolder -> holder.onPayload(payload)
+            is MessageUserContactHolder -> holder.onPayload(payload)
+            is MessageUserFileHolder -> holder.onPayload(payload)
+            is MessageUserMediasHolder -> holder.onPayload(payload)
+        }
+    }
 
     fun setMessages(
         messages: List<Message>,
@@ -164,6 +200,11 @@ class ConversationAdapter(
             true -> message.date.getMessageDate(context)
             false -> null
         }
+        val status = when {
+            message.isSending() -> StatusUserMessage.Sending
+            message.isFailedMessage() -> StatusUserMessage.Failed
+            else -> null
+        }
 
         return when {
             previousIsSameSender && nextIsSameSender ->
@@ -173,6 +214,7 @@ class ConversationAdapter(
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
                         sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
+                        status = status
                     )
                     false -> MessageRecipientMiddleItem(
                         messageId = message.id,
@@ -187,7 +229,8 @@ class ConversationAdapter(
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
                         sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                        date = messageDate
+                        date = messageDate,
+                        status = status
                     )
                     false -> MessageRecipientStartItem(
                         messageId = message.id,
@@ -205,6 +248,7 @@ class ConversationAdapter(
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
                         sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
+                        status = status
                     )
                     false -> MessageRecipientEndItem(
                         messageId = message.id,
@@ -219,7 +263,8 @@ class ConversationAdapter(
                         message = message.getText(),
                         hours = message.date.getMessageHours(context),
                         sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                        date = messageDate
+                        date = messageDate,
+                        status = status
                     )
                     false -> MessageRecipientSingleItem(
                         messageId = message.id,
@@ -315,7 +360,12 @@ class ConversationAdapter(
                 message = text,
                 hours = message.date.getMessageHours(context),
                 sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                date = messageDate
+                date = messageDate,
+                status = when {
+                    message.isSending() -> StatusUserMessage.Sending
+                    message.isFailedMessage() -> StatusUserMessage.Failed
+                    else -> null
+                }
             )
             false -> MessageRecipientSingleItem(
                 messageId = message.id,
@@ -354,7 +404,12 @@ class ConversationAdapter(
                     },
                     hours = message.date.getMessageHours(context),
                     sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                    date = messageDate
+                    date = messageDate,
+                    status = when {
+                        message.isSending() -> StatusUserMessage.Sending
+                        message.isFailedMessage() -> StatusUserMessage.Failed
+                        else -> null
+                    }
                 )
                 false -> MessageRecipientMediasItem(
                     messageId = message.id,
@@ -401,7 +456,12 @@ class ConversationAdapter(
                                 contactName = card.formattedName.value,
                                 hours = message.date.getMessageHours(context),
                                 sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                                date = messageDate
+                                date = messageDate,
+                                status = when {
+                                    message.isSending() -> StatusUserMessage.Sending
+                                    message.isFailedMessage() -> StatusUserMessage.Failed
+                                    else -> null
+                                }
                             )
                             false -> MessageRecipientContactItem(
                                 messageId = message.id,
@@ -451,7 +511,12 @@ class ConversationAdapter(
                             size = size,
                             hours = message.date.getMessageHours(context),
                             sim = message.subId?.let { subId -> getSimSlot(subs, subId) },
-                            date = messageDate
+                            date = messageDate,
+                            status = when {
+                                message.isSending() -> StatusUserMessage.Sending
+                                message.isFailedMessage() -> StatusUserMessage.Failed
+                                else -> null
+                            }
                         )
                         false -> MessageRecipientFileItem(
                             messageId = message.id,

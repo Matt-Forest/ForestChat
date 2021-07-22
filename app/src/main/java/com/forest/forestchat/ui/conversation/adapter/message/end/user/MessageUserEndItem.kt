@@ -19,18 +19,30 @@
 package com.forest.forestchat.ui.conversation.adapter.message.end.user
 
 import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.conversation.adapter.ConversationPayload
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.conversation.adapter.message.StatusUserMessage
 
 class MessageUserEndItem(
     val messageId: Long,
     val message: String,
     val hours: String,
     val sim: Int?,
+    val status: StatusUserMessage?
 ) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_END
 
     override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageUserEndItem && oldItem.messageId == messageId
+
+    override fun getChangePayload(oldItem: BaseItem): Any? {
+        oldItem as MessageUserEndItem
+
+        return when {
+            oldItem.status != status -> ConversationPayload.Status(status)
+            else -> null
+        }
+    }
 
 }

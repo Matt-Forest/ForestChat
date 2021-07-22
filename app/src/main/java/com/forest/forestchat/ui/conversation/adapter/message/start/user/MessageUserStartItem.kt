@@ -19,19 +19,31 @@
 package com.forest.forestchat.ui.conversation.adapter.message.start.user
 
 import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.conversation.adapter.ConversationPayload
 import com.forest.forestchat.ui.conversation.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.conversation.adapter.message.StatusUserMessage
 
 class MessageUserStartItem(
     val messageId: Long,
     val message: String,
     val hours: String,
     val sim: Int?,
-    val date: String?
+    val date: String?,
+    val status: StatusUserMessage?
 ) : BaseItem() {
 
     override fun getViewType(): Int = ConversationViewTypes.MESSAGE_USER_START
 
     override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is MessageUserStartItem && oldItem.messageId == messageId
+
+    override fun getChangePayload(oldItem: BaseItem): Any? {
+        oldItem as MessageUserStartItem
+
+        return when {
+            oldItem.status != status -> ConversationPayload.Status(status)
+            else -> null
+        }
+    }
 
 }
