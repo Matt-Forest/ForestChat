@@ -140,6 +140,7 @@ class ConversationNavigationView @JvmOverloads constructor(
                 is ConversationState.Data -> {
                     if (recyclerConversation.adapter !== conversationAdapter) {
                         recyclerConversation.adapter = conversationAdapter
+                        conversationAdapter.autoScrollToStart(recyclerConversation)
                     }
                     conversationAdapter.apply {
                         setMessages(state.messages, state.recipients, state.subscriptionsInfo)
