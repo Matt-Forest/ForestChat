@@ -123,6 +123,16 @@ class ConversationFragment : NavigationFragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.updateActiveConversation(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.updateActiveConversation(false)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
     fun onTransversalEvent(event: TransversalBusEvent) {

@@ -28,6 +28,7 @@ import com.forest.forestchat.domain.models.message.MessageBox
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.models.message.sms.MessageSms
 import com.forest.forestchat.domain.models.message.sms.SmsStatus
+import com.forest.forestchat.manager.ActiveThreadManager
 import com.forest.forestchat.utils.TelephonyThread
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -37,7 +38,8 @@ import javax.inject.Singleton
 class ReceiveSmsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val updateMessageUseCase: UpdateMessageUseCase,
-    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase
+    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
+    private val activeThreadManager: ActiveThreadManager
 ) {
 
     suspend operator fun invoke(subscriptionId: Int, messages: Array<SmsMessage>): Conversation? {
@@ -72,15 +74,16 @@ class ReceiveSmsUseCase @Inject constructor(
 
     private fun convertToMessage(subscriptionId: Int, messages: Array<SmsMessage>): Message {
         val address = messages[0].displayOriginatingAddress
+        val threadId = TelephonyThread.getOrCreateThreadId(context, listOf(address))
         return Message(
-            threadId = TelephonyThread.getOrCreateThreadId(context, listOf(address)),
+            threadId = threadId,
             contentId = 0L,
             address = address,
             box = MessageBox.Inbox,
             type = MessageType.Sms,
             date = System.currentTimeMillis(),
             dateSent = messages[0].timestampMillis,
-            read = false,
+            read = activeThreadManager.getActiveThread() == threadId,
             seen = false,
             subId = subscriptionId,
             sms = MessageSms(

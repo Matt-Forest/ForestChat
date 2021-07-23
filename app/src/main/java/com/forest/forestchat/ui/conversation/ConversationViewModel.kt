@@ -26,6 +26,7 @@ import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.useCases.*
 import com.forest.forestchat.extensions.getNavigationInput
+import com.forest.forestchat.manager.ActiveThreadManager
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.manager.SubscriptionManagerCompat
 import com.forest.forestchat.ui.common.mappers.buildAvatar
@@ -56,6 +57,7 @@ class ConversationViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
+    private val activeThreadManager: ActiveThreadManager,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -347,6 +349,15 @@ class ConversationViewModel @Inject constructor(
         conversation.recipients.firstOrNull()?.address?.let { address ->
             eventEmitter.emit(ConversationEvent.Call(address, permissionsManager.hasCalling()))
         }
+    }
+
+    fun updateActiveConversation(isActive: Boolean) {
+        activeThreadManager.setActiveThread(
+            when (isActive) {
+                true -> conversation.id
+                false -> null
+            }
+        )
     }
 
 }

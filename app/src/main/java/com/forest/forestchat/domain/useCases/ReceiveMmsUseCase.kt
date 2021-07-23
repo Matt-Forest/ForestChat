@@ -20,6 +20,7 @@ package com.forest.forestchat.domain.useCases
 
 import android.net.Uri
 import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.manager.ActiveThreadManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +30,8 @@ class ReceiveMmsUseCase @Inject constructor(
     private val isBlockedNumbersFromProviderUseCase: IsBlockedNumbersFromProviderUseCase,
     private val markAsReadUseCase: MarkAsReadUseCase,
     private val getConversationUseCase: GetConversationUseCase,
-    private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase
+    private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
+    private val activeThreadManager: ActiveThreadManager
 ) {
 
     suspend operator fun invoke(uri: Uri): Conversation? =
@@ -37,7 +39,7 @@ class ReceiveMmsUseCase @Inject constructor(
             var conversation = getConversationUseCase(message.threadId)
             val isBlocked : Boolean = message.address?.let { isBlockedNumbersFromProviderUseCase(it) } == true
 
-            if (isBlocked) {
+            if (isBlocked || activeThreadManager.getActiveThread() == message.threadId) {
                 markAsReadUseCase(message.threadId)
             }
 
