@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_title"
+            android:text="@string/conversation_block_dialog_title"
             android:textColor="@color/text" />
 
         <TextView
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:text="@string/conversation_delete_dialog_describe"
+            android:text="@string/conversation_block_dialog_describe"
             android:textColor="@color/text" />
 
         <TextView
@@ -58,7 +58,7 @@
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_confirm"
+            android:text="@string/conversation_block_dialog_confirm"
             android:textAllCaps="true"
             android:textColor="@color/text" />
 
@@ -75,7 +75,7 @@
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_refuse"
+            android:text="@string/conversation_block_dialog_refuse"
             android:textAllCaps="true"
             android:textColor="@color/text" />
 

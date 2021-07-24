@@ -18,8 +18,8 @@
  */
 package com.forest.forestchat.ui.conversation.models
 
+import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.ui.common.media.Media
-import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import java.io.File
 
 sealed class ConversationEvent {
@@ -36,5 +36,6 @@ sealed class ConversationEvent {
     data class ShowMessageDetails(val details: String) : ConversationEvent()
     data class ShowGallery(val mediaSelected: Media, val medias: List<Media>) : ConversationEvent()
     data class Call(val address: String, val asPermissionToCall: Boolean) : ConversationEvent()
+    data class GoToSettings(val conversation: Conversation) : ConversationEvent()
 
 }

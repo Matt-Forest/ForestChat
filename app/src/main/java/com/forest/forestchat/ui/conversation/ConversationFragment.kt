@@ -94,6 +94,7 @@ class ConversationFragment : NavigationFragment() {
             onInputContentSelected = viewModel::inputContentSelected
             toggleSimCard = viewModel::toggleSim
             onCallClick = viewModel::makeACall
+            onSettingsClick = viewModel::settings
             onRemoveAttachment = viewModel::removeAttachment
         }
 

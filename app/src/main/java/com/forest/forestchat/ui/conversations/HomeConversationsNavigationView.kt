@@ -35,7 +35,7 @@ import com.forest.forestchat.observer.ContactObserver
 import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.conversations.dialog.ConversationDeleteDialog
+import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent

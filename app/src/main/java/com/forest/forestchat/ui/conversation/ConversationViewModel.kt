@@ -54,6 +54,7 @@ class ConversationViewModel @Inject constructor(
     private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val resendMessageUseCase: ResendMessageUseCase,
+    private val markAsReadUseCase: MarkAsReadUseCase,
     private val permissionsManager: PermissionsManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
@@ -95,6 +96,9 @@ class ConversationViewModel @Inject constructor(
         title.value = conversation.getTitle()
         isLoading.value = true
 
+        viewModelScope.launch(Dispatchers.IO) {
+            markAsReadUseCase(conversation.id)
+        }
         updateMessages()
         initSimInformation()
     }
@@ -182,7 +186,7 @@ class ConversationViewModel @Inject constructor(
     fun onMessageOptionSelected(optionSelected: MessageOptionType) {
         messageSelected?.let { message ->
             when (optionSelected) {
-                MessageOptionType.Copy -> copyIntoClipboard(message)
+                MessageOptionType.Copy -> copyIntoClipboard.copyMessage(message)
                 MessageOptionType.Remove -> {
                     viewModelScope.launch(Dispatchers.IO) {
                         deleteMessageUseCase(message.id)
@@ -358,6 +362,10 @@ class ConversationViewModel @Inject constructor(
                 false -> null
             }
         )
+    }
+
+    fun settings() {
+        eventEmitter.emit(ConversationEvent.GoToSettings(conversation))
     }
 
 }

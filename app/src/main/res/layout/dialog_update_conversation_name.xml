@@ -38,17 +38,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_title"
+            android:text="@string/conversation_settings_dialog_update_name_title"
             android:textColor="@color/text" />
 
-        <TextView
-            style="@style/Typography.Caption"
+        <EditText
+            android:id="@+id/updateTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:padding="16dp"
-            android:text="@string/conversation_delete_dialog_describe"
-            android:textColor="@color/text" />
+            android:layout_margin="16dp"
+            android:foregroundTint="@color/edit_text_tint_selector"
+            android:hint="@string/conversation_settings_dialog_update_name_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp" />
 
         <TextView
             android:id="@+id/confirm"
@@ -58,7 +61,7 @@
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_confirm"
+            android:text="@string/conversation_settings_dialog_update_name_update"
             android:textAllCaps="true"
             android:textColor="@color/text" />
 
@@ -75,7 +78,7 @@
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
             android:paddingHorizontal="16dp"
-            android:text="@string/conversation_delete_dialog_refuse"
+            android:text="@string/conversation_settings_dialog_update_name_cancel"
             android:textAllCaps="true"
             android:textColor="@color/text" />
 

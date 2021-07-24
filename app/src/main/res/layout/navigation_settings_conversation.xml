@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:layout_height="match_parent"
+    tools:layout_width="match_parent"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/toolbarBackground"
+        android:elevation="4dp"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_arrow_left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text" />
+
+        <TextView
+            style="@style/Typography.H6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/conversation_settings_title"
+            android:textColor="@color/text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/back"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="11dp">
+
+                <com.forest.forestchat.ui.common.avatar.GroupAvatarView
+                    android:id="@+id/avatars"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name"
+                    style="@style/Typography.Subtitle1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toTopOf="@id/describe"
+                    app:layout_constraintEnd_toStartOf="@id/addToContact"
+                    app:layout_constraintStart_toEndOf="@id/avatars"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@tools:sample/full_names" />
+
+                <TextView
+                    android:id="@+id/describe"
+                    style="@style/Typography.Caption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_50"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/addToContact"
+                    app:layout_constraintStart_toStartOf="@id/name"
+                    app:layout_constraintTop_toBottomOf="@id/name"
+                    tools:text="@tools:sample/us_phones" />
+
+                <ImageView
+                    android:id="@+id/addToContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_add_profile"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/text"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@color/divider" />
+
+            <TextView
+                android:id="@+id/groupName"
+                style="@style/Typography.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="32dp"
+                android:padding="16dp"
+                android:text="@string/conversation_settings_group_name"
+                android:textColor="@color/text"
+                android:visibility="gone"
+                app:drawableStartCompat="@drawable/ic_edit"
+                app:drawableTint="@color/text"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/notifications"
+                style="@style/Typography.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="32dp"
+                android:padding="16dp"
+                android:text="@string/conversation_settings_notifications"
+                android:textColor="@color/text_enable_tint_selector"
+                app:drawableStartCompat="@drawable/ic_notification"
+                app:drawableTint="@color/text_enable_tint_selector" />
+
+            <TextView
+                android:id="@+id/archive"
+                style="@style/Typography.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="32dp"
+                android:padding="16dp"
+                android:text="@string/conversation_settings_archived"
+                android:textColor="@color/text_enable_tint_selector"
+                app:drawableStartCompat="@drawable/ic_archive"
+                app:drawableTint="@color/text_enable_tint_selector" />
+
+            <TextView
+                android:id="@+id/block"
+                style="@style/Typography.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="32dp"
+                android:padding="16dp"
+                android:text="@string/conversation_settings_block"
+                android:textColor="@color/text"
+                app:drawableStartCompat="@drawable/ic_block"
+                app:drawableTint="@color/text" />
+
+            <TextView
+                android:id="@+id/remove"
+                style="@style/Typography.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="32dp"
+                android:padding="16dp"
+                android:text="@string/conversation_settings_remove"
+                android:textColor="@color/text"
+                app:drawableStartCompat="@drawable/ic_remove"
+                app:drawableTint="@color/text" />
+
+            <TableLayout
+                android:id="@+id/medias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</merge>

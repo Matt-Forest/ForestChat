@@ -21,8 +21,11 @@ package com.forest.forestchat.utils
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import com.forest.forestchat.R
 import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
+import com.forest.forestchat.extensions.asString
+import com.forest.forestchat.extensions.makeToast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,14 +35,24 @@ class CopyIntoClipboard @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    operator fun invoke(message: Message) {
+    fun copyMessage(message: Message) {
         if (message.type == MessageType.Sms) {
             val contentToCopy = message.getText()
 
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("SMS", contentToCopy)
             clipboard.setPrimaryClip(clip)
+
+            context.makeToast(R.string.copy_message.asString(context))
         }
+    }
+
+    fun copy(contentToCopy: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("copy", contentToCopy)
+        clipboard.setPrimaryClip(clip)
+
+        context.makeToast(R.string.copy_value.asString(context))
     }
 
 }

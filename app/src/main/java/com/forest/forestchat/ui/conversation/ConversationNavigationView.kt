@@ -47,6 +47,7 @@ import com.forest.forestchat.ui.conversation.models.AttachmentSelection
 import com.forest.forestchat.ui.conversation.models.ConversationEvent
 import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.ui.gallery.GalleryInput
+import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationInput
 
 class ConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -64,6 +65,7 @@ class ConversationNavigationView @JvmOverloads constructor(
     lateinit var onAttachmentSelected: (AttachmentSelection) -> Unit
     lateinit var onInputContentSelected: (InputContentInfoCompat) -> Unit
     lateinit var onCallClick: () -> Unit
+    lateinit var onSettingsClick: () -> Unit
     lateinit var onRemoveAttachment: (Int) -> Unit
 
     private var conversationAdapter = ConversationAdapter(context) { onMessageEvent(it) }
@@ -77,6 +79,7 @@ class ConversationNavigationView @JvmOverloads constructor(
             back.setOnClickListener { findNavController().popBackStack() }
             simCard.setOnClickListener { toggleSimCard() }
             phone.setOnClickListener { onCallClick() }
+            information.setOnClickListener { onSettingsClick() }
             messageToSend.doAfterTextChanged { text ->
                 onTextToSendChange(text?.toString() ?: "")
             }
@@ -118,6 +121,10 @@ class ConversationNavigationView @JvmOverloads constructor(
             is ConversationEvent.ShowGallery -> {
                 val input = GalleryInput(event.medias, event.mediaSelected)
                 findNavController().navigate(ConversationFragmentDirections.goToGallery(input))
+            }
+            is ConversationEvent.GoToSettings -> {
+                val input = SettingsConversationInput(event.conversation)
+                findNavController().navigate(ConversationFragmentDirections.goToSettings(input))
             }
             else -> null
         }
