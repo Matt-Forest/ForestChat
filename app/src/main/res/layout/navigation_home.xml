@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -72,6 +71,7 @@
             android:clickable="true"
             android:contentDescription="@string/bottom_nav_add"
             android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:src="@drawable/ic_add"
             app:layout_anchor="@id/bottomNavigationView"
             app:layout_anchorGravity="fill_vertical|center_horizontal"

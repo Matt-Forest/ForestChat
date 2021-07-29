@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="10dp"
         android:src="@drawable/ic_close"
         app:tint="@color/text" />
