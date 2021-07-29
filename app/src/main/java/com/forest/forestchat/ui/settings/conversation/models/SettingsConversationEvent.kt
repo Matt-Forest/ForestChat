@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation.models
+package com.forest.forestchat.ui.settings.conversation.models
 
 import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.ui.common.media.Media
 
 sealed class SettingsConversationEvent {
@@ -35,6 +36,8 @@ sealed class SettingsConversationEvent {
         val medias: List<Media>
     ) : SettingsConversationEvent()
 
-    data class ShowNotification(val conversation: Conversation) : SettingsConversationEvent()
+    data class GoToNotification(val conversation: Conversation) : SettingsConversationEvent()
+
+    data class GoToGroupMembers(val recipients: List<Recipient>) : SettingsConversationEvent()
 
 }

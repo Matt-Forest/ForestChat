@@ -47,7 +47,7 @@ import com.forest.forestchat.ui.conversation.models.AttachmentSelection
 import com.forest.forestchat.ui.conversation.models.ConversationEvent
 import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.ui.gallery.GalleryInput
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationInput
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationInput
 
 class ConversationNavigationView @JvmOverloads constructor(
     context: Context,

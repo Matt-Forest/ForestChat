@@ -130,4 +130,6 @@
     <string name="copy_message">Message copied</string>
     <string name="copy_value">Copied</string>
 
+    <string name="recipients_title">Members of group</string>
+
 </resources>

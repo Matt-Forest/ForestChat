@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation
+package com.forest.forestchat.ui.settings.conversation
 
 import android.content.Intent
 import android.net.Uri
@@ -30,7 +30,7 @@ import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationEvent
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationEvent
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -54,9 +54,9 @@ class SettingsConversationFragment : NavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {
             onMediaSelected = viewModel::onMediaSelected
-            onProfileSelected = viewModel::onProfileSelected
+            onProfileSelected = viewModel::onInformationAction
             onProfileLongClick = viewModel::onProfileLongClick
-            onAddContact = viewModel::onAddContact
+            onInformationAction = viewModel::onInformationAction
             onTitleChange = viewModel::onTitleChange
             onTitleUpdated = viewModel::onTitleUpdated
             onNotifications = viewModel::onNotifications

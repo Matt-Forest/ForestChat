@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation
+package com.forest.forestchat.ui.settings.conversation
 
 import androidx.lifecycle.*
 import com.forest.forestchat.domain.useCases.DeleteConversationsByThreadIdUseCase
@@ -24,9 +24,9 @@ import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
 import com.forest.forestchat.domain.useCases.UpdateConversationUseCase
 import com.forest.forestchat.extensions.getNavigationInput
 import com.forest.forestchat.ui.common.media.Media
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationData
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationEvent
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationInput
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationData
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationEvent
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationInput
 import com.forest.forestchat.utils.CopyIntoClipboard
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
@@ -70,7 +70,7 @@ class SettingsConversationViewModel @Inject constructor(
             )
             false -> SettingsConversationData.Single(
                 conversation.getTitle(),
-                conversation.recipients[0].contact != null,
+                conversation.recipients[0].contact == null,
                 conversation.recipients
             )
         }
@@ -117,10 +117,6 @@ class SettingsConversationViewModel @Inject constructor(
         }
     }
 
-    fun onProfileSelected() {
-        onAddContact()
-    }
-
     fun onProfileLongClick() {
         copyIntoClipboard.copy(conversation.recipients[0].address)
     }
@@ -162,7 +158,7 @@ class SettingsConversationViewModel @Inject constructor(
     }
 
     fun onNotifications() {
-        eventEmitter.emit(SettingsConversationEvent.ShowNotification(conversation))
+        eventEmitter.emit(SettingsConversationEvent.GoToNotification(conversation))
     }
 
     fun onDeleteConversation() {
@@ -171,13 +167,18 @@ class SettingsConversationViewModel @Inject constructor(
         }
     }
 
-    fun onAddContact() {
-        val recipient = conversation.recipients[0]
+    fun onInformationAction() {
         eventEmitter.emit(
-            SettingsConversationEvent.ShowContact(
-                recipient.contact?.lookupKey,
-                recipient.address
-            )
+            when (conversation.grouped) {
+                true -> SettingsConversationEvent.GoToGroupMembers(conversation.recipients)
+                false -> {
+                    val recipient = conversation.recipients[0]
+                    SettingsConversationEvent.ShowContact(
+                        recipient.contact?.lookupKey,
+                        recipient.address
+                    )
+                }
+            }
         )
     }
 

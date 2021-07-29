@@ -16,11 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation.models
+package com.forest.forestchat.ui.settings.conversation.models
 
-import android.os.Parcelable
-import com.forest.forestchat.domain.models.Conversation
-import kotlinx.android.parcel.Parcelize
+import com.forest.forestchat.domain.models.Recipient
 
-@Parcelize
-data class SettingsConversationInput(val conversation: Conversation) : Parcelable
+sealed class SettingsConversationData {
+
+    data class Single(
+        val name: String?,
+        val showAddContact: Boolean,
+        val recipients: List<Recipient>
+    ) : SettingsConversationData()
+
+    data class Group(
+        val name: String?,
+        val recipients: List<Recipient>
+    ) : SettingsConversationData()
+
+}

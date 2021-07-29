@@ -16,21 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation.models
+package com.forest.forestchat.ui.recipients.models
 
-import com.forest.forestchat.domain.models.Recipient
+sealed class RecipientsEvent {
 
-sealed class SettingsConversationData {
-
-    data class Single(
-        val name: String?,
-        val showAddContact: Boolean,
-        val recipients: List<Recipient>
-    ) : SettingsConversationData()
-
-    data class Group(
-        val name: String?,
-        val recipients: List<Recipient>
-    ) : SettingsConversationData()
+    data class ShowContact(
+        val lookupKey: String?,
+        val address: String?
+    ) : RecipientsEvent()
 
 }

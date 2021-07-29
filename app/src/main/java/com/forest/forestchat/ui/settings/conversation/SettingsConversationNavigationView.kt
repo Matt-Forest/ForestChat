@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation
+package com.forest.forestchat.ui.settings.conversation
 
 import android.content.Context
 import android.content.res.Resources
@@ -34,9 +34,10 @@ import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.common.media.MediaView
 import com.forest.forestchat.ui.gallery.GalleryInput
-import com.forest.forestchat.ui.settingsConversation.dialog.UpdateConversationNameDialog
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationData
-import com.forest.forestchat.ui.settingsConversation.models.SettingsConversationEvent
+import com.forest.forestchat.ui.recipients.models.RecipientsInput
+import com.forest.forestchat.ui.settings.conversation.dialog.UpdateConversationNameDialog
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationData
+import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationEvent
 
 class SettingsConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -48,7 +49,7 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
     lateinit var onMediaSelected: (Long) -> Unit
     lateinit var onProfileSelected: () -> Unit
     lateinit var onProfileLongClick: () -> Unit
-    lateinit var onAddContact: () -> Unit
+    lateinit var onInformationAction: () -> Unit
     lateinit var onTitleChange: () -> Unit
     lateinit var onTitleUpdated: (String) -> Unit
     lateinit var onNotifications: () -> Unit
@@ -70,7 +71,7 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                 onProfileLongClick()
                 true
             }
-            addToContact.setOnClickListener { onAddContact() }
+            action.setOnClickListener { onInformationAction() }
             groupName.setOnClickListener { onTitleChange() }
             notifications.setOnClickListener { onNotifications() }
             archive.setOnClickListener { onArchive() }
@@ -96,8 +97,16 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                     onTitleUpdated(newName)
                 }.create().show()
             }
-            is SettingsConversationEvent.ShowNotification -> {
+            is SettingsConversationEvent.GoToNotification -> {
                 // TODO update notification screen
+            }
+            is SettingsConversationEvent.GoToGroupMembers -> {
+                val input = RecipientsInput(event.recipients)
+                findNavController().navigate(
+                    SettingsConversationFragmentDirections.goToRecipients(
+                        input
+                    )
+                )
             }
             else -> null
         }
@@ -110,7 +119,8 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                     name.text = data.name
                     describe.text = data.recipients[0].getNumberPhone()
                     avatars.updateAvatars(buildAvatar(data.recipients))
-                    addToContact.visibleIf { data.showAddContact }
+                    action.visibleIf { data.showAddContact }
+                    action.setImageDrawable(R.drawable.ic_add_profile.asDrawable(context))
                     groupName.gone()
                 }
                 is SettingsConversationData.Group -> {
@@ -120,7 +130,8 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                         data.recipients.size
                     )
                     avatars.updateAvatars(buildAvatar(data.recipients))
-                    addToContact.gone()
+                    action.visible()
+                    action.setImageDrawable(R.drawable.ic_chevron_right.asDrawable(context))
                     groupName.visible()
                 }
             }

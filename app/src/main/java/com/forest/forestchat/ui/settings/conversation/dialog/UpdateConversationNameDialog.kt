@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settingsConversation.dialog
+package com.forest.forestchat.ui.settings.conversation.dialog
 
 import android.app.AlertDialog
 import android.content.Context

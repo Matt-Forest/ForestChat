@@ -79,7 +79,7 @@
 
             <argument
                 android:name="input"
-                app:argType="com.forest.forestchat.ui.settingsConversation.models.SettingsConversationInput"
+                app:argType="com.forest.forestchat.ui.settings.conversation.models.SettingsConversationInput"
                 app:nullable="false" />
 
         </action>
@@ -100,12 +100,12 @@
 
     <fragment
         android:id="@+id/settings_conversation_dest"
-        android:name="com.forest.forestchat.ui.settingsConversation.SettingsConversationFragment"
+        android:name="com.forest.forestchat.ui.settings.conversation.SettingsConversationFragment"
         tools:layout="@layout/navigation_settings_conversation">
 
         <argument
             android:name="input"
-            app:argType="com.forest.forestchat.ui.settingsConversation.models.SettingsConversationInput"
+            app:argType="com.forest.forestchat.ui.settings.conversation.models.SettingsConversationInput"
             app:nullable="false" />
 
         <action
@@ -122,6 +122,33 @@
                 app:nullable="false" />
 
         </action>
+
+        <action
+            android:id="@+id/go_to_recipients"
+            app:destination="@id/recipients_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.recipients.models.RecipientsInput"
+                app:nullable="false" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipients_dest"
+        android:name="com.forest.forestchat.ui.recipients.RecipientsFragment"
+        tools:layout="@layout/navigation_recipients">
+
+        <argument
+            android:name="input"
+            app:argType="com.forest.forestchat.ui.recipients.models.RecipientsInput"
+            app:nullable="false" />
 
     </fragment>
 
