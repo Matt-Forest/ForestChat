@@ -53,6 +53,7 @@ class HomeConversationsViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
     private val searchConversationsUseCase: SearchConversationsUseCase,
     private val searchContactsUseCase: SearchContactsUseCase,
+    private val getContactByIdUseCase: GetContactByIdUseCase,
     private val syncContactsUseCase: SyncContactsUseCase,
     private val syncConversationUseCase: SyncConversationsUseCase,
     private val lastSyncSharedPrefs: LastSyncSharedPrefs,
@@ -232,6 +233,26 @@ class HomeConversationsViewModel @Inject constructor(
         bannerIsLoad = isLoad
         if (state.value is HomeConversationsState.Conversations) {
             bannerVisible.value = true
+        }
+    }
+
+    fun searchContact(contactId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getContactByIdUseCase(contactId)?.let { contact ->
+                withContext(Dispatchers.Main) {
+                    eventEmitter.emit(HomeConversationEvent.ShowContact(contact.lookupKey))
+                }
+            }
+        }
+    }
+
+    fun searchConversation(conversationId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getConversationUseCase(conversationId)?.let { conversation ->
+                withContext(Dispatchers.Main) {
+                    eventEmitter.emit(HomeConversationEvent.GoToConversation(conversation))
+                }
+            }
         }
     }
 

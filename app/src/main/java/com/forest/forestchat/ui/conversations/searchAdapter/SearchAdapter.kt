@@ -27,24 +27,27 @@ import com.forest.forestchat.extensions.asPlurals
 import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.getConversationTimestamp
 import com.forest.forestchat.ui.base.recycler.BaseAdapter
-import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.base.recycler.BaseHolder
+import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.common.mappers.buildAvatar
+import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactHolder
 import com.forest.forestchat.ui.conversations.searchAdapter.contact.SearchContactItem
 import com.forest.forestchat.ui.conversations.searchAdapter.conversation.SearchConversationHolder
 import com.forest.forestchat.ui.conversations.searchAdapter.conversation.SearchConversationItem
 import com.forest.forestchat.ui.conversations.searchAdapter.header.SearchHeaderHolder
 import com.forest.forestchat.ui.conversations.searchAdapter.header.SearchHeaderItem
-import com.forest.forestchat.ui.common.mappers.buildAvatar
-import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
 
-class SearchAdapter : BaseAdapter() {
+class SearchAdapter(
+    private val onConversationClick: (Long) -> Unit,
+    private val onContactClick: (Long) -> Unit
+) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
             SearchViewTypes.HEADER -> SearchHeaderHolder(parent)
-            SearchViewTypes.CONVERSATION -> SearchConversationHolder(parent)
-            SearchViewTypes.CONTACT -> SearchContactHolder(parent)
+            SearchViewTypes.CONVERSATION -> SearchConversationHolder(parent, onConversationClick)
+            SearchViewTypes.CONTACT -> SearchContactHolder(parent, onContactClick)
             else -> null
         }
 
@@ -53,7 +56,7 @@ class SearchAdapter : BaseAdapter() {
         conversations: List<SearchConversationResult>,
         contacts: List<Contact>
     ) {
-        val items : MutableList<BaseItem> = mutableListOf()
+        val items: MutableList<BaseItem> = mutableListOf()
 
         if (conversations.isNotEmpty()) {
             items.add(SearchHeaderItem(R.string.conversations_search_conversation.asString(context)))

@@ -58,10 +58,15 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
     lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
     lateinit var bannerIsLoad: (Boolean) -> Unit
+    lateinit var onSearchConversationClick: (Long) -> Unit
+    lateinit var onSearchContactClick: (Long) -> Unit
 
     private val binding: NavigationConversationsBinding
     private var conversationsAdapter = HomeConversationsAdapter { onConversationEvent(it) }
-    private val searchAdapter = SearchAdapter()
+    private val searchAdapter = SearchAdapter(
+        { onSearchConversationClick(it) },
+        { onSearchContactClick(it) }
+    )
 
 
     init {

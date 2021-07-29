@@ -21,8 +21,10 @@ package com.forest.forestchat.ui.home
 import android.Manifest
 import android.app.role.RoleManager
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.Telephony
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,6 +81,8 @@ class HomeFragment : NavigationFragment() {
             onConversationDeleted = conversationsViewModel::removeConversation
             onContactChanged = conversationsViewModel::onContactChanged
             bannerIsLoad = conversationsViewModel::bannerIsLoad
+            onSearchContactClick = conversationsViewModel::searchContact
+            onSearchConversationClick = conversationsViewModel::searchConversation
         }
 
         with(conversationsViewModel) {
@@ -89,6 +93,7 @@ class HomeFragment : NavigationFragment() {
                 when (event) {
                     is HomeConversationEvent.RequestPermission -> requestPermission()
                     is HomeConversationEvent.RequestDefaultSms -> requestDefaultSmsDialog()
+                    is HomeConversationEvent.ShowContact -> showContact(event.lookupKey)
                     else -> null
                 }
                 navigationView.getConversationsView().event(event)
@@ -175,6 +180,26 @@ class HomeFragment : NavigationFragment() {
         } else {
             val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
             intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, requireActivity().packageName)
+            requireActivity().startActivity(intent)
+        }
+    }
+
+    private fun showContact(lookupKey: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setData(
+                Uri.withAppendedPath(
+                    ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                    lookupKey
+                )
+            )
+
+        startActivityExternal(intent)
+    }
+
+    private fun startActivityExternal(intent: Intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            resultLauncher.launch(intent)
+        } else {
             requireActivity().startActivity(intent)
         }
     }

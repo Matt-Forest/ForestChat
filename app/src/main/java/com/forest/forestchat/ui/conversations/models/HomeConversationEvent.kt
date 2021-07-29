@@ -39,4 +39,6 @@ sealed class HomeConversationEvent {
 
     data class RequestDeleteDialog(val id: Long) : HomeConversationEvent()
 
+    data class ShowContact(val lookupKey: String) : HomeConversationEvent()
+
 }

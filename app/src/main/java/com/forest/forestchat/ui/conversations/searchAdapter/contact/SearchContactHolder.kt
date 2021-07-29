@@ -24,7 +24,8 @@ import com.forest.forestchat.databinding.HolderContactSearchBinding
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class SearchContactHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onClick: (Long) -> Unit
 ) : BaseHolder<SearchContactItem>(parent, R.layout.holder_contact_search) {
 
     private val binding = HolderContactSearchBinding.bind(itemView)
@@ -34,6 +35,8 @@ class SearchContactHolder(
             avatars.updateAvatars(item.avatarType)
             title.text = item.name
             snippet.text = item.number
+
+            itemView.setOnClickListener { onClick(item.id) }
         }
     }
 

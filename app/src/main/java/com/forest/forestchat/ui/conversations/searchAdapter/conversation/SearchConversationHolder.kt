@@ -24,7 +24,8 @@ import com.forest.forestchat.databinding.HolderConversationSearchBinding
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 
 class SearchConversationHolder(
-    parent: ViewGroup
+    parent: ViewGroup,
+    private val onClick: (Long) -> Unit
 ) : BaseHolder<SearchConversationItem>(parent, R.layout.holder_conversation_search) {
 
     private val binding = HolderConversationSearchBinding.bind(itemView)
@@ -35,6 +36,8 @@ class SearchConversationHolder(
             title.text = item.title
             snippet.text = item.message
             date.text = item.date
+
+            itemView.setOnClickListener { onClick(item.id) }
         }
     }
 
