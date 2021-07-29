@@ -23,6 +23,7 @@ import com.forest.forestchat.domain.useCases.DeleteConversationsByThreadIdUseCas
 import com.forest.forestchat.domain.useCases.GetMessagesByConversationUseCase
 import com.forest.forestchat.domain.useCases.UpdateConversationUseCase
 import com.forest.forestchat.extensions.getNavigationInput
+import com.forest.forestchat.manager.NotificationManager
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationData
 import com.forest.forestchat.ui.settings.conversation.models.SettingsConversationEvent
@@ -41,6 +42,7 @@ class SettingsConversationViewModel @Inject constructor(
     private val getMessagesByConversationUseCase: GetMessagesByConversationUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,
     private val deleteConversationsByThreadIdUseCase: DeleteConversationsByThreadIdUseCase,
+    private val notificationManager: NotificationManager,
     private val copyIntoClipboard: CopyIntoClipboard,
     handle: SavedStateHandle
 ) : ViewModel() {
@@ -158,7 +160,14 @@ class SettingsConversationViewModel @Inject constructor(
     }
 
     fun onNotifications() {
-        eventEmitter.emit(SettingsConversationEvent.GoToNotification(conversation))
+        viewModelScope.launch(Dispatchers.IO) {
+            notificationManager.createNotificationChannel(conversation.id)
+            val channelId = notificationManager.buildNotificationChannelId(conversation.id)
+
+            withContext(Dispatchers.Main) {
+                eventEmitter.emit(SettingsConversationEvent.ShowNotifications(channelId))
+            }
+        }
     }
 
     fun onDeleteConversation() {

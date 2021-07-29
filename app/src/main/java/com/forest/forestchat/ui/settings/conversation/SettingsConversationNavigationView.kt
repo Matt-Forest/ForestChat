@@ -19,7 +19,10 @@
 package com.forest.forestchat.ui.settings.conversation
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
+import android.provider.Settings
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
@@ -81,6 +84,7 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                     onRemove()
                 }
             }
+            notifications.visibleIf { Build.VERSION.SDK_INT >= Build.VERSION_CODES.O }
         }
     }
 
@@ -97,8 +101,13 @@ class SettingsConversationNavigationView @JvmOverloads constructor(
                     onTitleUpdated(newName)
                 }.create().show()
             }
-            is SettingsConversationEvent.GoToNotification -> {
-                // TODO update notification screen
+            is SettingsConversationEvent.ShowNotifications -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_CHANNEL_ID, event.channelId)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    context.startActivity(intent)
+                }
             }
             is SettingsConversationEvent.GoToGroupMembers -> {
                 val input = RecipientsInput(event.recipients)

@@ -18,7 +18,6 @@
  */
 package com.forest.forestchat.ui.settings.conversation.models
 
-import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.ui.common.media.Media
 
@@ -36,7 +35,7 @@ sealed class SettingsConversationEvent {
         val medias: List<Media>
     ) : SettingsConversationEvent()
 
-    data class GoToNotification(val conversation: Conversation) : SettingsConversationEvent()
+    data class ShowNotifications(val channelId: String) : SettingsConversationEvent()
 
     data class GoToGroupMembers(val recipients: List<Recipient>) : SettingsConversationEvent()
 

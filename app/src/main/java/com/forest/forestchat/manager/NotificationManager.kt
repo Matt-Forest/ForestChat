@@ -32,12 +32,14 @@ import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
+import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
 import coil.request.ErrorResult
@@ -112,6 +114,17 @@ class NotificationManager @Inject constructor(
                 notification.addAction(actionReply(threadId))
 
                 notificationManager.notify(threadId.toInt(), notification.build())
+
+                // Wake lock screen
+                context.getSystemService<PowerManager>()?.let { powerManager ->
+                    if (!powerManager.isInteractive) {
+                        (context.getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+                            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, context.packageName).apply {
+                                acquire(5_000)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -120,8 +133,8 @@ class NotificationManager @Inject constructor(
      * Create the NotificationChannel, but only on API 26+ because
      * the NotificationChannel class is new and not in the support library
      */
-    private suspend fun createNotificationChannel(threadId: Long = 0L) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    suspend fun createNotificationChannel(threadId: Long = 0L) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getNotificationChannel(threadId) == null) {
             val channel = when (threadId) {
                 0L -> NotificationChannel(
                     DefaultNotificationChannel,
@@ -136,7 +149,7 @@ class NotificationManager @Inject constructor(
                 else -> {
                     val conversation = getConversationUseCase(threadId) ?: return
                     NotificationChannel(
-                        "notifications_$threadId",
+                        buildNotificationChannelId(threadId),
                         conversation.getTitle(),
                         NotificationManager.IMPORTANCE_HIGH
                     ).apply {
@@ -160,6 +173,13 @@ class NotificationManager @Inject constructor(
         }
     }
 
+    fun buildNotificationChannelId(threadId: Long): String {
+        return when (threadId) {
+            0L -> DefaultNotificationChannel
+            else -> "notifications_$threadId"
+        }
+    }
+
     /**
      * Returns the channel id that should be used for a notification based on the threadId
      *
@@ -178,10 +198,7 @@ class NotificationManager @Inject constructor(
      * Returns the notification channel for the given conversation, or null if it doesn't exist
      */
     private fun getNotificationChannel(threadId: Long): NotificationChannel? {
-        val channelId = when (threadId) {
-            0L -> DefaultNotificationChannel
-            else -> "notifications_$threadId"
-        }
+        val channelId = buildNotificationChannelId(threadId)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return notificationManager.notificationChannels
