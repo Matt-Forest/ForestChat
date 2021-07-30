@@ -18,26 +18,17 @@
  */
 package com.forest.forestchat.domain.useCases
 
-import android.telephony.PhoneNumberUtils
 import com.forest.forestchat.domain.models.contact.Contact
-import com.forest.forestchat.extensions.removeAccents
 import com.forest.forestchat.localStorage.database.daos.ContactDao
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SearchContactsUseCase @Inject constructor(
+class GetContactsUseCase @Inject constructor(
     private val contactDao: ContactDao
 ) {
 
-    suspend operator fun invoke(search: String): List<Contact>? =
+    suspend operator fun invoke(): List<Contact>? =
         contactDao.getAll()
-            ?.filter { contact ->
-                contact.name?.removeAccents()?.contains(search.removeAccents(), true) == true ||
-                        (PhoneNumberUtils.isGlobalPhoneNumber(search) &&
-                                contact.numbers
-                                    .map { it.address }
-                                    .any { address -> address.contains(search.trim()) })
-            }
 
 }

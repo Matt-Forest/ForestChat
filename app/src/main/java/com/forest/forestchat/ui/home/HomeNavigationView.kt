@@ -21,12 +21,12 @@ package com.forest.forestchat.ui.home
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.ui.conversations.HomeConversationsNavigationView
-import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
@@ -40,7 +40,12 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
         val layoutInflater = LayoutInflater.from(context)
         binding = NavigationHomeBinding.inflate(layoutInflater, this)
 
-        binding.fab.drawable.setTint(R.color.white.asColor(context))
+        with(binding) {
+            fab.drawable.setTint(R.color.white.asColor(context))
+            fab.setOnClickListener {
+                findNavController().navigate(HomeFragmentDirections.goToCreationConversation())
+            }
+        }
 
         setupBottomView()
         toggleViews()

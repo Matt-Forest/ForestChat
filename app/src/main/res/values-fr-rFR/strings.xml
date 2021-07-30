@@ -115,4 +115,14 @@
 
     <string name="recipients_title">Membres du groupe</string>
 
+    <string name="create_conversation_search_hint">Entrez un nom ou un numéro</string>
+    <string name="create_conversation_button_next">Suivant</string>
+    <string name="create_conversation_button_create">Créer</string>
+    <string name="create_conversation_contact">Contacts</string>
+    <plurals name="create_conversation_members">
+        <item quantity="one">%s membre</item>
+        <item quantity="other">%s membres</item>
+    </plurals>
+    <string name="create_conversation_add_contact">Ajouter aux destinaires</string>
+
 </resources>
