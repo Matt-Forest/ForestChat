@@ -132,4 +132,18 @@
     </plurals>
     <string name="create_conversation_add_contact">Add to recipients</string>
 
+    <string name="create_conversation_group_title">Create a group</string>
+    <string name="create_conversation_group_name">Group name</string>
+    <string name="create_conversation_group_profile">Group profile</string>
+    <string name="create_conversation_group_conversation_type">Conversation type</string>
+    <string name="create_conversation_group_button_create">Create</string>
+    <plurals name="create_conversation_group_members">
+        <item quantity="one">%s member</item>
+        <item quantity="other">%s members</item>
+    </plurals>
+    <string name="create_conversation_group_title_group">Group</string>
+    <string name="create_conversation_group_title_mailing_list">Mailing list</string>
+    <string name="create_conversation_group_describe_group">Create a group conversation in which everyone can interact with group members.</string>
+    <string name="create_conversation_group_describe_mailing_list">Send the same message to multiple recipients. \nThey will not be able to interact with each other.\nUseful when changing phone number.</string>
+
 </resources>

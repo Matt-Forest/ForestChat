@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation.adapter.search
+package com.forest.forestchat.ui.create.conversation.adapter.search
 
 import android.view.ViewGroup
 import com.forest.forestchat.R

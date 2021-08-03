@@ -16,8 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation.models
+package com.forest.forestchat.ui.create.group.models
 
+import android.os.Parcelable
 import com.forest.forestchat.domain.models.contact.Contact
+import kotlinx.android.parcel.Parcelize
 
-data class ContactSelected(val contact: Contact?, val newAddress: String?)
+@Parcelize
+data class CreateGroupInput(
+    val contacts: List<Contact>?,
+    val newRecipient: List<String>?
+) : Parcelable

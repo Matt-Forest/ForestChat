@@ -125,4 +125,18 @@
     </plurals>
     <string name="create_conversation_add_contact">Ajouter aux destinaires</string>
 
+    <string name="create_conversation_group_title">Créer un groupe</string>
+    <string name="create_conversation_group_name">Nom du groupe</string>
+    <string name="create_conversation_group_profile">Profil du groupe</string>
+    <string name="create_conversation_group_conversation_type">Type de conversation</string>
+    <string name="create_conversation_group_button_create">Créer</string>
+    <plurals name="create_conversation_group_members">
+        <item quantity="one">%s membre</item>
+        <item quantity="other">%s membres</item>
+    </plurals>
+    <string name="create_conversation_group_title_group">Groupe</string>
+    <string name="create_conversation_group_title_mailing_list">Liste de diffusion</string>
+    <string name="create_conversation_group_describe_group">Créer une conversation groupé dans laquelle chacun peut intéragir avec les membres du groupe.</string>
+    <string name="create_conversation_group_describe_mailing_list">Envoyez le même message à plusieurs destinataires.\nIls ne pourront pas intéragir entre eux.\nUtile lorsque vous changez de numéro de téléphone.</string>
+
 </resources>

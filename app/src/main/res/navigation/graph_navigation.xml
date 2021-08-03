@@ -162,7 +162,66 @@
 
     <fragment
         android:id="@+id/create_conversation_dest"
-        android:name="com.forest.forestchat.ui.createConversation.CreateConversationFragment"
-        tools:layout="@layout/navigation_create_conversation" />
+        android:name="com.forest.forestchat.ui.create.conversation.CreateConversationFragment"
+        tools:layout="@layout/navigation_create_conversation">
+
+        <action
+            android:id="@+id/go_to_conversation"
+            app:destination="@id/conversation_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.conversation.models.ConversationInput"
+                app:nullable="false" />
+
+        </action>
+
+        <action
+            android:id="@+id/go_to_create_group"
+            app:destination="@id/create_group_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.create.group.models.CreateGroupInput"
+                app:nullable="false" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_group_dest"
+        android:name="com.forest.forestchat.ui.create.group.CreateGroupFragment"
+        tools:layout="@layout/navigation_create_group">
+
+        <argument
+            android:name="input"
+            app:argType="com.forest.forestchat.ui.create.group.models.CreateGroupInput"
+            app:nullable="false" />
+
+        <action
+            android:id="@+id/go_to_conversation"
+            app:destination="@id/conversation_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.conversation.models.ConversationInput"
+                app:nullable="false" />
+
+        </action>
+
+    </fragment>
 
 </navigation>

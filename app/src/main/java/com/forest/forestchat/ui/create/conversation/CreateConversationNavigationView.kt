@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation
+package com.forest.forestchat.ui.create.conversation
 
 import android.content.Context
 import android.util.AttributeSet
@@ -28,11 +28,11 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationCreateConversationBinding
 import com.forest.forestchat.extensions.*
 import com.forest.forestchat.ui.common.avatar.AvatarType
-import com.forest.forestchat.ui.createConversation.adapter.search.CreateConversationSearchAdapter
-import com.forest.forestchat.ui.createConversation.adapter.selected.CreateConversationSelectedAdapter
-import com.forest.forestchat.ui.createConversation.models.ContactSearch
-import com.forest.forestchat.ui.createConversation.models.ContactSelected
-import com.forest.forestchat.ui.createConversation.models.CreateConversationButtonState
+import com.forest.forestchat.ui.create.conversation.adapter.search.CreateConversationSearchAdapter
+import com.forest.forestchat.ui.create.conversation.adapter.selected.CreateConversationSelectedAdapter
+import com.forest.forestchat.ui.create.conversation.models.ContactSearch
+import com.forest.forestchat.ui.create.conversation.models.ContactSelected
+import com.forest.forestchat.ui.create.conversation.models.CreateConversationButtonState
 
 class CreateConversationNavigationView @JvmOverloads constructor(
     context: Context,

@@ -16,10 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation.models
+package com.forest.forestchat.ui.create.conversation.models
 
-enum class CreateConversationButtonState {
-    None,
-    Next,
-    Create
-}
+import com.forest.forestchat.domain.models.contact.Contact
+
+data class ContactSelected(val contact: Contact?, val newAddress: String?)

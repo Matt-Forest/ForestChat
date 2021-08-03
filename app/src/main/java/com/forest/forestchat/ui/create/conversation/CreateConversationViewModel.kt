@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation
+package com.forest.forestchat.ui.create.conversation
 
 import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.LiveData
@@ -26,9 +26,9 @@ import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.domain.useCases.GetContactByIdUseCase
 import com.forest.forestchat.domain.useCases.GetContactsUseCase
 import com.forest.forestchat.domain.useCases.SearchContactsUseCase
-import com.forest.forestchat.ui.createConversation.models.ContactSearch
-import com.forest.forestchat.ui.createConversation.models.ContactSelected
-import com.forest.forestchat.ui.createConversation.models.CreateConversationButtonState
+import com.forest.forestchat.ui.create.conversation.models.ContactSearch
+import com.forest.forestchat.ui.create.conversation.models.ContactSelected
+import com.forest.forestchat.ui.create.conversation.models.CreateConversationButtonState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation.adapter.selected
+package com.forest.forestchat.ui.create.conversation.adapter.selected
 
 import android.view.ViewGroup
 import com.forest.forestchat.domain.models.contact.Contact
@@ -24,7 +24,7 @@ import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.common.mappers.buildSingleAvatar
-import com.forest.forestchat.ui.createConversation.models.ContactSelected
+import com.forest.forestchat.ui.create.conversation.models.ContactSelected
 
 class CreateConversationSelectedAdapter(
     private val onRemove: (Int) -> Unit

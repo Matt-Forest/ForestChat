@@ -16,8 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.createConversation.models
+package com.forest.forestchat.ui.create.conversation.adapter.selected
 
-import com.forest.forestchat.domain.models.contact.Contact
+import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.common.avatar.AvatarType
 
-data class ContactSearch(val contact: Contact, val isCheck: Boolean)
+class CreateConversationSelectedItem(
+    val index: Int,
+    val name: String,
+    val avatarType: AvatarType.Single
+) : BaseItem() {
+
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
+        oldItem is CreateConversationSelectedItem && oldItem.index == index
+
+}
