@@ -28,11 +28,14 @@ import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationCreateConversationBinding
 import com.forest.forestchat.extensions.*
 import com.forest.forestchat.ui.common.avatar.AvatarType
+import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.create.conversation.adapter.search.CreateConversationSearchAdapter
 import com.forest.forestchat.ui.create.conversation.adapter.selected.CreateConversationSelectedAdapter
 import com.forest.forestchat.ui.create.conversation.models.ContactSearch
 import com.forest.forestchat.ui.create.conversation.models.ContactSelected
 import com.forest.forestchat.ui.create.conversation.models.CreateConversationButtonState
+import com.forest.forestchat.ui.create.conversation.models.CreateConversationEvent
+import com.forest.forestchat.ui.create.group.models.CreateGroupInput
 
 class CreateConversationNavigationView @JvmOverloads constructor(
     context: Context,
@@ -83,7 +86,6 @@ class CreateConversationNavigationView @JvmOverloads constructor(
 
     fun updateSelectedRecipient(selectedRecipient: List<ContactSelected>) {
         adapterSelected.update(selectedRecipient)
-        binding.selectedContactRecycler.visibleIf { selectedRecipient.isNotEmpty() }
         binding.members.text = R.plurals.create_conversation_members.asPlurals(
             context,
             selectedRecipient.size
@@ -109,6 +111,19 @@ class CreateConversationNavigationView @JvmOverloads constructor(
                     text = R.string.create_conversation_button_create.asString(context)
                     visible()
                 }
+            }
+        }
+    }
+
+    fun onEvent(event: CreateConversationEvent) {
+        when (event) {
+            is CreateConversationEvent.GoToCreateGroup -> {
+                val input = CreateGroupInput(event.contacts, event.newRecipient)
+                findNavController().navigate(CreateConversationFragmentDirections.goToCreateGroup(input))
+            }
+            is CreateConversationEvent.GoToConversation -> {
+                val input = ConversationInput(event.conversation)
+                findNavController().navigate(CreateConversationFragmentDirections.goToConversation(input))
             }
         }
     }

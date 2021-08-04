@@ -22,6 +22,7 @@
     <color name="bottomNavBackground">#042B3E</color>
     <color name="toolbarBackground">#042B3E</color>
     <color name="editTextBackground">#031926</color>
+    <color name="editTextBackground2">#042B3E</color>
     <color name="attachmentCardBackground">#031926</color>
     <color name="attachmentBackground">#042B3E</color>
     <color name="text">#FFFFFF</color>

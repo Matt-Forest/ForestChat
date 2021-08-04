@@ -44,6 +44,7 @@
     <color name="bottomNavBackground">#FFFFFF</color>
     <color name="toolbarBackground">#FFFFFF</color>
     <color name="editTextBackground">#EDF2FB</color>
+    <color name="editTextBackground2">#EDF2FB</color>
     <color name="bubbleBackground">#EDF2FB</color>
     <color name="attachmentCardBackground">#EDF2FB</color>
     <color name="attachmentBackground">#FFFFFF</color>

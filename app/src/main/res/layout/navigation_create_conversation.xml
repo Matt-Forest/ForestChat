@@ -111,16 +111,25 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selectedContactRecycler"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal"
-        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/members"
         tools:itemCount="5"
-        tools:listitem="@layout/holder_create_conversation_contact_selected"
-        tools:visibility="visible" />
+        tools:listitem="@layout/holder_create_conversation_contact_selected" />
+
+    <TextView
+        android:id="@+id/contact"
+        style="@style/Typography.Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/create_conversation_contact"
+        android:textColor="@color/text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectedContactRecycler" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/newRecipient"
@@ -134,7 +143,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectedContactRecycler"
+        app:layout_constraintTop_toBottomOf="@id/contact"
         tools:visibility="visible">
 
         <com.forest.forestchat.ui.common.avatar.GroupAvatarView
@@ -142,7 +151,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="46dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -181,18 +190,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/contact"
-        style="@style/Typography.Subtitle2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/create_conversation_contact"
-        android:textColor="@color/text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/newRecipient" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contactRecycler"
         android:layout_width="0dp"
@@ -201,7 +198,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contact"
+        app:layout_constraintTop_toBottomOf="@id/newRecipient"
         tools:itemCount="5"
         tools:listitem="@layout/holder_create_conversation_contact_search" />
 

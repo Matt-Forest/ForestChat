@@ -25,20 +25,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.domain.useCases.GetContactByIdUseCase
 import com.forest.forestchat.domain.useCases.GetContactsUseCase
+import com.forest.forestchat.domain.useCases.GetOrCreateConversationByAddressesUseCase
 import com.forest.forestchat.domain.useCases.SearchContactsUseCase
 import com.forest.forestchat.ui.create.conversation.models.ContactSearch
 import com.forest.forestchat.ui.create.conversation.models.ContactSelected
 import com.forest.forestchat.ui.create.conversation.models.CreateConversationButtonState
+import com.forest.forestchat.ui.create.conversation.models.CreateConversationEvent
+import com.zhuinden.eventemitter.EventEmitter
+import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateConversationViewModel @Inject constructor(
     private val getContactsUseCase: GetContactsUseCase,
     private val getContactByIdUseCase: GetContactByIdUseCase,
-    private val searchContactsUseCase: SearchContactsUseCase
+    private val searchContactsUseCase: SearchContactsUseCase,
+    private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase
 ) : ViewModel() {
 
     private val contactsSearch = MutableLiveData<List<ContactSearch>>()
@@ -52,6 +58,9 @@ class CreateConversationViewModel @Inject constructor(
 
     private val newRecipient = MutableLiveData<String>()
     fun newRecipient(): LiveData<String> = newRecipient
+
+    private val eventEmitter = EventEmitter<CreateConversationEvent>()
+    fun eventSource(): EventSource<CreateConversationEvent> = eventEmitter
 
     private var search: String = ""
 
@@ -164,7 +173,38 @@ class CreateConversationViewModel @Inject constructor(
     }
 
     fun create() {
-        // TODO
+        when (contactsSelected.value?.count() ?: 0) {
+            0 -> null
+            1 -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val contact = contactsSelected.value?.get(0)?.contact
+                    val address = contactsSelected.value?.get(0)?.newAddress
+                    getOrCreateConversationByAddressesUseCase(
+                        listOf(
+                            when {
+                                contact != null -> contact.getDefaultNumber()?.address
+                                    ?: contact.numbers[0].address
+                                address != null -> address
+                                else -> ""
+                            }
+                        )
+                    )?.let { conversation ->
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(CreateConversationEvent.GoToConversation(conversation))
+                        }
+                    }
+                }
+            }
+            else -> {
+                val contacts = contactsSelected.value
+                    ?.filter { it.contact != null }
+                    ?.map { it.contact!! }
+                val newRecipients = contactsSelected.value
+                    ?.filter { it.newAddress != null }
+                    ?.map { it.newAddress!! }
+                eventEmitter.emit(CreateConversationEvent.GoToCreateGroup(contacts, newRecipients))
+            }
+        }
     }
 
 }
