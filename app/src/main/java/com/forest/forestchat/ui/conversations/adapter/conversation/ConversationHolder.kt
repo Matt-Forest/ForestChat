@@ -83,11 +83,20 @@ class ConversationHolder(
         binding.title.text = newTitle
     }
 
+    private fun updateLastMessage(message: String) {
+        binding.snippet.text = message
+    }
+
     fun onPayload(payloadHome: HomeConversationsPayload) {
         when (payloadHome) {
             is HomeConversationsPayload.Title -> updateTitle(payloadHome.newTitle)
             is HomeConversationsPayload.Pin -> updatePin(payloadHome.pin)
-            HomeConversationsPayload.MarkAsRead -> updateMarkAsRead(false)
+            is HomeConversationsPayload.NewLastMessage -> updateLastMessage(payloadHome.newLastMessage)
+            is HomeConversationsPayload.MarkAsRead -> updateMarkAsRead(payloadHome.isRead)
+            is HomeConversationsPayload.UpdateMessageAndMarkAsRead -> {
+                updateLastMessage(payloadHome.newLastMessage)
+                updateMarkAsRead(payloadHome.isRead)
+            }
         }
     }
 

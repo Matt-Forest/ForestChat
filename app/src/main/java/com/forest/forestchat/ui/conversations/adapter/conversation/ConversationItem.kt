@@ -19,9 +19,9 @@
 package com.forest.forestchat.ui.conversations.adapter.conversation
 
 import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.common.avatar.AvatarType
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
-import com.forest.forestchat.ui.common.avatar.AvatarType
 
 class ConversationItem(
     val id: Long,
@@ -45,7 +45,14 @@ class ConversationItem(
         return when {
             oldItem.title != title -> HomeConversationsPayload.Title(title)
             oldItem.pinned != pinned -> HomeConversationsPayload.Pin(pinned)
-            oldItem.unread != unread -> HomeConversationsPayload.MarkAsRead
+            oldItem.unread != unread && oldItem.lastMessage != lastMessage -> HomeConversationsPayload.UpdateMessageAndMarkAsRead(
+                unread,
+                lastMessage
+            )
+            oldItem.unread != unread -> HomeConversationsPayload.MarkAsRead(unread)
+            oldItem.lastMessage != lastMessage -> HomeConversationsPayload.NewLastMessage(
+                lastMessage
+            )
             else -> null
         }
     }

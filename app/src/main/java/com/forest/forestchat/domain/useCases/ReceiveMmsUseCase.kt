@@ -29,6 +29,7 @@ class ReceiveMmsUseCase @Inject constructor(
     private val syncMessageFromUriUseCase: SyncMessageFromUriUseCase,
     private val isBlockedNumbersFromProviderUseCase: IsBlockedNumbersFromProviderUseCase,
     private val markAsReadUseCase: MarkAsReadUseCase,
+    private val updateConversationUseCase: UpdateConversationUseCase,
     private val getConversationUseCase: GetConversationUseCase,
     private val updateLastMessageConversationUseCase: UpdateLastMessageConversationUseCase,
     private val activeThreadManager: ActiveThreadManager
@@ -37,7 +38,8 @@ class ReceiveMmsUseCase @Inject constructor(
     suspend operator fun invoke(uri: Uri): Conversation? =
         syncMessageFromUriUseCase(uri)?.let { message ->
             var conversation = getConversationUseCase(message.threadId)
-            val isBlocked : Boolean = message.address?.let { isBlockedNumbersFromProviderUseCase(it) } == true
+            val isBlocked: Boolean =
+                message.address?.let { isBlockedNumbersFromProviderUseCase(it) } == true
 
             if (isBlocked || activeThreadManager.getActiveThread() == message.threadId) {
                 markAsReadUseCase(message.threadId)
@@ -52,7 +54,9 @@ class ReceiveMmsUseCase @Inject constructor(
             return when (conversation?.blocked == true) {
                 true -> null
                 false -> {
-                    conversation?.copy(archived = false)
+                    conversation = conversation?.copy(archived = false)
+                    conversation?.let { updateConversationUseCase(it) }
+                    conversation
                 }
             }
         }

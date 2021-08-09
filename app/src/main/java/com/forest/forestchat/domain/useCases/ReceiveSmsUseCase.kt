@@ -38,6 +38,7 @@ import javax.inject.Singleton
 class ReceiveSmsUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val updateMessageUseCase: UpdateMessageUseCase,
+    private val updateConversationUseCase: UpdateConversationUseCase,
     private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
     private val activeThreadManager: ActiveThreadManager
 ) {
@@ -51,7 +52,7 @@ class ReceiveSmsUseCase @Inject constructor(
                 message = message.copy(contentId = contentId)
             }
 
-            val conversation = getOrCreateConversationByThreadIdUseCase(message.threadId)
+            var conversation = getOrCreateConversationByThreadIdUseCase(message.threadId)
             if (conversation?.blocked == true) {
                 message = message.copy(
                     seen = true,
@@ -60,11 +61,14 @@ class ReceiveSmsUseCase @Inject constructor(
             }
 
             updateMessageUseCase(message)
+            conversation = conversation?.copy(lastMessage = message)
 
             return when (conversation?.blocked == true) {
                 true -> null
                 false -> {
-                    conversation?.copy(archived = false)
+                    conversation = conversation?.copy(archived = false)
+                    conversation?.let { updateConversationUseCase(it) }
+                    conversation
                 }
             }
         }

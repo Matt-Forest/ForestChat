@@ -21,5 +21,7 @@ package com.forest.forestchat.ui.conversations.adapter
 sealed class HomeConversationsPayload {
     data class Pin(val pin: Boolean) : HomeConversationsPayload()
     data class Title(val newTitle: String) : HomeConversationsPayload()
-    object MarkAsRead : HomeConversationsPayload()
+    data class NewLastMessage(val newLastMessage: String) : HomeConversationsPayload()
+    data class UpdateMessageAndMarkAsRead(val isRead: Boolean, val newLastMessage: String) : HomeConversationsPayload()
+    data class MarkAsRead(val isRead: Boolean) : HomeConversationsPayload()
 }
