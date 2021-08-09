@@ -19,7 +19,8 @@
 package com.forest.forestchat.ui.base.fragment
 
 import android.content.pm.ActivityInfo
-import android.view.View
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -30,11 +31,13 @@ import androidx.lifecycle.OnLifecycleEvent
  */
 class FullscreenLifecycle(private val fragment: Fragment) : LifecycleObserver {
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun start() {
         fragment.activity?.window?.setDecorFitsSystemWindows(false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stop() {
         fragment.activity?.window?.setDecorFitsSystemWindows(true)
@@ -45,10 +48,11 @@ class FullscreenLifecycle(private val fragment: Fragment) : LifecycleObserver {
 /**
  * Set orientation for a fragment
  */
-class OrientationLifecycle(private val fragment: Fragment, private val orientation: Int) : LifecycleObserver {
+class OrientationLifecycle(private val fragment: Fragment, private val orientation: Int) :
+    LifecycleObserver {
 
-    private var baseOrientation : Int =
-            fragment.activity?.requestedOrientation ?: ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+    private var baseOrientation: Int =
+        fragment.activity?.requestedOrientation ?: ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun start() {

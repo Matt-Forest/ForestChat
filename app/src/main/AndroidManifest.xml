@@ -48,7 +48,6 @@
 
         <activity
             android:name=".ui.NavigationActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
 

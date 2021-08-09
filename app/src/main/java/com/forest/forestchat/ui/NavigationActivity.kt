@@ -18,6 +18,7 @@
  */
 package com.forest.forestchat.ui
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.forest.forestchat.R
@@ -34,6 +35,12 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestedOrientation = when (resources.getBoolean(R.bool.isTablet)) {
+            true -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
+            false -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        }
+
         setContentView(R.layout.activity_navigation)
     }
 
