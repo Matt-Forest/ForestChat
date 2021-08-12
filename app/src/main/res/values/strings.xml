@@ -158,4 +158,11 @@
     <string name="settings_app_about_label">About ForestChat</string>
     <string name="settings_app_about_describe">Version %s</string>
 
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_version">Version</string>
+    <string name="settings_about_source_code">Source code of the application</string>
+    <string name="settings_about_source_contact">Contact</string>
+    <string name="settings_about_source_licence">Licence</string>
+    <string name="settings_about_source_copyright" translatable="false">Copyright</string>
+
 </resources>

@@ -16,59 +16,49 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.settings.app
+package com.forest.forestchat.ui.settings.about
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.navigation.findNavController
-import com.forest.forestchat.R
-import com.forest.forestchat.databinding.NavigationSettingsAppBinding
-import com.forest.forestchat.extensions.format
+import com.forest.forestchat.databinding.NavigationSettingsAboutBinding
 import com.forest.forestchat.utils.getAppVersion
 
-
-class SettingsAppNavigationView @JvmOverloads constructor(
+class SettingsAboutNavigationView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
-    lateinit var onSync: () -> Unit
-    lateinit var onNotifications: () -> Unit
+    companion object {
+        const val UrlGithub = "https://github.com/Matt-Forest/ForestChat"
+        const val ContactMail = "contact@forestchat.org"
+        const val Licence = "GNU General Public Licence v3.0"
+        const val Copyright = "@ 2021"
+    }
 
-    private val binding: NavigationSettingsAppBinding
+    lateinit var openUrl: (String) -> Unit
+    lateinit var openMail: (String) -> Unit
+
+    private val binding: NavigationSettingsAboutBinding
 
     init {
         val layoutInflater = LayoutInflater.from(context)
-        binding = NavigationSettingsAppBinding.inflate(layoutInflater, this)
+        binding = NavigationSettingsAboutBinding.inflate(layoutInflater, this)
 
         orientation = VERTICAL
 
         with(binding) {
             back.setOnClickListener { findNavController().popBackStack() }
-            aboutDescribe.text =
-                R.string.settings_app_about_describe.format(context, context.getAppVersion())
-            theme.setOnClickListener {
-                //TODO go to theme fragment
-            }
-            archives.setOnClickListener {
-                // TODO go to archive fragment
-            }
-            notifications.setOnClickListener { onNotifications() }
-            synchronize.setOnClickListener { onSync() }
-            about.setOnClickListener {
-                findNavController().navigate(SettingsAppFragmentDirections.goToAbout())
-            }
-        }
-    }
+            versionDescribe.text = context.getAppVersion()
+            sourceCodeDescribe.text = UrlGithub
+            contactDescribe.text = ContactMail
+            licenceDescribe.text = Licence
+            copyrightDescribe.text = Copyright
 
-    fun updateLoading(isLoading: Boolean) {
-        binding.loadBar.apply {
-            when (isLoading) {
-                true -> startLoading()
-                false -> stopLoading()
-            }
+            sourceCode.setOnClickListener { openUrl(UrlGithub) }
+            contact.setOnClickListener { openMail(ContactMail) }
         }
     }
 

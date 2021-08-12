@@ -52,7 +52,7 @@
             android:layout_marginHorizontal="11dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/settings_app_title"
+            android:text="@string/settings_about_title"
             android:textColor="@color/text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,227 +77,162 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/theme"
+                android:id="@+id/version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
-
-                <ImageView
-                    android:id="@+id/themeIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_palette"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/text" />
 
                 <TextView
                     android:id="@+id/versionLabel"
                     style="@style/Typography.Subtitle1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_theme_label"
+                    android:text="@string/settings_about_version"
                     android:textColor="@color/text"
-                    app:layout_constraintBottom_toTopOf="@id/themeDescribe"
+                    app:layout_constraintBottom_toTopOf="@id/versionDescribe"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/themeIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/themeDescribe"
+                    android:id="@+id/versionDescribe"
                     style="@style/Typography.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_theme_describe"
                     android:textColor="@color/text_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/themeIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/versionLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/archives"
+                android:id="@+id/sourceCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
-                <ImageView
-                    android:id="@+id/archivesIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_archive"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/text" />
-
                 <TextView
-                    android:id="@+id/archivesLabel"
+                    android:id="@+id/sourceCodeLabel"
                     style="@style/Typography.Subtitle1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_archive_label"
+                    android:text="@string/settings_about_source_code"
                     android:textColor="@color/text"
-                    app:layout_constraintBottom_toTopOf="@id/archivesDescribe"
+                    app:layout_constraintBottom_toTopOf="@id/sourceCodeDescribe"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/archivesIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/archivesDescribe"
+                    android:id="@+id/sourceCodeDescribe"
                     style="@style/Typography.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_archive_describe"
                     android:textColor="@color/text_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/archivesIcon"
-                    app:layout_constraintTop_toBottomOf="@id/archivesLabel" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sourceCodeLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/notifications"
+                android:id="@+id/contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
-                <ImageView
-                    android:id="@+id/notificationIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_notification"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/text" />
-
                 <TextView
-                    android:id="@+id/notificationLabel"
+                    android:id="@+id/contactLabel"
                     style="@style/Typography.Subtitle1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_notifications_label"
+                    android:text="@string/settings_about_source_contact"
                     android:textColor="@color/text"
-                    app:layout_constraintBottom_toTopOf="@id/notificationDescribe"
+                    app:layout_constraintBottom_toTopOf="@id/contactDescribe"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/notificationIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/notificationDescribe"
+                    android:id="@+id/contactDescribe"
                     style="@style/Typography.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_notifications_describe"
                     android:textColor="@color/text_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/notificationIcon"
-                    app:layout_constraintTop_toBottomOf="@id/notificationLabel" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/contactLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/synchronize"
+                android:id="@+id/licence"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
-                <ImageView
-                    android:id="@+id/synchronizeIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_sync"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/text" />
-
                 <TextView
-                    android:id="@+id/synchronizeLabel"
+                    android:id="@+id/licenceLabel"
                     style="@style/Typography.Subtitle1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_synchronise_label"
+                    android:text="@string/settings_about_source_licence"
                     android:textColor="@color/text"
-                    app:layout_constraintBottom_toTopOf="@id/synchronizeDescribe"
+                    app:layout_constraintBottom_toTopOf="@id/licenceDescribe"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/synchronizeIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/synchronizeDescribe"
+                    android:id="@+id/licenceDescribe"
                     style="@style/Typography.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_synchronise_describe"
                     android:textColor="@color/text_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/synchronizeIcon"
-                    app:layout_constraintTop_toBottomOf="@id/synchronizeLabel" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/licenceLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/about"
+                android:id="@+id/copyright"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
-                <ImageView
-                    android:id="@+id/aboutIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_info"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/text" />
-
                 <TextView
-                    android:id="@+id/aboutLabel"
+                    android:id="@+id/copyrightLabel"
                     style="@style/Typography.Subtitle1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_about_label"
+                    android:text="@string/settings_about_source_copyright"
                     android:textColor="@color/text"
-                    app:layout_constraintBottom_toTopOf="@id/aboutDescribe"
+                    app:layout_constraintBottom_toTopOf="@id/copyrightDescribe"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/aboutIcon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/aboutDescribe"
+                    android:id="@+id/copyrightDescribe"
                     style="@style/Typography.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/settings_app_about_describe"
                     android:textColor="@color/text_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/aboutIcon"
-                    app:layout_constraintTop_toBottomOf="@id/aboutLabel" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/copyrightLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

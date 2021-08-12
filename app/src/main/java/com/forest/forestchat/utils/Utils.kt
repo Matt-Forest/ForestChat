@@ -18,6 +18,9 @@
  */
 package com.forest.forestchat.utils
 
+import android.content.Context
+import android.content.pm.PackageManager
+
 fun <T> tryOrNull(body: () -> T?): T? {
     return try {
         body()
@@ -25,3 +28,11 @@ fun <T> tryOrNull(body: () -> T?): T? {
         null
     }
 }
+
+fun Context.getAppVersion(): String =
+    try {
+        val pInfo = packageManager.getPackageInfo(packageName, 0)
+        pInfo.versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        ""
+    }
