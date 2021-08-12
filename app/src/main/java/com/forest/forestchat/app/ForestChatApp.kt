@@ -25,15 +25,28 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.forest.forestchat.localStorage.sharedPrefs.ForestChatThemeSharedPrefs
 import com.forest.forestchat.ui.common.coil.ByteArrayFetcher
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class ForestChatApp : Application(), ImageLoaderFactory {
 
+    @Inject
+    lateinit var themeSharedPrefs: ForestChatThemeSharedPrefs
+
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+
+
+        AppCompatDelegate.setDefaultNightMode(
+            when (themeSharedPrefs.get()) {
+                ForestChatTheme.Light -> AppCompatDelegate.MODE_NIGHT_NO
+                ForestChatTheme.Dark -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        )
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this)

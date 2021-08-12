@@ -157,4 +157,9 @@
     <string name="settings_about_source_contact">Contact</string>
     <string name="settings_about_source_licence">Licence</string>
 
+    <string name="settings_theme">Thème</string>
+    <string name="settings_theme_system">Valeur par défaut du système</string>
+    <string name="settings_theme_light">Thème clair</string>
+    <string name="settings_theme_dark">Thème sombre</string>
+
 </resources>

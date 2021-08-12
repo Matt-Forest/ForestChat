@@ -112,6 +112,7 @@
                 android:id="@+id/sourceCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
@@ -144,6 +145,7 @@
                 android:id="@+id/contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 

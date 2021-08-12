@@ -50,7 +50,7 @@ class SettingsAppNavigationView @JvmOverloads constructor(
             aboutDescribe.text =
                 R.string.settings_app_about_describe.format(context, context.getAppVersion())
             theme.setOnClickListener {
-                //TODO go to theme fragment
+                findNavController().navigate(SettingsAppFragmentDirections.goToAppearance())
             }
             archives.setOnClickListener {
                 // TODO go to archive fragment

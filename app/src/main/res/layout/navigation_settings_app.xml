@@ -80,6 +80,7 @@
                 android:id="@+id/theme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
@@ -125,6 +126,7 @@
                 android:id="@+id/archives"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
@@ -170,6 +172,7 @@
                 android:id="@+id/notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
@@ -215,6 +218,7 @@
                 android:id="@+id/synchronize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
@@ -260,6 +264,7 @@
                 android:id="@+id/about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp">
 
