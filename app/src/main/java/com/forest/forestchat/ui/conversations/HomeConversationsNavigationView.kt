@@ -23,7 +23,6 @@ import android.content.Intent
 import android.provider.ContactsContract
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.findNavController
@@ -32,10 +31,10 @@ import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.goneIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.observer.ContactObserver
+import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
 import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
@@ -75,12 +74,7 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
 
         with(binding) {
             changePermission.setOnClickListener { requestSmsPermission() }
-            userProfile.setOnClickListener {
-                when (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-                    true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
+            userProfile.setOnClickListener { findNavController().navigate(HomeFragmentDirections.goToSettings()) }
 
             clearSearch.setOnClickListener {
                 searchChat.text.clear()

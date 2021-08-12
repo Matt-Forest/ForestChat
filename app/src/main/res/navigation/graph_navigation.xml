@@ -50,6 +50,14 @@
             app:popEnterAnim="@anim/nav_slide_from_left"
             app:popExitAnim="@anim/nav_slide_to_right" />
 
+        <action
+            android:id="@+id/go_to_settings"
+            app:destination="@id/settings_app_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right" />
+
     </fragment>
 
     <fragment
@@ -225,6 +233,13 @@
                 app:nullable="false" />
 
         </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings_app_dest"
+        android:name="com.forest.forestchat.ui.settings.app.SettingsAppFragment"
+        tools:layout="@layout/navigation_settings_app">
 
     </fragment>
 

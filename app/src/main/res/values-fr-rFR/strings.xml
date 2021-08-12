@@ -139,4 +139,16 @@
     <string name="create_conversation_group_describe_group">Créer une conversation groupé dans laquelle chacun peut intéragir avec les membres du groupe.</string>
     <string name="create_conversation_group_describe_mailing_list">Envoyez le même message à plusieurs destinataires.\nIls ne pourront pas intéragir entre eux.\nUtile lorsque vous changez de numéro de téléphone.</string>
 
+    <string name="settings_app_title">Paramètres</string>
+    <string name="settings_app_theme_label">Thème de l\'application</string>
+    <string name="settings_app_theme_describe">Choisissez un thème sombre pour un meilleur confort visuel</string>
+    <string name="settings_app_archive_label">Archives</string>
+    <string name="settings_app_archive_describe">Retrouver toutes vos conversations archivées</string>
+    <string name="settings_app_notifications_label">Notifications</string>
+    <string name="settings_app_notifications_describe">Personnaliser vos notifications</string>
+    <string name="settings_app_synchronise_label">Synchroniser les messages</string>
+    <string name="settings_app_synchronise_describe">Resynchroniser les messages avec la base de données Android native</string>
+    <string name="settings_app_about_label">A propos de ForestChat</string>
+    <string name="settings_app_about_describe">Version %s</string>
+
 </resources>
