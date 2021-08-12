@@ -27,13 +27,10 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
-import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.recipients.models.RecipientsEvent
 import com.zhuinden.liveevent.observe
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class RecipientsFragment : NavigationFragment() {
 
@@ -67,12 +64,6 @@ class RecipientsFragment : NavigationFragment() {
                 }
             }
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @Suppress("unused")
-    fun onTransversalEvent(event: TransversalBusEvent) {
-        // nothing
     }
 
     private fun showContact(lookupKey: String?, address: String?) {

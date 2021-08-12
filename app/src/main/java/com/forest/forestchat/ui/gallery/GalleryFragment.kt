@@ -22,12 +22,9 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import com.forest.forestchat.R
-import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.ui.base.fragment.FullscreenLifecycle
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.base.fragment.OrientationLifecycle
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class GalleryFragment : NavigationFragment() {
 
@@ -48,11 +45,6 @@ class GalleryFragment : NavigationFragment() {
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @Suppress("unused")
-    fun onTransversalEvent(event: TransversalBusEvent) {
-        // nothing
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(viewLifecycleOwner.lifecycle) {

@@ -23,10 +23,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.forest.forestchat.R
-import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class SettingsAboutFragment : NavigationFragment() {
 
@@ -44,12 +41,6 @@ class SettingsAboutFragment : NavigationFragment() {
             openUrl = this@SettingsAboutFragment::openUrl
             openMail = this@SettingsAboutFragment::openMail
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @Suppress("unused")
-    fun onTransversalEvent(event: TransversalBusEvent) {
-        // nothing
     }
 
     private fun openUrl(url: String) {

@@ -136,7 +136,7 @@ class ConversationFragment : NavigationFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
-    fun onTransversalEvent(event: TransversalBusEvent) {
+    override fun onTransversalEvent(event: TransversalBusEvent) {
         viewModel.updateMessages()
     }
 

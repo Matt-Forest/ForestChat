@@ -68,6 +68,12 @@ abstract class NavigationFragment : Fragment() {
         EventBus.getDefault().unregister(this)
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Suppress("unused")
+    open fun onTransversalEvent(event: TransversalBusEvent) {
+        // nothing
+    }
+
     /**
      * set fragment view
      */

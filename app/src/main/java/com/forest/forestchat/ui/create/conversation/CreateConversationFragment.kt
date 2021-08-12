@@ -22,12 +22,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
-import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class CreateConversationFragment : NavigationFragment() {
 
@@ -58,12 +55,6 @@ class CreateConversationFragment : NavigationFragment() {
             observe(buttonState(), navigationView::updateFabButton)
             observeEvents(eventSource(), navigationView::onEvent)
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    @Suppress("unused")
-    fun onTransversalEvent(event: TransversalBusEvent) {
-        // nothing
     }
 
 }
