@@ -16,9 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter
+package com.forest.forestchat.ui.settings.archives.models
 
-object HomeConversationViewTypes {
-    const val CONVERSATION = 0
-    const val NATIVE_AD = 1
+import com.forest.forestchat.domain.models.Conversation
+
+sealed class SettingsArchiveState {
+
+    object Empty : SettingsArchiveState()
+    data class Conversations(val conversations: List<Conversation>) : SettingsArchiveState()
+
 }

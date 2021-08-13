@@ -16,12 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter
+package com.forest.forestchat.ui.common.conversations.adapter
 
-sealed class HomeConversationsPayload {
-    data class Pin(val pin: Boolean) : HomeConversationsPayload()
-    data class Title(val newTitle: String) : HomeConversationsPayload()
-    data class NewLastMessage(val newLastMessage: String) : HomeConversationsPayload()
-    data class UpdateMessageAndMarkAsRead(val isRead: Boolean, val newLastMessage: String) : HomeConversationsPayload()
-    data class MarkAsRead(val isRead: Boolean) : HomeConversationsPayload()
+object ConversationViewTypes {
+    const val CONVERSATION = 0
+    const val NATIVE_AD = 1
 }

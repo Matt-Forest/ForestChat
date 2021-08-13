@@ -31,8 +31,8 @@ import com.forest.forestchat.domain.useCases.SyncConversationsUseCase
 import com.forest.forestchat.domain.useCases.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
+import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItemEvent
+import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.zhuinden.eventemitter.EventEmitter
@@ -208,6 +208,7 @@ class HomeConversationsViewModel @Inject constructor(
                             eventEmitter.emit(HomeConversationEvent.RequestDeleteDialog(conversation.id))
                         }
                     }
+                    else -> null
                 }
             }
             conversationSelected = null

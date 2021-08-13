@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.dialog
+package com.forest.forestchat.ui.common.conversations.dialog
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.forest.forestchat.databinding.DialogConversationOptionsBinding
+import com.forest.forestchat.extensions.goneIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.ui.base.dialog.BaseBottomDialog
+import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionType
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ConversationOptionsDialog(
@@ -32,7 +34,8 @@ class ConversationOptionsDialog(
     private val showAddToContacts: Boolean,
     private val showPin: Boolean,
     private val showPinnedOff: Boolean,
-    private val showMarkAsRead: Boolean
+    private val showMarkAsRead: Boolean,
+    private val showUnarchived: Boolean
 ) : BaseBottomDialog(context, true) {
 
     private val binding: DialogConversationOptionsBinding by lazy {
@@ -48,12 +51,15 @@ class ConversationOptionsDialog(
             pin.visibleIf { showPin }
             pinnedOff.visibleIf { showPinnedOff }
             markAsRead.visibleIf { showMarkAsRead }
+            unArchive.visibleIf { showUnarchived }
+            archive.goneIf { showUnarchived }
 
             addContact.setOnClickListener { select(dialog, ConversationOptionType.AddToContacts) }
             pin.setOnClickListener { select(dialog, ConversationOptionType.Pin) }
             pinnedOff.setOnClickListener { select(dialog, ConversationOptionType.PinnedOff) }
             markAsRead.setOnClickListener { select(dialog, ConversationOptionType.MarkAsRead) }
             archive.setOnClickListener { select(dialog, ConversationOptionType.Archive) }
+            unArchive.setOnClickListener { select(dialog, ConversationOptionType.UnArchive) }
             block.setOnClickListener { select(dialog, ConversationOptionType.Block) }
             remove.setOnClickListener { select(dialog, ConversationOptionType.Remove) }
         }

@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.dialog
+package com.forest.forestchat.ui.common.conversations.adapter.nativeAd
 
-enum class ConversationOptionType {
-    AddToContacts,
-    Pin,
-    PinnedOff,
-    MarkAsRead,
-    Archive,
-    Block,
-    Remove
+import com.forest.forestchat.ui.base.recycler.BaseItem
+import com.forest.forestchat.ui.common.conversations.adapter.ConversationViewTypes
+
+class NativeAdItem : BaseItem() {
+
+    override fun getViewType(): Int = ConversationViewTypes.NATIVE_AD
+
+    override fun isItemTheSame(oldItem: BaseItem): Boolean =
+        oldItem is NativeAdItem
+
 }

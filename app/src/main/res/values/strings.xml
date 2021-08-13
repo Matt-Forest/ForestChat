@@ -33,7 +33,6 @@
     <string name="conversations_sender_user">You: %s</string>
     <string name="conversations_draft">Draft</string>
     <string name="conversations_ads">Ads</string>
-    <string name="conversations_loading">Data loading…</string>
     <string name="conversations_search_contact" translatable="false">Contacts</string>
     <string name="conversations_search_conversation" translatable="false">Chats</string>
     <plurals name="conversations_search_conversation_count">
@@ -41,6 +40,7 @@
         <item quantity="other">%s messages</item>
     </plurals>
     <string name="conversation_option_archived">Archive</string>
+    <string name="conversation_option_unarchived">Unarchive</string>
     <string name="conversation_option_deleted">Remove</string>
     <string name="conversation_option_blocked">Block</string>
     <string name="conversation_option_pinned">Pin</string>
@@ -169,5 +169,8 @@
     <string name="settings_theme_system">System default</string>
     <string name="settings_theme_light">Light theme</string>
     <string name="settings_theme_dark">Dark theme</string>
+
+    <string name="settings_archive_title">Archive</string>
+    <string name="settings_archive_empty">No conversation archived.</string>
 
 </resources>

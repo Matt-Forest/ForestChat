@@ -32,8 +32,8 @@
     <string name="conversations_sender_user">Vous: %s</string>
     <string name="conversations_draft">Brouillon</string>
     <string name="conversations_ads">Pub</string>
-    <string name="conversations_loading">Chargement des données…</string>
     <string name="conversation_option_archived">Archiver</string>
+    <string name="conversation_option_unarchived">Désarchiver</string>
     <string name="conversation_option_deleted">Supprimer</string>
     <string name="conversation_option_blocked">Bloquer</string>
     <string name="conversation_option_pinned">Epingler</string>
@@ -161,5 +161,8 @@
     <string name="settings_theme_system">Valeur par défaut du système</string>
     <string name="settings_theme_light">Thème clair</string>
     <string name="settings_theme_dark">Thème sombre</string>
+
+    <string name="settings_archive_title">Archive</string>
+    <string name="settings_archive_empty">Aucun conversation archivée.</string>
 
 </resources>

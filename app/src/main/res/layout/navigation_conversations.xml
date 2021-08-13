@@ -66,35 +66,13 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/loadingData"
+    <com.forest.forestchat.ui.common.HorizontalProgressBar
+        android:id="@+id/loadBar"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChat"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarChat">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/primary" />
-
-        <TextView
-            style="@style/Typography.Subtitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:paddingHorizontal="40dp"
-            android:text="@string/conversations_loading"
-            android:textColor="@color/text" />
-
-    </LinearLayout>
+        android:layout_height="4dp" />
 
     <TextView
         android:id="@+id/empty"
@@ -202,6 +180,6 @@
         ads:adUnitId="@string/ads_banner_id"
         ads:layout_constraintEnd_toEndOf="parent"
         ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toBottomOf="@id/toolbarChat" />
+        ads:layout_constraintTop_toBottomOf="@id/loadBar" />
 
 </merge>

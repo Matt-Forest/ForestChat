@@ -16,16 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.nativeAd
+package com.forest.forestchat.domain.useCases
 
-import com.forest.forestchat.ui.base.recycler.BaseItem
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
+import com.forest.forestchat.domain.models.Conversation
+import com.forest.forestchat.localStorage.database.daos.ConversationDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NativeAdItem : BaseItem() {
+@Singleton
+class GetConversationsArchivedUseCase @Inject constructor(
+    private val conversationDao: ConversationDao
+) {
 
-    override fun getViewType(): Int = HomeConversationViewTypes.NATIVE_AD
-
-    override fun isItemTheSame(oldItem: BaseItem): Boolean =
-        oldItem is NativeAdItem
+    suspend operator fun invoke(): List<Conversation>? = conversationDao.getAll()
+        ?.filter { it.lastMessage != null && it.archived }
+        ?.sortedByDescending { it.lastMessage?.date }
 
 }

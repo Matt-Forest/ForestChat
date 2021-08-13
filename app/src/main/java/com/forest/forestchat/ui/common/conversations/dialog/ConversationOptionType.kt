@@ -16,9 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.conversation
+package com.forest.forestchat.ui.common.conversations.dialog
 
-sealed class ConversationItemEvent {
-    data class Selected(val id: Long) : ConversationItemEvent()
-    data class Clicked(val id: Long) : ConversationItemEvent()
+enum class ConversationOptionType {
+    AddToContacts,
+    Pin,
+    PinnedOff,
+    MarkAsRead,
+    Archive,
+    Block,
+    Remove,
+    UnArchive
 }

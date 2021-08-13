@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.conversation
+package com.forest.forestchat.ui.common.conversations.adapter.conversation
 
 import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.avatar.AvatarType
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationViewTypes
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
+import com.forest.forestchat.ui.common.conversations.adapter.ConversationViewTypes
+import com.forest.forestchat.ui.common.conversations.adapter.ConversationsPayload
 
 class ConversationItem(
     val id: Long,
@@ -34,7 +34,7 @@ class ConversationItem(
     val draft: Boolean
 ) : BaseItem() {
 
-    override fun getViewType(): Int = HomeConversationViewTypes.CONVERSATION
+    override fun getViewType(): Int = ConversationViewTypes.CONVERSATION
 
     override fun isItemTheSame(oldItem: BaseItem): Boolean =
         oldItem is ConversationItem && oldItem.id == id
@@ -43,14 +43,14 @@ class ConversationItem(
         oldItem as ConversationItem
 
         return when {
-            oldItem.title != title -> HomeConversationsPayload.Title(title)
-            oldItem.pinned != pinned -> HomeConversationsPayload.Pin(pinned)
-            oldItem.unread != unread && oldItem.lastMessage != lastMessage -> HomeConversationsPayload.UpdateMessageAndMarkAsRead(
+            oldItem.title != title -> ConversationsPayload.Title(title)
+            oldItem.pinned != pinned -> ConversationsPayload.Pin(pinned)
+            oldItem.unread != unread && oldItem.lastMessage != lastMessage -> ConversationsPayload.UpdateMessageAndMarkAsRead(
                 unread,
                 lastMessage
             )
-            oldItem.unread != unread -> HomeConversationsPayload.MarkAsRead(unread)
-            oldItem.lastMessage != lastMessage -> HomeConversationsPayload.NewLastMessage(
+            oldItem.unread != unread -> ConversationsPayload.MarkAsRead(unread)
+            oldItem.lastMessage != lastMessage -> ConversationsPayload.NewLastMessage(
                 lastMessage
             )
             else -> null

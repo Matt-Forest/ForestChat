@@ -53,7 +53,7 @@ class SettingsAppNavigationView @JvmOverloads constructor(
                 findNavController().navigate(SettingsAppFragmentDirections.goToAppearance())
             }
             archives.setOnClickListener {
-                // TODO go to archive fragment
+                findNavController().navigate(SettingsAppFragmentDirections.goToArchive())
             }
             notifications.setOnClickListener { onNotifications() }
             synchronize.setOnClickListener { onSync() }

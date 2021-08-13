@@ -161,6 +161,33 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/unArchive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_inbox"
+            app:tint="@color/text" />
+
+        <TextView
+            style="@style/Typography.Subtitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/conversation_option_unarchived"
+            android:textColor="@color/text" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

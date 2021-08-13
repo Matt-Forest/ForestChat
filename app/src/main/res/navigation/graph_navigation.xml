@@ -257,6 +257,14 @@
             app:popEnterAnim="@anim/nav_slide_from_left"
             app:popExitAnim="@anim/nav_slide_to_right" />
 
+        <action
+            android:id="@+id/go_to_archive"
+            app:destination="@id/settings_archive_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right" />
+
     </fragment>
 
     <fragment
@@ -268,5 +276,27 @@
         android:id="@+id/settings_appearance_dest"
         android:name="com.forest.forestchat.ui.settings.appearance.SettingsAppearanceFragment"
         tools:layout="@layout/navigation_settings_appearance" />
+
+    <fragment
+        android:id="@+id/settings_archive_dest"
+        android:name="com.forest.forestchat.ui.settings.archives.SettingsArchiveFragment"
+        tools:layout="@layout/navigation_settings_archive">
+
+        <action
+            android:id="@+id/go_to_conversation"
+            app:destination="@id/conversation_dest"
+            app:enterAnim="@anim/nav_slide_from_right"
+            app:exitAnim="@anim/nav_slide_to_left"
+            app:popEnterAnim="@anim/nav_slide_from_left"
+            app:popExitAnim="@anim/nav_slide_to_right">
+
+            <argument
+                android:name="input"
+                app:argType="com.forest.forestchat.ui.conversation.models.ConversationInput"
+                app:nullable="false" />
+
+        </action>
+
+    </fragment>
 
 </navigation>

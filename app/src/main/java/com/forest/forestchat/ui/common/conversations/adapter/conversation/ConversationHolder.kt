@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter.conversation
+package com.forest.forestchat.ui.common.conversations.adapter.conversation
 
 import android.graphics.Typeface
 import android.view.ViewGroup
@@ -26,7 +26,7 @@ import com.forest.forestchat.databinding.HolderConversationBinding
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.asFont
 import com.forest.forestchat.ui.base.recycler.BaseHolder
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationsPayload
+import com.forest.forestchat.ui.common.conversations.adapter.ConversationsPayload
 
 class ConversationHolder(
     parent: ViewGroup,
@@ -87,13 +87,13 @@ class ConversationHolder(
         binding.snippet.text = message
     }
 
-    fun onPayload(payloadHome: HomeConversationsPayload) {
+    fun onPayload(payloadHome: ConversationsPayload) {
         when (payloadHome) {
-            is HomeConversationsPayload.Title -> updateTitle(payloadHome.newTitle)
-            is HomeConversationsPayload.Pin -> updatePin(payloadHome.pin)
-            is HomeConversationsPayload.NewLastMessage -> updateLastMessage(payloadHome.newLastMessage)
-            is HomeConversationsPayload.MarkAsRead -> updateMarkAsRead(payloadHome.isRead)
-            is HomeConversationsPayload.UpdateMessageAndMarkAsRead -> {
+            is ConversationsPayload.Title -> updateTitle(payloadHome.newTitle)
+            is ConversationsPayload.Pin -> updatePin(payloadHome.pin)
+            is ConversationsPayload.NewLastMessage -> updateLastMessage(payloadHome.newLastMessage)
+            is ConversationsPayload.MarkAsRead -> updateMarkAsRead(payloadHome.isRead)
+            is ConversationsPayload.UpdateMessageAndMarkAsRead -> {
                 updateLastMessage(payloadHome.newLastMessage)
                 updateMarkAsRead(payloadHome.isRead)
             }

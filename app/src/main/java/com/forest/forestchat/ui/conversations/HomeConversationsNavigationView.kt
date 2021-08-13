@@ -33,10 +33,10 @@ import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.observer.ContactObserver
 import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
 import com.forest.forestchat.ui.conversation.models.ConversationInput
-import com.forest.forestchat.ui.conversations.adapter.HomeConversationsAdapter
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.conversations.dialog.ConversationOptionType
-import com.forest.forestchat.ui.conversations.dialog.ConversationOptionsDialog
+import com.forest.forestchat.ui.common.conversations.adapter.ConversationsAdapter
+import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItemEvent
+import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionType
+import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionsDialog
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.forest.forestchat.ui.conversations.searchAdapter.SearchAdapter
@@ -61,7 +61,7 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
     lateinit var onSearchContactClick: (Long) -> Unit
 
     private val binding: NavigationConversationsBinding
-    private var conversationsAdapter = HomeConversationsAdapter { onConversationEvent(it) }
+    private var conversationsAdapter = ConversationsAdapter { onConversationEvent(it) }
     private val searchAdapter = SearchAdapter(
         { onSearchConversationClick(it) },
         { onSearchContactClick(it) }
@@ -131,7 +131,8 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
                     event.showAddToContacts,
                     event.showPin,
                     event.showPinnedOff,
-                    event.showMarkAsRead
+                    event.showMarkAsRead,
+                    false
                 ).create().show()
             }
             is HomeConversationEvent.RequestDeleteDialog -> {
@@ -166,7 +167,7 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
                         recyclerChat.adapter = conversationsAdapter
                     }
                     conversationsAdapter.apply {
-                        setConversations(context, state.conversations)
+                        setConversations(context, state.conversations, false)
                     }
                 }
                 is HomeConversationsState.Search -> {
@@ -183,7 +184,12 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
     }
 
     fun setLoading(isVisible: Boolean) {
-        binding.loadingData.visibleIf { isVisible }
+        with(binding.loadBar) {
+            when (isVisible) {
+                true -> startLoading()
+                false -> stopLoading()
+            }
+        }
     }
 
     fun updateBannerVisibility(isVisible: Boolean) {

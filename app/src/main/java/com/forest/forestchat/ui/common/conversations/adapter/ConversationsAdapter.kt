@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.conversations.adapter
+package com.forest.forestchat.ui.common.conversations.adapter
 
 import android.content.Context
 import android.view.ViewGroup
@@ -27,34 +27,34 @@ import com.forest.forestchat.ui.base.recycler.BaseAdapter
 import com.forest.forestchat.ui.base.recycler.BaseHolder
 import com.forest.forestchat.ui.base.recycler.BaseItem
 import com.forest.forestchat.ui.common.mappers.buildAvatar
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationHolder
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItem
-import com.forest.forestchat.ui.conversations.adapter.conversation.ConversationItemEvent
-import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdHolder
-import com.forest.forestchat.ui.conversations.adapter.nativeAd.NativeAdItem
+import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationHolder
+import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItem
+import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItemEvent
+import com.forest.forestchat.ui.common.conversations.adapter.nativeAd.NativeAdHolder
+import com.forest.forestchat.ui.common.conversations.adapter.nativeAd.NativeAdItem
 
-class HomeConversationsAdapter(
+class ConversationsAdapter(
     private val onEvent: (ConversationItemEvent) -> Unit
 ) : BaseAdapter() {
 
     override fun buildViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<*>? =
         when (viewType) {
-            HomeConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onEvent)
-            HomeConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
+            ConversationViewTypes.CONVERSATION -> ConversationHolder(parent, onEvent)
+            ConversationViewTypes.NATIVE_AD -> NativeAdHolder(parent)
             else -> null
         }
 
     override fun onPayload(holder: BaseHolder<BaseItem>, position: Int, payload: Any) {
         holder as ConversationHolder
-        payload as HomeConversationsPayload
+        payload as ConversationsPayload
 
         holder.onPayload(payload)
     }
 
-    fun setConversations(context: Context, conversations: List<Conversation>) {
+    fun setConversations(context: Context, conversations: List<Conversation>, isArchived: Boolean) {
         val items = mutableListOf<BaseItem>()
         conversations.forEachIndexed { index, conversation ->
-            if (index > 0 && index % 5 == 0) {
+            if (index > 0 && index % 5 == 0 && !isArchived) {
                 items.add(NativeAdItem())
             }
             items.add(ConversationItem(
