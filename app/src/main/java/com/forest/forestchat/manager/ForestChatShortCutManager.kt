@@ -92,7 +92,7 @@ class ForestChatShortCutManager @Inject constructor(
 
         val intent = Intent(context, NavigationActivity::class.java)
             .setAction(Intent.ACTION_VIEW)
-            .putExtra(NavigationActivity.ConversationThreadId, conversation.id)
+            .putExtra(NavigationActivity.ThreadId, conversation.id)
 
         return ShortcutInfo.Builder(context, "${conversation.id}")
             .setShortLabel(conversation.getTitle())

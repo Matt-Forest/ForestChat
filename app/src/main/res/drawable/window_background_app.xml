@@ -23,10 +23,4 @@
             <solid android:color="@color/background" />
         </shape>
     </item>
-    <item
-        android:width="100dp"
-        android:height="100dp"
-        android:drawable="@drawable/ic_forest"
-        android:gravity="center" />
-
 </layer-list>

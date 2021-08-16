@@ -35,10 +35,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.Person
-import androidx.core.app.RemoteInput
+import androidx.core.app.*
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
@@ -343,7 +340,7 @@ class NotificationManager @Inject constructor(
                     context,
                     threadId.toInt(),
                     Intent(context, NavigationActivity::class.java).putExtra(
-                        NavigationActivity.ConversationThreadId,
+                        NavigationActivity.ThreadId,
                         threadId
                     ),
                     PendingIntent.FLAG_UPDATE_CURRENT

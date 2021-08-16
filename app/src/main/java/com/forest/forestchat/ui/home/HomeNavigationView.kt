@@ -24,8 +24,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
+import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.invisibleIf
+import com.forest.forestchat.ui.NavigationEvent
+import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.HomeConversationsNavigationView
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
@@ -80,6 +83,15 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
         with(binding) {
             conversationsContainerView.invisibleIf { selectedTab == HomeTab.Dashboard }
             dashboardContainerView.invisibleIf { selectedTab == HomeTab.Conversations }
+        }
+    }
+
+    fun deeplinkEvent(event: NavigationEvent) {
+        when (event) {
+            is NavigationEvent.GoToConversation -> {
+                val input = ConversationInput(event.conversation)
+                findNavController().navigate(HomeFragmentDirections.goToConversation(input))
+            }
         }
     }
 

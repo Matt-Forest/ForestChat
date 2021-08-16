@@ -29,11 +29,13 @@ import android.provider.Telephony
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.extensions.observeEvents
+import com.forest.forestchat.ui.NavigationViewModel
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
@@ -48,6 +50,7 @@ import org.greenrobot.eventbus.ThreadMode
 class HomeFragment : NavigationFragment() {
 
     private val conversationsViewModel: HomeConversationsViewModel by viewModels()
+    private val navigationViewModel: NavigationViewModel by activityViewModels()
     private val dashboardViewModel: DashboardViewModel by viewModels()
 
     private val navigationView: HomeNavigationView
@@ -98,6 +101,10 @@ class HomeFragment : NavigationFragment() {
                 }
                 navigationView.getConversationsView().event(event)
             }
+        }
+
+        with(navigationViewModel) {
+            observeEvents(deeplinkEventSource(), navigationView::deeplinkEvent)
         }
     }
 
@@ -159,6 +166,7 @@ class HomeFragment : NavigationFragment() {
         MobileAds.initialize(requireContext()) {
             conversationsViewModel.getConversations()
             navigationView.getConversationsView().initBanner()
+            navigationViewModel.consumeRedirection()
         }
     }
 

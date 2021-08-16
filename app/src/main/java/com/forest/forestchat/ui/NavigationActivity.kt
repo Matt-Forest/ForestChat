@@ -20,6 +20,7 @@ package com.forest.forestchat.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.forest.forestchat.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +31,9 @@ class NavigationActivity : AppCompatActivity() {
 
     companion object {
         const val ThreadId = "threadId"
-        const val ConversationThreadId = "conversationThreadId"
     }
+
+    private val viewModel: NavigationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,13 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_navigation)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        intent.extras?.getLong(ThreadId)?.let { threadId ->
+            viewModel.setRedirection(threadId)
+        }
     }
 
 }
