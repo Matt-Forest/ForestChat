@@ -20,6 +20,7 @@ package com.forest.forestchat.ui.base.fragment
 
 import android.content.pm.ActivityInfo
 import android.os.Build
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -31,16 +32,35 @@ import androidx.lifecycle.OnLifecycleEvent
  */
 class FullscreenLifecycle(private val fragment: Fragment) : LifecycleObserver {
 
-    @RequiresApi(Build.VERSION_CODES.R)
+    @Suppress("DEPRECATION")
+    private var baseSystemVisibilityUi : Int =
+        fragment.activity?.window?.decorView?.systemUiVisibility ?: 0
+
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun start() {
-        fragment.activity?.window?.setDecorFitsSystemWindows(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            fragment.activity?.window?.setDecorFitsSystemWindows(false)
+        } else {
+            @Suppress("DEPRECATION")
+            fragment.activity?.window?.decorView?.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    )
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stop() {
-        fragment.activity?.window?.setDecorFitsSystemWindows(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            fragment.activity?.window?.setDecorFitsSystemWindows(true)
+        } else {
+            @Suppress("DEPRECATION")
+            fragment.activity?.window?.decorView?.systemUiVisibility = baseSystemVisibilityUi
+        }
     }
 
 }
