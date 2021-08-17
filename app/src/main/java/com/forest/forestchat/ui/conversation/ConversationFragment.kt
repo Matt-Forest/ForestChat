@@ -79,9 +79,9 @@ class ConversationFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = ConversationNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
-    override fun getNavigationBarBgColor(): Int = R.color.background
+    override fun getNavigationBarBgColor(): Int = R.color.toolbarBackground
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(navigationView) {

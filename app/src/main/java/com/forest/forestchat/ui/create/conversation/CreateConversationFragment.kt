@@ -23,8 +23,8 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.observe
-import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.zhuinden.liveevent.observe
 
 class CreateConversationFragment : NavigationFragment() {
 
@@ -35,7 +35,7 @@ class CreateConversationFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = CreateConversationNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 
@@ -53,7 +53,7 @@ class CreateConversationFragment : NavigationFragment() {
             observe(contactsSelected(), navigationView::updateSelectedRecipient)
             observe(newRecipient(), navigationView::updateNewRecipient)
             observe(buttonState(), navigationView::updateFabButton)
-            observeEvents(eventSource(), navigationView::onEvent)
+            eventSource().observe(viewLifecycleOwner, navigationView::onEvent)
         }
     }
 

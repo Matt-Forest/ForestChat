@@ -41,7 +41,7 @@ class GalleryFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = GalleryNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 

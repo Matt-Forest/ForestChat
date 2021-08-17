@@ -31,19 +31,16 @@ import com.forest.forestchat.extensions.asString
 import com.forest.forestchat.extensions.goneIf
 import com.forest.forestchat.extensions.visibleIf
 import com.forest.forestchat.observer.ContactObserver
-import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
-import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.common.conversations.adapter.ConversationsAdapter
 import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItemEvent
 import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionType
 import com.forest.forestchat.ui.common.conversations.dialog.ConversationOptionsDialog
+import com.forest.forestchat.ui.common.dialog.ConversationDeleteDialog
+import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
 import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.forest.forestchat.ui.conversations.searchAdapter.SearchAdapter
 import com.forest.forestchat.ui.home.HomeFragmentDirections
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
 
 class HomeConversationsNavigationView @JvmOverloads constructor(
     context: Context,
@@ -56,7 +53,6 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
     lateinit var optionSelected: (ConversationOptionType) -> Unit
     lateinit var onConversationEvent: (ConversationItemEvent) -> Unit
     lateinit var onConversationDeleted: (Long) -> Unit
-    lateinit var bannerIsLoad: (Boolean) -> Unit
     lateinit var onSearchConversationClick: (Long) -> Unit
     lateinit var onSearchContactClick: (Long) -> Unit
 
@@ -86,36 +82,6 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
                 }
             }
         }
-    }
-
-    fun initBanner() {
-        val adRequest = AdRequest.Builder().build()
-        binding.adView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                bannerIsLoad(true)
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                // Code to be executed when an ad request fails.
-                bannerIsLoad(false)
-            }
-
-            override fun onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            override fun onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            override fun onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        }
-        binding.adView.loadAd(adRequest)
     }
 
     fun event(event: HomeConversationEvent) {
@@ -190,10 +156,6 @@ class HomeConversationsNavigationView @JvmOverloads constructor(
                 false -> stopLoading()
             }
         }
-    }
-
-    fun updateBannerVisibility(isVisible: Boolean) {
-        binding.adView.visibleIf { isVisible }
     }
 
 }

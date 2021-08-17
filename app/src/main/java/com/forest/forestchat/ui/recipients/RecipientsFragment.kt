@@ -44,7 +44,7 @@ class RecipientsFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = RecipientsNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 

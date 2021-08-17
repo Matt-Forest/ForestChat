@@ -16,18 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.extensions
+package com.forest.forestchat.ui.splash
 
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.forest.forestchat.databinding.NavigationSplashBinding
 
-fun <T> Fragment.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
-    liveData.observe(viewLifecycleOwner) { data: T? ->
-        // data could be null when live data obtained via SavedStateHandle
-        // because value is set with 'null' when we don't use initial value
-        if (data != null) {
-            // observer will be called when value is set only.
-            observer(data)
-        }
+class SplashNavigationView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : ConstraintLayout(context, attrs) {
+
+    private val binding: NavigationSplashBinding
+
+    init {
+        val layoutInflater = LayoutInflater.from(context)
+        binding = NavigationSplashBinding.inflate(layoutInflater, this)
     }
+
 }

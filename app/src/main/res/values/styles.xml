@@ -23,9 +23,12 @@
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorAccent">@color/secondary</item>
         <item name="fontFamily">@font/mulish_regular</item>
+        <item name="android:autofilledHighlight" tools:targetApi="o">@color/transparent</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
         <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheet</item>
         <item name="android:windowBackground">@drawable/window_background_app</item>
-        <item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">

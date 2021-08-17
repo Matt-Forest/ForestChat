@@ -54,7 +54,7 @@ class ConversationsAdapter(
     fun setConversations(context: Context, conversations: List<Conversation>, isArchived: Boolean) {
         val items = mutableListOf<BaseItem>()
         conversations.forEachIndexed { index, conversation ->
-            if (index > 0 && index % 5 == 0 && !isArchived) {
+            if (index % 5 == 0 && !isArchived) {
                 items.add(NativeAdItem())
             }
             items.add(ConversationItem(

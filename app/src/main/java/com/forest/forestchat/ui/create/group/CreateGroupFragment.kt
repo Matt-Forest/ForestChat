@@ -23,8 +23,8 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.observe
-import com.forest.forestchat.extensions.observeEvents
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.zhuinden.liveevent.observe
 
 class CreateGroupFragment : NavigationFragment() {
 
@@ -35,7 +35,7 @@ class CreateGroupFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = CreateGroupNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 
@@ -48,7 +48,7 @@ class CreateGroupFragment : NavigationFragment() {
 
         with(viewModel) {
             observe(conversationType(), navigationView::updateType)
-            observeEvents(eventSource(), navigationView::onEvent)
+            eventSource().observe(viewLifecycleOwner, navigationView::onEvent)
         }
     }
 

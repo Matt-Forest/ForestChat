@@ -34,7 +34,7 @@ class SettingsAppearanceFragment : NavigationFragment() {
 
     override fun buildNavigationView(): View = SettingsAppearanceNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = R.color.background
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.background
 

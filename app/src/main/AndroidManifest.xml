@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
   ~
   ~ This file is part of ForestChat.
@@ -74,6 +73,7 @@
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+
                 <data android:mimeType="application/vnd.wap.mms-message" />
                 <data android:mimeType="application/vnd.wap.sic" />
             </intent-filter>
@@ -92,7 +92,7 @@
         <receiver android:name=".receiver.SmsDeliveredReceiver" />
         <receiver
             android:name=".receiver.MmsSentReceiver"
-            android:taskAffinity="com.klinker.android.messaging.MMS_SENT"/>
+            android:taskAffinity="com.klinker.android.messaging.MMS_SENT" />
         <receiver
             android:name=".receiver.MmsUpdatedReceiver"
             android:taskAffinity="com.klinker.android.messaging.MMS_UPDATED" />
@@ -122,11 +122,11 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ads_application_id"/>
+            android:value="@string/ads_application_id" />
 
         <meta-data
             android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
-            android:value="true"/>
+            android:value="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -26,9 +26,6 @@ import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.domain.useCases.*
-import com.forest.forestchat.domain.useCases.SyncContactsUseCase
-import com.forest.forestchat.domain.useCases.SyncConversationsUseCase
-import com.forest.forestchat.domain.useCases.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.ui.common.conversations.adapter.conversation.ConversationItemEvent
@@ -63,9 +60,6 @@ class HomeConversationsViewModel @Inject constructor(
     private val isLoading = MutableLiveData(true)
     fun isLoading(): LiveData<Boolean> = isLoading
 
-    private val bannerVisible = MutableLiveData(false)
-    fun bannerVisible(): LiveData<Boolean> = bannerVisible
-
     private val state = MutableLiveData<HomeConversationsState>()
     fun state(): LiveData<HomeConversationsState> = state
 
@@ -73,7 +67,10 @@ class HomeConversationsViewModel @Inject constructor(
     fun eventSource(): EventSource<HomeConversationEvent> = eventEmitter
 
     private var conversationSelected: Conversation? = null
-    private var bannerIsLoad = false
+
+    init {
+        getConversations()
+    }
 
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -100,7 +97,6 @@ class HomeConversationsViewModel @Inject constructor(
                         true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
                         false -> state.postValue(HomeConversationsState.Conversations(conversations))
                     }
-                    bannerVisible.postValue(bannerIsLoad)
                     isLoading.postValue(false)
                 }
             }
@@ -122,7 +118,6 @@ class HomeConversationsViewModel @Inject constructor(
                 val conversations = searchConversationsUseCase(search)
                 val contacts = searchContactsUseCase(search)
 
-                bannerVisible.postValue(false)
                 when (conversations.isNullOrEmpty() && contacts.isNullOrEmpty()) {
                     true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_search))
                     false -> state.postValue(
@@ -227,13 +222,6 @@ class HomeConversationsViewModel @Inject constructor(
             syncContactsUseCase()
             syncConversationUseCase()
             getConversations()
-        }
-    }
-
-    fun bannerIsLoad(isLoad: Boolean) {
-        bannerIsLoad = isLoad
-        if (state.value is HomeConversationsState.Conversations) {
-            bannerVisible.value = true
         }
     }
 

@@ -92,44 +92,50 @@ abstract class NavigationFragment : Fragment() {
      */
     protected abstract fun getNavigationBarBgColor(): Int
 
+    @Suppress("DEPRECATION")
     fun updateStatusBarMode() {
         val isDarkColor = isDarkColor(getStatusBarBgColor().asColor(context))
         with(requireActivity().window) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val appearance = when (isDarkColor) {
-                    true -> WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS.inv()
-                    false -> WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                var appearance = insetsController?.systemBarsAppearance
+                    ?: WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                appearance = when (isDarkColor) {
+                    true -> appearance and WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS.inv()
+                    false -> appearance or WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                 }
                 insetsController?.setSystemBarsAppearance(appearance, appearance)
-            } else {
-                @Suppress("DEPRECATION")
-                decorView.systemUiVisibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                } else {
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                var flags = decorView.systemUiVisibility
+                flags = when (isDarkColor) {
+                    true -> flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                    false -> flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
+                decorView.systemUiVisibility = flags
             }
 
             statusBarColor = getStatusBarBgColor().asColor(context)
         }
     }
 
+    @Suppress("DEPRECATION")
     fun updateNavigationBar() {
         val isDarkColor = isDarkColor(getNavigationBarBgColor().asColor(context))
         with(requireActivity().window) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val appearance = when (isDarkColor) {
-                    true -> WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS.inv()
-                    false -> WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                var appearance = insetsController?.systemBarsAppearance
+                    ?: WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                appearance = when (isDarkColor) {
+                    true -> appearance and WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS.inv()
+                    false -> appearance or WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
                 }
                 insetsController?.setSystemBarsAppearance(appearance, appearance)
-            } else {
-                @Suppress("DEPRECATION")
-                decorView.systemUiVisibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                } else {
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                var flags = decorView.systemUiVisibility
+                flags = when (isDarkColor) {
+                    true -> flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                    false -> flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
+                decorView.systemUiVisibility = flags
             }
 
             navigationBarColor = getNavigationBarBgColor().asColor(context)
