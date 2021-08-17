@@ -150,6 +150,8 @@
     <string name="settings_app_synchronise_describe">Resynchroniser les messages avec la base de données Android native</string>
     <string name="settings_app_about_label">A propos de ForestChat</string>
     <string name="settings_app_about_describe">Version %s</string>
+    <string name="settings_app_cookies_setting_label">Paramétrer les cookies</string>
+    <string name="settings_app_cookies_setting_describe">Personaliser vos cookies</string>
 
     <string name="settings_about_title">A propos</string>
     <string name="settings_about_version">Version</string>

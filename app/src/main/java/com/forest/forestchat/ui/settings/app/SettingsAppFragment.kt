@@ -25,6 +25,8 @@ import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.observe
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.UserMessagingPlatform
 
 class SettingsAppFragment : NavigationFragment() {
 
@@ -43,6 +45,7 @@ class SettingsAppFragment : NavigationFragment() {
         with(navigationView) {
             onNotifications = { showNotifications() }
             onSync = viewModel::syncData
+            onCookiesUpdate = { updateCookies() }
         }
 
         with(viewModel) {
@@ -55,6 +58,17 @@ class SettingsAppFragment : NavigationFragment() {
         intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
         intent.putExtra("android.provider.extra.APP_PACKAGE", context?.packageName)
         requireActivity().startActivity(intent)
+    }
+
+    private fun updateCookies() {
+        UserMessagingPlatform.loadConsentForm(
+            requireContext(),
+            { consentForm ->
+                consentForm.show(requireActivity()) { }
+            }
+        ) {
+            // Handle the error
+        }
     }
 
 }

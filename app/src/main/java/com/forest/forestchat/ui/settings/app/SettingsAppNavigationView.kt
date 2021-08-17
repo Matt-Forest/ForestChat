@@ -36,6 +36,7 @@ class SettingsAppNavigationView @JvmOverloads constructor(
 
     lateinit var onSync: () -> Unit
     lateinit var onNotifications: () -> Unit
+    lateinit var onCookiesUpdate: () -> Unit
 
     private val binding: NavigationSettingsAppBinding
 
@@ -60,6 +61,7 @@ class SettingsAppNavigationView @JvmOverloads constructor(
             about.setOnClickListener {
                 findNavController().navigate(SettingsAppFragmentDirections.goToAbout())
             }
+            cookiesSetting.setOnClickListener { onCookiesUpdate() }
         }
     }
 
