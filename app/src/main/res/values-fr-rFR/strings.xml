@@ -165,4 +165,6 @@
     <string name="settings_archive_title">Archive</string>
     <string name="settings_archive_empty">Aucun conversation archivée.</string>
 
+    <string name="splash_loading">Chargement des conversations…</string>
+
 </resources>

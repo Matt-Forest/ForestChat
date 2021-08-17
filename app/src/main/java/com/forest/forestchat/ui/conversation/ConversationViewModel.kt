@@ -26,9 +26,7 @@ import com.forest.forestchat.domain.models.message.Message
 import com.forest.forestchat.domain.models.message.MessageType
 import com.forest.forestchat.domain.useCases.*
 import com.forest.forestchat.extensions.getNavigationInput
-import com.forest.forestchat.manager.ActiveThreadManager
-import com.forest.forestchat.manager.PermissionsManager
-import com.forest.forestchat.manager.SubscriptionManagerCompat
+import com.forest.forestchat.manager.*
 import com.forest.forestchat.ui.common.mappers.buildAvatar
 import com.forest.forestchat.ui.common.media.Media
 import com.forest.forestchat.ui.conversation.adapter.MessageItemEvent
@@ -59,6 +57,8 @@ class ConversationViewModel @Inject constructor(
     private val copyIntoClipboard: CopyIntoClipboard,
     private val messageDetailsFormatter: MessageDetailsFormatter,
     private val activeThreadManager: ActiveThreadManager,
+    private val notificationManager: NotificationManager,
+    private val forestChatShortCutManager: ForestChatShortCutManager,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -98,6 +98,8 @@ class ConversationViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             markAsReadUseCase(conversation.id)
+            notificationManager.update(conversation.id)
+            forestChatShortCutManager.updateBadge()
         }
         updateMessages()
         initSimInformation()

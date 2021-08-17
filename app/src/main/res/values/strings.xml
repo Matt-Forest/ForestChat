@@ -173,4 +173,6 @@
     <string name="settings_archive_title">Archive</string>
     <string name="settings_archive_empty">No conversation archived.</string>
 
+    <string name="splash_loading">Loading conversations…</string>
+
 </resources>
