@@ -24,19 +24,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.databinding.NavigationHomeBinding
-import com.forest.forestchat.domain.models.Conversation
 import com.forest.forestchat.extensions.asColor
-import com.forest.forestchat.extensions.invisibleIf
 import com.forest.forestchat.ui.NavigationEvent
 import com.forest.forestchat.ui.conversation.models.ConversationInput
 import com.forest.forestchat.ui.conversations.HomeConversationsNavigationView
 
 class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
 
-    // Common
-    lateinit var toggleTab: (HomeTab) -> Unit
-
-    private var selectedTab: HomeTab = HomeTab.Conversations
     private val binding: NavigationHomeBinding
 
     init {
@@ -49,42 +43,9 @@ class HomeNavigationView(context: Context) : CoordinatorLayout(context) {
                 findNavController().navigate(HomeFragmentDirections.goToCreationConversation())
             }
         }
-
-        setupBottomView()
-        toggleViews()
     }
 
     fun getConversationsView(): HomeConversationsNavigationView = binding.conversationsContainerView
-
-    private fun setupBottomView() {
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener {
-            val selectedId = it.itemId
-            if (selectedTab.id == selectedId) {
-                return@setOnNavigationItemSelectedListener false
-            }
-
-            when (selectedId) {
-                HomeTab.Conversations.id -> {
-                    selectedTab = HomeTab.Conversations
-                    toggleViews()
-                }
-                HomeTab.Dashboard.id -> {
-                    selectedTab = HomeTab.Dashboard
-                    toggleViews()
-                }
-            }
-            toggleTab(selectedTab)
-
-            true
-        }
-    }
-
-    private fun toggleViews() {
-        with(binding) {
-            conversationsContainerView.invisibleIf { selectedTab == HomeTab.Dashboard }
-            dashboardContainerView.invisibleIf { selectedTab == HomeTab.Conversations }
-        }
-    }
 
     fun deeplinkEvent(event: NavigationEvent) {
         when (event) {

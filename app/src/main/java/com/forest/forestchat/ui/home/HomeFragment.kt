@@ -38,7 +38,6 @@ import com.forest.forestchat.ui.NavigationViewModel
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
-import com.forest.forestchat.ui.dashboard.DashboardViewModel
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -47,31 +46,20 @@ class HomeFragment : NavigationFragment() {
 
     private val conversationsViewModel: HomeConversationsViewModel by viewModels()
     private val navigationViewModel: NavigationViewModel by activityViewModels()
-    private val dashboardViewModel: DashboardViewModel by viewModels()
 
     private val navigationView: HomeNavigationView
         get() = view as HomeNavigationView
 
-    private var homeTab = HomeTab.Conversations
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
     override fun buildNavigationView(): View = HomeNavigationView(requireContext())
 
-    override fun getStatusBarBgColor(): Int = when (homeTab) {
-        HomeTab.Conversations -> R.color.toolbarBackground
-        HomeTab.Dashboard -> R.color.background
-    }
+    override fun getStatusBarBgColor(): Int = R.color.toolbarBackground
 
     override fun getNavigationBarBgColor(): Int = R.color.bottomNavBackground
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        navigationView.toggleTab = {
-            homeTab = it
-            updateStatusBarMode()
-            updateNavigationBar()
-        }
-
         with(navigationView.getConversationsView()) {
             requestSmsPermission = { conversationsViewModel.getConversations() }
             onSearchChange = conversationsViewModel::onSearchChange
