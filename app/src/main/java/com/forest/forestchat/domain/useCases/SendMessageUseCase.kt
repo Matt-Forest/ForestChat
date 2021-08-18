@@ -151,11 +151,9 @@ class SendMessageUseCase @Inject constructor(
             ?.let(SmsManagerFactory::createSmsManager)
             ?: SmsManager.getDefault()
 
-        val parts = smsManager.divideMessage(body) ?: arrayListOf()
-        val forceMms = parts.size > 1
-
-        if (addresses.size == 1 && attachments.isEmpty() && !forceMms) {
+        if (addresses.size == 1 && attachments.isEmpty()) {
             /* ---- SMS ---- */
+            val parts = smsManager.divideMessage(body) ?: arrayListOf()
             val message = sendMessageToNativeProvider(
                 convertToMessage(
                     subId,
