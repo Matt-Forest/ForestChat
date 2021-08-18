@@ -31,11 +31,17 @@ class SyncDataUseCase @Inject constructor(
     private val lastSyncSharedPrefs: LastSyncSharedPrefs
 ) {
 
+    private var syncInProgress = false
+
     suspend operator fun invoke() {
-        syncMessagesUseCase()
-        syncContactsUseCase()
-        syncConversationsUseCase()
-        lastSyncSharedPrefs.set(Date().time)
+        if (!syncInProgress) {
+            syncInProgress = true
+            syncMessagesUseCase()
+            syncContactsUseCase()
+            syncConversationsUseCase()
+            lastSyncSharedPrefs.set(Date().time)
+            syncInProgress = false
+        }
     }
 
 }
