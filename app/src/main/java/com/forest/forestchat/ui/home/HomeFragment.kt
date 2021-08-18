@@ -92,6 +92,11 @@ class HomeFragment : NavigationFragment() {
         navigationViewModel.consumeRedirection()
     }
 
+    override fun onResume() {
+        super.onResume()
+        conversationsViewModel.getConversations()
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     @Suppress("unused")
     override fun onTransversalEvent(event: TransversalBusEvent) {

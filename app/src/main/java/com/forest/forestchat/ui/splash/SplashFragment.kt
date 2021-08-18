@@ -32,7 +32,6 @@ import androidx.navigation.fragment.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.splash.models.SplashEvent
-import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
@@ -63,6 +62,11 @@ class SplashFragment : NavigationFragment() {
         }
 
         checkAdsConsent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.syncDataIfNeeded()
     }
 
     private fun checkAdsConsent() {

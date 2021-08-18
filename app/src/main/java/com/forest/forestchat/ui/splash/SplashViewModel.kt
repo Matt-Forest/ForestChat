@@ -56,11 +56,9 @@ class SplashViewModel @Inject constructor(
                     eventEmitter.emit(SplashEvent.GoToHome)
                 }
             }
-
-        syncDataIfNeeded()
     }
 
-    private fun syncDataIfNeeded() {
+    fun syncDataIfNeeded() {
         viewModelScope.launch(Dispatchers.IO) {
             when {
                 !permissionsManager.isDefaultSms() -> {
