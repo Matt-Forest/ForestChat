@@ -215,7 +215,7 @@ class NotificationManager @Inject constructor(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(NavigationActivity.ThreadId, threadId)
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // on seen intent
         val seenIntent = Intent(context, MarkAsSeenReceiver::class.java).apply {
@@ -391,7 +391,7 @@ class NotificationManager @Inject constructor(
                         context,
                         NavigationActivity::class.java
                     ).putExtra(NavigationActivity.ThreadId, threadId)
-                    val contentPi = PendingIntent.getActivity(context, 0, intent, 0)
+                    val contentPi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                     val notification =
                         NotificationCompat.Builder(context, getChannelIdForNotification(threadId))
