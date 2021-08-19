@@ -21,7 +21,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/backgroundDialog"/>
+    <solid android:color="@color/dialogBackground"/>
 
     <corners
         android:topLeftRadius="8dp"

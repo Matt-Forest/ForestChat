@@ -32,6 +32,7 @@ import coil.transform.CircleCropTransformation
 import com.forest.forestchat.R
 import com.forest.forestchat.extensions.asColor
 import com.forest.forestchat.extensions.asFont
+import com.forest.forestchat.extensions.dp
 import com.forest.forestchat.extensions.sp
 
 
@@ -40,7 +41,7 @@ class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = R.color.primary.asColor(context)
+        color = R.color.avatarBackground.asColor(context)
     }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = R.font.mulish_regular.asFont(context)

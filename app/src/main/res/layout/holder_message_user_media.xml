@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="@dimen/conversation_item_media_h_padding"
+    android:paddingHorizontal="@dimen/conversation_user_padding"
     android:paddingVertical="2dp">
 
     <TextView
@@ -47,7 +47,7 @@
         android:id="@+id/medias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/conversation_item_media_user_margin_start"
+        android:layout_marginStart="@dimen/conversation_user_max"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"

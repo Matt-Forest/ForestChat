@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:paddingStart="72dp"
+    android:paddingStart="@dimen/conversation_user_max"
     android:paddingTop="2dp"
     android:paddingEnd="16dp"
     android:paddingBottom="10dp">
@@ -34,10 +34,11 @@
         android:layout_height="wrap_content"
         android:autoLink="email|phone|web"
         android:background="@drawable/bg_bubble_corner_top_right"
+        android:backgroundTint="@color/primary"
         android:paddingHorizontal="10dp"
         android:paddingVertical="8dp"
-        android:textColor="@color/text"
-        android:textColorLink="@color/text"
+        android:textColor="@color/white"
+        android:textColorLink="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem/random" />

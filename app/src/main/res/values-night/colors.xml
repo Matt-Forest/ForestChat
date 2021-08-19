@@ -18,17 +18,17 @@
   -->
 <resources>
 
-    <color name="background">#031926</color>
-    <color name="bottomNavBackground">#042B3E</color>
-    <color name="toolbarBackground">#042B3E</color>
-    <color name="editTextBackground">#031926</color>
-    <color name="editTextBackground2">#042B3E</color>
-    <color name="attachmentCardBackground">#031926</color>
-    <color name="attachmentBackground">#042B3E</color>
+    <color name="background">#1B1C1E</color>
+    <color name="bottomNavBackground">#1E1E1E</color>
+    <color name="toolbarBackground">#1E1E1E</color>
+    <color name="editTextBackground">#151515</color>
+    <color name="editTextBackground2">#151515</color>
+    <color name="attachmentCardBackground">#151515</color>
+    <color name="attachmentBackground">#1E1E1E</color>
     <color name="text">#FFFFFF</color>
     <color name="text_50">#80FFFFFF</color>
     <color name="divider">#1AFFFFFF</color>
-    <color name="backgroundDialog">#042B3E</color>
-    <color name="bubbleBackground">#095981</color>
+    <color name="dialogBackground">#042B3E</color>
+    <color name="bubbleBackground">#2E2E2E</color>
 
 </resources>

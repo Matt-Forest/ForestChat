@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog"
-    app:cardBackgroundColor="@color/backgroundDialog"
+    app:cardBackgroundColor="@color/dialogBackground"
     app:cardCornerRadius="14dp"
     app:cardElevation="16dp"
     tools:layout_width="300dp">

@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="72dp"
+    android:paddingHorizontal="@dimen/conversation_single_middle_padding_horizontal"
     android:paddingTop="2dp"
     android:paddingBottom="10dp">
 

@@ -71,9 +71,9 @@ class MessageUserMediasHolder(
     private fun getTableWidth(): Float {
         val displayMetrics = Resources.getSystem().displayMetrics
         val screenWidth = displayMetrics.widthPixels.toFloat()
-        val paddingWidth: Float = R.dimen.conversation_item_media_h_padding.asDimen(context) ?: 0F
+        val paddingWidth: Float = R.dimen.conversation_user_padding.asDimen(context) ?: 0F
         val marginStart: Float =
-            R.dimen.conversation_item_media_user_margin_start.asDimen(context) ?: 0F
+            R.dimen.conversation_user_max.asDimen(context) ?: 0F
 
         return screenWidth - paddingWidth * 2 - marginStart
     }

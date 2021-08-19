@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/toolbarBackground"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         android:padding="11dp">
 
         <ImageView

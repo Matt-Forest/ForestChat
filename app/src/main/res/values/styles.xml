@@ -20,8 +20,8 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primaryDark</item>
-        <item name="android:colorAccent">@color/secondary</item>
+        <item name="android:colorPrimaryDark">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
         <item name="fontFamily">@font/mulish_regular</item>
         <item name="android:autofilledHighlight" tools:targetApi="o">@color/transparent</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>

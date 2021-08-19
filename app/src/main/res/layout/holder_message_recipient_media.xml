@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="@dimen/conversation_item_media_h_padding"
+    android:paddingHorizontal="@dimen/conversation_recipient_padding"
     android:paddingVertical="2dp">
 
     <TextView
@@ -45,8 +45,8 @@
 
     <com.forest.forestchat.ui.common.avatar.AvatarView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/conversation_item_media_recipient_avatar"
-        android:layout_height="@dimen/conversation_item_media_recipient_avatar"
+        android:layout_width="@dimen/avatar_conversation_size"
+        android:layout_height="@dimen/avatar_conversation_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name" />
 
@@ -55,7 +55,7 @@
         style="@style/Typography.Overline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/conversation_recipient_padding"
         android:maxLines="1"
         android:paddingHorizontal="10dp"
         android:paddingVertical="2dp"
@@ -70,8 +70,8 @@
         android:id="@+id/medias"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/conversation_item_media_recipient_margin_start"
-        android:layout_marginEnd="@dimen/conversation_item_media_recipient_margin_end"
+        android:layout_marginStart="@dimen/conversation_recipient_padding"
+        android:layout_marginEnd="@dimen/conversation_recipient_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/name" />
@@ -81,7 +81,7 @@
         style="@style/Typography.Overline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/conversation_recipient_padding"
         android:layout_marginTop="2dp"
         android:maxLines="1"
         android:paddingHorizontal="10dp"

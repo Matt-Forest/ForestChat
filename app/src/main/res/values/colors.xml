@@ -20,13 +20,8 @@
 <resources>
     <!-- Basic color -->
     <color name="transparent">#FFFFFFFF</color>
-    <color name="primary">#40916C</color>
-    <color name="primaryVeryLight">#74C69D</color>
-    <color name="primaryLight">#52B788</color>
-    <color name="primaryDark">#2D6A4F</color>
-    <color name="primaryVeryDark">#1B4332</color>
-    <color name="primary_50">#8040916C</color>
-    <color name="secondary">#468FAF</color>
+    <color name="primary">#00796B</color>
+    <color name="primary_50">#8000796B</color>
     <color name="error">#D62839</color>
     <color name="richeBlack">#031926</color>
     <color name="richeBlack1">#032130</color>
@@ -51,6 +46,7 @@
     <color name="text">#031926</color>
     <color name="text_50">#80031926</color>
     <color name="divider">#1A031926</color>
-    <color name="backgroundDialog">#FFFFFF</color>
+    <color name="dialogBackground">#FFFFFF</color>
+    <color name="avatarBackground">#00796B</color>
 
 </resources>

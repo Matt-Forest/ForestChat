@@ -17,10 +17,15 @@
   ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <!-- Only for medias holder on conversation adapter -->
-    <dimen name="conversation_item_media_h_padding">16dp</dimen>
-    <dimen name="conversation_item_media_user_margin_start">72dp</dimen>
-    <dimen name="conversation_item_media_recipient_avatar">40dp</dimen>
-    <dimen name="conversation_item_media_recipient_margin_start">16dp</dimen>
-    <dimen name="conversation_item_media_recipient_margin_end">56dp</dimen>
+
+    <dimen name="toolbar_elevation">8dp</dimen>
+    <dimen name="avatar_conversation_size">25dp</dimen>
+
+    <dimen name="conversation_user_padding">16dp</dimen>
+    <dimen name="conversation_recipient_padding">10dp</dimen>
+    <dimen name="conversation_recipient_end">50dp</dimen>
+    <!-- = conversation_padding * 2 + avatar_conversation_size -->
+    <dimen name="conversation_single_middle_padding_horizontal">45dp</dimen>
+    <!-- = avatar_conversation_size + conversation_recipient_padding *2 + conversation_recipient_end -->
+    <dimen name="conversation_user_max">95dp</dimen>
 </resources>
