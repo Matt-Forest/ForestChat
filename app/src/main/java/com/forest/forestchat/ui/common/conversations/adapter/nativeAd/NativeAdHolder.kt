@@ -41,6 +41,7 @@ class NativeAdHolder(
     private val binding = HolderNativeAdBinding.bind(itemView)
 
     override fun bind(item: NativeAdItem) {
+        initAd()
         val adLoader = AdLoader.Builder(context, R.string.ads_native_id.asString(context))
             .forNativeAd { nativeAd ->
                 val adView = LayoutInflater.from(context)
@@ -66,15 +67,24 @@ class NativeAdHolder(
                 binding.container.removeAllViews()
                 binding.container.addView(adView)
             }
-            .withAdListener(object : AdListener() {
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    Toast.makeText(context, "test", Toast.LENGTH_SHORT).show()
-                }
-            })
             .build()
 
         adLoader.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun initAd() {
+        val adView = LayoutInflater.from(context)
+            .inflate(R.layout.view_native_ad, null) as NativeAdView
+
+        val title = adView.findViewById<TextView>(R.id.title)
+        val snippet = adView.findViewById<TextView>(R.id.snippet)
+        val icon = adView.findViewById<GroupAvatarView>(R.id.icon)
+
+        title.text = R.string.conversations_ads_title.asString(context)
+        snippet.text = R.string.conversations_ads_snippet.asString(context)
+        icon.updateAvatars(AvatarType.Single.Ads)
+        binding.container.removeAllViews()
+        binding.container.addView(adView)
     }
 
 }

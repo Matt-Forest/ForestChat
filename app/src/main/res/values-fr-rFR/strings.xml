@@ -169,4 +169,7 @@
 
     <string name="splash_loading">Chargement des conversations…</string>
 
+    <string name="conversations_ads_title">Publicité</string>
+    <string name="conversations_ads_snippet">Chargement…</string>
+
 </resources>

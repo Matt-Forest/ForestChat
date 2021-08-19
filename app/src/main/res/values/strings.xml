@@ -177,4 +177,7 @@
 
     <string name="splash_loading">Loading conversations…</string>
 
+    <string name="conversations_ads_title">Publicity</string>
+    <string name="conversations_ads_snippet">Loading…</string>
+
 </resources>
