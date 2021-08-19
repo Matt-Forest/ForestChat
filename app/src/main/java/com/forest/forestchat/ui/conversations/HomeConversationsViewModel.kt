@@ -68,6 +68,10 @@ class HomeConversationsViewModel @Inject constructor(
 
     private var conversationSelected: Conversation? = null
 
+    init {
+        getConversations()
+    }
+
     fun getConversations() {
         viewModelScope.launch(Dispatchers.IO) {
             when {

@@ -34,10 +34,13 @@ import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
+import com.forest.forestchat.extensions.safeStartPostponedEnterTransition
+import com.forest.forestchat.extensions.waitDrawBeforeTransition
 import com.forest.forestchat.ui.NavigationViewModel
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -60,6 +63,8 @@ class HomeFragment : NavigationFragment() {
     override fun getNavigationBarBgColor(): Int = R.color.bottomNavBackground
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
+
         with(navigationView.getConversationsView()) {
             requestSmsPermission = { conversationsViewModel.getConversations() }
             onSearchChange = conversationsViewModel::onSearchChange
@@ -73,7 +78,10 @@ class HomeFragment : NavigationFragment() {
 
         with(conversationsViewModel) {
             observe(isLoading(), navigationView.getConversationsView()::setLoading)
-            observe(state(), navigationView.getConversationsView()::updateState)
+            observe(state()) { state ->
+                navigationView.getConversationsView().updateState(state)
+                safeStartPostponedEnterTransition()
+            }
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
                     is HomeConversationEvent.RequestPermission -> requestPermission()

@@ -37,8 +37,10 @@ import androidx.fragment.app.viewModels
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
+import com.forest.forestchat.extensions.safeStartPostponedEnterTransition
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.conversation.models.ConversationEvent
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -84,6 +86,8 @@ class ConversationFragment : NavigationFragment() {
     override fun getNavigationBarBgColor(): Int = R.color.toolbarBackground
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
+
         with(navigationView) {
             onMessageEvent = viewModel::onEvent
             optionSelected = viewModel::onMessageOptionSelected
@@ -101,7 +105,10 @@ class ConversationFragment : NavigationFragment() {
         with(viewModel) {
             observe(isLoading(), navigationView::setLoading)
             observe(title(), navigationView::updateTitle)
-            observe(state(), navigationView::updateState)
+            observe(state()) { state ->
+                navigationView.updateState(state)
+                safeStartPostponedEnterTransition()
+            }
             observe(messageToSend(), navigationView::updateMessageToSend)
             observe(attachmentVisibility(), navigationView::updateAttachmentVisibility)
             observe(activateSending(), navigationView::activateSending)
