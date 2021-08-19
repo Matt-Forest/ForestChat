@@ -187,7 +187,7 @@ class ConversationNavigationView @JvmOverloads constructor(
         binding.sendOrAttachment.setImageDrawable(
             when (activate) {
                 true -> R.drawable.ic_send
-                false -> R.drawable.ic_add
+                false -> R.drawable.ic_circle_add
             }.asDrawable(context)
         )
         binding.addAttachment.visibleIf { activate }

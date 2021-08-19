@@ -287,11 +287,12 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_circle_primary"
             android:contentDescription="@null"
-            android:padding="14dp"
-            android:src="@drawable/ic_add"
+            android:padding="12dp"
+            android:src="@drawable/ic_circle_add"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/messageLayout"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
