@@ -83,11 +83,11 @@ class ForestChatShortCutManager @Inject constructor(
                 val bitmap = buildIconBitmap("tel:$address", shortcutManager)
 
                 when (bitmap == null) {
-                    true ->Icon.createWithResource(context, R.mipmap.ic_shortcut_person)
+                    true ->Icon.createWithResource(context, R.mipmap.shortcut_person)
                     false -> Icon.createWithBitmap(bitmap)
                 }
             }
-            else -> Icon.createWithResource(context, R.mipmap.ic_shortcut_group)
+            else -> Icon.createWithResource(context, R.mipmap.shortcut_group)
         }
 
         val intent = Intent(context, NavigationActivity::class.java)
