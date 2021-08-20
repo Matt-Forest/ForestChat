@@ -27,6 +27,8 @@ import com.forest.forestchat.domain.useCases.GetContactByIdUseCase
 import com.forest.forestchat.domain.useCases.GetContactsUseCase
 import com.forest.forestchat.domain.useCases.GetOrCreateConversationByAddressesUseCase
 import com.forest.forestchat.domain.useCases.SearchContactsUseCase
+import com.forest.forestchat.manager.PermissionsManager
+import com.forest.forestchat.ui.NavigationEvent
 import com.forest.forestchat.ui.create.conversation.models.ContactSearch
 import com.forest.forestchat.ui.create.conversation.models.ContactSelected
 import com.forest.forestchat.ui.create.conversation.models.CreateConversationButtonState
@@ -44,7 +46,8 @@ class CreateConversationViewModel @Inject constructor(
     private val getContactsUseCase: GetContactsUseCase,
     private val getContactByIdUseCase: GetContactByIdUseCase,
     private val searchContactsUseCase: SearchContactsUseCase,
-    private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase
+    private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase,
+    private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
     private val contactsSearch = MutableLiveData<List<ContactSearch>>()
@@ -176,21 +179,29 @@ class CreateConversationViewModel @Inject constructor(
         when (contactsSelected.value?.count() ?: 0) {
             0 -> null
             1 -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val contact = contactsSelected.value?.get(0)?.contact
-                    val address = contactsSelected.value?.get(0)?.newAddress
-                    getOrCreateConversationByAddressesUseCase(
-                        listOf(
-                            when {
-                                contact != null -> contact.getDefaultNumber()?.address
-                                    ?: contact.numbers[0].address
-                                address != null -> address
-                                else -> ""
+                when {
+                    !permissionsManager.isDefaultSms() ->
+                            eventEmitter.emit(CreateConversationEvent.RequestDefaultSms)
+                    !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() ->
+                            eventEmitter.emit(CreateConversationEvent.RequestPermission)
+                    else -> {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            val contact = contactsSelected.value?.get(0)?.contact
+                            val address = contactsSelected.value?.get(0)?.newAddress
+                            getOrCreateConversationByAddressesUseCase(
+                                listOf(
+                                    when {
+                                        contact != null -> contact.getDefaultNumber()?.address
+                                            ?: contact.numbers[0].address
+                                        address != null -> address
+                                        else -> ""
+                                    }
+                                )
+                            )?.let { conversation ->
+                                withContext(Dispatchers.Main) {
+                                    eventEmitter.emit(CreateConversationEvent.GoToConversation(conversation))
+                                }
                             }
-                        )
-                    )?.let { conversation ->
-                        withContext(Dispatchers.Main) {
-                            eventEmitter.emit(CreateConversationEvent.GoToConversation(conversation))
                         }
                     }
                 }

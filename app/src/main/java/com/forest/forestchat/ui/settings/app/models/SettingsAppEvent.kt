@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.forest.forestchat.ui.create.conversation.models
+package com.forest.forestchat.ui.settings.app.models
 
-import com.forest.forestchat.domain.models.Conversation
-import com.forest.forestchat.domain.models.contact.Contact
-import com.forest.forestchat.ui.settings.app.models.SettingsAppEvent
+sealed class SettingsAppEvent {
 
-sealed class CreateConversationEvent {
-
-    object RequestDefaultSms : CreateConversationEvent()
-    object RequestPermission : CreateConversationEvent()
-
-    data class GoToConversation(val conversation: Conversation) : CreateConversationEvent()
-
-    data class GoToCreateGroup(
-        val contacts: List<Contact>?,
-        val newRecipient: List<String>?
-    ) : CreateConversationEvent()
+    object RequestDefaultSms : SettingsAppEvent()
+    object RequestPermission : SettingsAppEvent()
 
 }

@@ -21,6 +21,8 @@ package com.forest.forestchat.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.domain.useCases.GetOrCreateConversationByThreadIdUseCase
+import com.forest.forestchat.manager.PermissionsManager
+import com.forest.forestchat.ui.splash.models.SplashEvent
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,11 +33,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
-    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase
+    private val getOrCreateConversationByThreadIdUseCase: GetOrCreateConversationByThreadIdUseCase,
+    private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
-    private val deeplinkEventEmitter = EventEmitter<NavigationEvent>()
-    fun deeplinkEventSource(): EventSource<NavigationEvent> = deeplinkEventEmitter
+    private val eventEmitter = EventEmitter<NavigationEvent>()
+    fun eventSource(): EventSource<NavigationEvent> = eventEmitter
 
     private var threadId: Long? = null
 
@@ -46,10 +49,24 @@ class NavigationViewModel @Inject constructor(
     fun consumeRedirection() {
         threadId?.let { id ->
             viewModelScope.launch(Dispatchers.IO) {
-                getOrCreateConversationByThreadIdUseCase(id)?.let { conversation ->
-                    withContext(Dispatchers.Main) {
-                        threadId = null
-                        deeplinkEventEmitter.emit(NavigationEvent.GoToConversation(conversation))
+                when {
+                    !permissionsManager.isDefaultSms() -> {
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(NavigationEvent.RequestDefaultSms)
+                        }
+                    }
+                    !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(NavigationEvent.RequestPermission)
+                        }
+                    }
+                    else -> {
+                        getOrCreateConversationByThreadIdUseCase(id)?.let { conversation ->
+                            withContext(Dispatchers.Main) {
+                                threadId = null
+                                eventEmitter.emit(NavigationEvent.GoToConversation(conversation))
+                            }
+                        }
                     }
                 }
             }

@@ -54,9 +54,9 @@ class SplashFragment : NavigationFragment() {
         with(viewModel) {
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
-                    is SplashEvent.RequestPermission -> requestPermission()
-                    is SplashEvent.RequestDefaultSms -> requestDefaultSmsDialog()
-                    is SplashEvent.GoToHome -> findNavController().navigate(SplashFragmentDirections.goToHome())
+                    SplashEvent.RequestPermission -> requestPermission()
+                    SplashEvent.RequestDefaultSms -> requestDefaultSmsDialog()
+                    SplashEvent.GoToHome -> findNavController().navigate(SplashFragmentDirections.goToHome())
                 }
             }
         }

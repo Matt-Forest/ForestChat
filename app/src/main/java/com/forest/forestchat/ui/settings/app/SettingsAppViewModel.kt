@@ -23,15 +23,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forest.forestchat.domain.useCases.SyncDataUseCase
+import com.forest.forestchat.manager.PermissionsManager
+import com.forest.forestchat.ui.settings.app.models.SettingsAppEvent
+import com.zhuinden.eventemitter.EventEmitter
+import com.zhuinden.eventemitter.EventSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsAppViewModel @Inject constructor(
-    private val syncDataUseCase: SyncDataUseCase
+    private val syncDataUseCase: SyncDataUseCase,
+    private val permissionsManager: PermissionsManager
 ) : ViewModel() {
+
+    private val eventEmitter = EventEmitter<SettingsAppEvent>()
+    fun eventSource(): EventSource<SettingsAppEvent> = eventEmitter
 
     private val loading = MutableLiveData<Boolean>()
     fun loading(): LiveData<Boolean> = loading
@@ -39,8 +48,22 @@ class SettingsAppViewModel @Inject constructor(
     fun syncData() {
         viewModelScope.launch(Dispatchers.IO) {
             loading.postValue(true)
-            syncDataUseCase()
-            loading.postValue(false)
+            when {
+                !permissionsManager.isDefaultSms() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(SettingsAppEvent.RequestDefaultSms)
+                    }
+                }
+                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(SettingsAppEvent.RequestPermission)
+                    }
+                }
+                else -> {
+                    syncDataUseCase()
+                    loading.postValue(false)
+                }
+            }
         }
     }
 

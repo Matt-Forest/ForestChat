@@ -22,6 +22,9 @@ import com.forest.forestchat.domain.models.Conversation
 
 sealed class GroupConversationEvent {
 
+    object RequestDefaultSms : GroupConversationEvent()
+    object RequestPermission : GroupConversationEvent()
+
     data class GoToConversation(val conversation: Conversation) : GroupConversationEvent()
 
 }

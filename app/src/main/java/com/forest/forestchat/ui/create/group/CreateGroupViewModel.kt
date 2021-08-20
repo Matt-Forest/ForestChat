@@ -23,6 +23,7 @@ import com.forest.forestchat.domain.models.Recipient
 import com.forest.forestchat.domain.useCases.GetOrCreateConversationByAddressesUseCase
 import com.forest.forestchat.domain.useCases.UpdateConversationUseCase
 import com.forest.forestchat.extensions.getNavigationInput
+import com.forest.forestchat.manager.PermissionsManager
 import com.forest.forestchat.ui.create.group.models.CreateGroupInput
 import com.forest.forestchat.ui.create.group.models.GroupConversationEvent
 import com.forest.forestchat.ui.create.group.models.GroupConversationType
@@ -38,6 +39,7 @@ import javax.inject.Inject
 class CreateGroupViewModel @Inject constructor(
     private val getOrCreateConversationByAddressesUseCase: GetOrCreateConversationByAddressesUseCase,
     private val updateConversationUseCase: UpdateConversationUseCase,
+    private val permissionsManager: PermissionsManager,
     handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -60,14 +62,28 @@ class CreateGroupViewModel @Inject constructor(
 
     fun create() {
         viewModelScope.launch(Dispatchers.IO) {
-            getOrCreateConversationByAddressesUseCase(buildRecipients().map { it.address })?.let { conversation ->
-                val conv = conversation.copy(
-                    name = name,
-                    grouped = conversationType.value == GroupConversationType.Group
-                )
-                updateConversationUseCase(conv)
-                withContext(Dispatchers.Main) {
-                    eventEmitter.emit(GroupConversationEvent.GoToConversation(conv))
+            when {
+                !permissionsManager.isDefaultSms() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(GroupConversationEvent.RequestDefaultSms)
+                    }
+                }
+                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
+                    withContext(Dispatchers.Main) {
+                        eventEmitter.emit(GroupConversationEvent.RequestPermission)
+                    }
+                }
+                else -> {
+                    getOrCreateConversationByAddressesUseCase(buildRecipients().map { it.address })?.let { conversation ->
+                        val conv = conversation.copy(
+                            name = name,
+                            grouped = conversationType.value == GroupConversationType.Group
+                        )
+                        updateConversationUseCase(conv)
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(GroupConversationEvent.GoToConversation(conv))
+                        }
+                    }
                 }
             }
         }

@@ -22,6 +22,8 @@ import com.forest.forestchat.domain.models.Conversation
 
 sealed class NavigationEvent {
 
+    object RequestDefaultSms : NavigationEvent()
+    object RequestPermission : NavigationEvent()
     data class GoToConversation(val conversation: Conversation) : NavigationEvent()
 
 }
