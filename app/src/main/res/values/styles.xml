@@ -29,6 +29,8 @@
         <item name="android:statusBarColor">@color/background</item>
         <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheet</item>
         <item name="android:windowBackground">@drawable/window_background_app</item>
+        <!-- Needed on some device like Xiaomi -->
+        <item name="android:forceDarkAllowed" tools:targetApi="Q">false</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
