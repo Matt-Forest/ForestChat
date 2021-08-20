@@ -57,7 +57,7 @@ class HomeConversationsViewModel @Inject constructor(
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
 
-    private val isLoading = MutableLiveData(true)
+    private val isLoading = MutableLiveData(false)
     fun isLoading(): LiveData<Boolean> = isLoading
 
     private val state = MutableLiveData<HomeConversationsState>()
@@ -73,31 +73,33 @@ class HomeConversationsViewModel @Inject constructor(
     }
 
     fun getConversations() {
-        viewModelScope.launch(Dispatchers.IO) {
-            when {
-                !permissionsManager.isDefaultSms() -> {
-                    withContext(Dispatchers.Main) {
-                        eventEmitter.emit(HomeConversationEvent.RequestDefaultSms)
+        if (isLoading.value == false) {
+            isLoading.value = true
+            viewModelScope.launch(Dispatchers.IO) {
+                when {
+                    !permissionsManager.isDefaultSms() -> {
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(HomeConversationEvent.RequestDefaultSms)
+                        }
                     }
-                }
-                !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
-                    withContext(Dispatchers.Main) {
-                        eventEmitter.emit(HomeConversationEvent.RequestPermission)
-                        state.value = HomeConversationsState.RequestPermission
+                    !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
+                        withContext(Dispatchers.Main) {
+                            eventEmitter.emit(HomeConversationEvent.RequestPermission)
+                            state.value = HomeConversationsState.RequestPermission
+                        }
                     }
-                }
-                else -> {
-                    val lastSync = lastSyncSharedPrefs.get()
-                    if (lastSync == 0L) {
-                        isLoading.postValue(true)
-                        syncDataUseCase()
+                    else -> {
+                        val lastSync = lastSyncSharedPrefs.get()
+                        if (lastSync == 0L) {
+                            syncDataUseCase()
+                        }
+                        val conversations = getConversationsUseCase()
+                        when (conversations.isNullOrEmpty()) {
+                            true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
+                            false -> state.postValue(HomeConversationsState.Conversations(conversations))
+                        }
+                        isLoading.postValue(false)
                     }
-                    val conversations = getConversationsUseCase()
-                    when (conversations.isNullOrEmpty()) {
-                        true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
-                        false -> state.postValue(HomeConversationsState.Conversations(conversations))
-                    }
-                    isLoading.postValue(false)
                 }
             }
         }
