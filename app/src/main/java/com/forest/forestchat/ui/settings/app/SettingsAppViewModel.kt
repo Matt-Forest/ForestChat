@@ -20,10 +20,13 @@ package com.forest.forestchat.ui.settings.app
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forest.forestchat.R
 import com.forest.forestchat.domain.useCases.SyncDataUseCase
 import com.forest.forestchat.manager.PermissionsManager
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.forest.forestchat.ui.settings.app.models.SettingsAppEvent
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
@@ -45,6 +48,18 @@ class SettingsAppViewModel @Inject constructor(
     private val loading = MutableLiveData<Boolean>()
     fun loading(): LiveData<Boolean> = loading
 
+    private val syncDataObserver = Observer<Boolean> { syncFinished ->
+        if(syncFinished) {
+            viewModelScope.launch(Dispatchers.IO) {
+                loading.postValue(false)
+            }
+        }
+    }
+
+    init {
+        syncDataUseCase.syncFinished().observeForever(syncDataObserver)
+    }
+
     fun syncData() {
         viewModelScope.launch(Dispatchers.IO) {
             loading.postValue(true)
@@ -59,12 +74,13 @@ class SettingsAppViewModel @Inject constructor(
                         eventEmitter.emit(SettingsAppEvent.RequestPermission)
                     }
                 }
-                else -> {
-                    syncDataUseCase()
-                    loading.postValue(false)
-                }
+                else -> syncDataUseCase()
             }
         }
+    }
+
+    override fun onCleared() {
+        syncDataUseCase.syncFinished().removeObserver(syncDataObserver)
     }
 
 }

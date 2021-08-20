@@ -19,6 +19,7 @@
 package com.forest.forestchat.ui.splash
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
@@ -48,7 +49,17 @@ class SplashViewModel @Inject constructor(
     private val syncDone = MutableLiveData(false)
     private val gdprReady = MutableLiveData(false)
 
+    private val syncDataObserver = Observer<Boolean> { syncFinished ->
+        if(syncFinished) {
+            viewModelScope.launch(Dispatchers.IO) {
+                syncDone.postValue(true)
+            }
+        }
+    }
+
     init {
+        syncDataUseCase.syncFinished().observeForever(syncDataObserver)
+
         combineTupleNonNull(syncDone, gdprReady)
             .distinctUntilChanged()
             .observeForever { (syncDone, gdprReady) ->
@@ -56,6 +67,10 @@ class SplashViewModel @Inject constructor(
                     eventEmitter.emit(SplashEvent.GoToHome)
                 }
             }
+    }
+
+    override fun onCleared() {
+        syncDataUseCase.syncFinished().removeObserver(syncDataObserver)
     }
 
     fun syncDataIfNeeded() {
@@ -75,8 +90,9 @@ class SplashViewModel @Inject constructor(
                     val lastSync = lastSyncSharedPrefs.get()
                     if (lastSync == 0L) {
                         syncDataUseCase()
+                    } else {
+                        syncDone.postValue(true)
                     }
-                    syncDone.postValue(true)
                 }
             }
         }

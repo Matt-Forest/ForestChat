@@ -21,6 +21,8 @@ package com.forest.forestchat.domain.useCases
 import android.content.Context
 import android.net.Uri
 import android.provider.Telephony
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forest.forestchat.domain.mappers.toConversation
 import com.forest.forestchat.domain.mappers.toRecipient
 import com.forest.forestchat.domain.models.Recipient
@@ -44,48 +46,57 @@ class SyncConversationsUseCase @Inject constructor(
     private val messageDao: MessageDao
 ) {
 
-    suspend operator fun invoke() {
-        val persistedConversationData = conversationDao.getAll()
-        conversationDao.deleteAll()
-        val contacts = contactDao.getAll()
-        val messages = messageDao.getAll()
+    private var syncInProgress = false
 
-        context.contentResolver.query(
-            Uri.parse("${Telephony.MmsSms.CONTENT_CONVERSATIONS_URI}?simple=true"),
-            arrayOf(
-                Telephony.Threads._ID,
-                Telephony.Threads.RECIPIENT_IDS
-            ),
-            null,
-            null,
-            "date desc"
-        )?.use { cursor ->
-            while (cursor.moveToNext()) {
-                val id = cursor.getLongValue(Telephony.Threads._ID)
-                val persistedConversation = persistedConversationData?.firstOrNull { it.id == id }
-                val recipients = getRecipientByIds(
-                    cursor.getStringValue(Telephony.Threads.RECIPIENT_IDS)
-                        .split(" ")
-                        .filter { it.isNotBlank() },
-                    contacts
-                )
-                // if we have a persisted value so we get it, else we ask to provider
-                val isBlocked = when (persistedConversation) {
-                    null -> recipients.all { isBlockedNumbersFromProviderUseCase(it.address) }
-                    else -> persistedConversation.blocked
-                }
+    suspend operator fun invoke() : Boolean {
+        if (!syncInProgress) {
+            syncInProgress = true
 
-                conversationDao.insert(
-                    toConversation(
-                        id,
-                        persistedConversation,
-                        isBlocked,
-                        recipients,
-                        messages
+            val persistedConversationData = conversationDao.getAll()
+            conversationDao.deleteAll()
+            val contacts = contactDao.getAll()
+            val messages = messageDao.getAll()
+
+            context.contentResolver.query(
+                Uri.parse("${Telephony.MmsSms.CONTENT_CONVERSATIONS_URI}?simple=true"),
+                arrayOf(
+                    Telephony.Threads._ID,
+                    Telephony.Threads.RECIPIENT_IDS
+                ),
+                null,
+                null,
+                "date desc"
+            )?.use { cursor ->
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLongValue(Telephony.Threads._ID)
+                    val persistedConversation =
+                        persistedConversationData?.firstOrNull { it.id == id }
+                    val recipients = getRecipientByIds(
+                        cursor.getStringValue(Telephony.Threads.RECIPIENT_IDS)
+                            .split(" ")
+                            .filter { it.isNotBlank() },
+                        contacts
                     )
-                )
+                    // if we have a persisted value so we get it, else we ask to provider
+                    val isBlocked = when (persistedConversation) {
+                        null -> recipients.all { isBlockedNumbersFromProviderUseCase(it.address) }
+                        else -> persistedConversation.blocked
+                    }
+
+                    conversationDao.insert(
+                        toConversation(
+                            id,
+                            persistedConversation,
+                            isBlocked,
+                            recipients,
+                            messages
+                        )
+                    )
+                }
             }
+            syncInProgress = false
         }
+        return syncInProgress
     }
 
     private fun getRecipientByIds(

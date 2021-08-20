@@ -18,7 +18,11 @@
  */
 package com.forest.forestchat.domain.useCases
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
+import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,15 +35,26 @@ class SyncDataUseCase @Inject constructor(
     private val lastSyncSharedPrefs: LastSyncSharedPrefs
 ) {
 
+    private val syncFinished = MutableLiveData(false)
+    fun syncFinished(): LiveData<Boolean> = syncFinished
+
     private var syncInProgress = false
 
     suspend operator fun invoke() {
         if (!syncInProgress) {
+            syncFinished.postValue(false)
             syncInProgress = true
             syncMessagesUseCase()
             syncContactsUseCase()
-            syncConversationsUseCase()
+
+            // As long as the conversations aren't synchronize we stay here.
+            // Not the best thing :/
+            while (syncConversationsUseCase()) {
+                delay(100)
+            }
+
             lastSyncSharedPrefs.set(Date().time)
+            syncFinished.postValue(true)
             syncInProgress = false
         }
     }

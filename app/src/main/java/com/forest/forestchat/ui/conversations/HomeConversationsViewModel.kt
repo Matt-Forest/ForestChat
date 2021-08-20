@@ -18,10 +18,7 @@
  */
 package com.forest.forestchat.ui.conversations
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.domain.models.Conversation
@@ -51,8 +48,6 @@ class HomeConversationsViewModel @Inject constructor(
     private val searchConversationsUseCase: SearchConversationsUseCase,
     private val searchContactsUseCase: SearchContactsUseCase,
     private val getContactByIdUseCase: GetContactByIdUseCase,
-    private val syncContactsUseCase: SyncContactsUseCase,
-    private val syncConversationUseCase: SyncConversationsUseCase,
     private val lastSyncSharedPrefs: LastSyncSharedPrefs,
     private val permissionsManager: PermissionsManager
 ) : ViewModel() {
@@ -66,10 +61,29 @@ class HomeConversationsViewModel @Inject constructor(
     private val eventEmitter = EventEmitter<HomeConversationEvent>()
     fun eventSource(): EventSource<HomeConversationEvent> = eventEmitter
 
+    private val syncDataObserver = Observer<Boolean> { syncFinished ->
+        if (syncFinished) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val conversations = getConversationsUseCase()
+                when (conversations.isNullOrEmpty()) {
+                    true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
+                    false -> state.postValue(HomeConversationsState.Conversations(conversations))
+                }
+                isLoading.postValue(false)
+            }
+        }
+    }
+
     private var conversationSelected: Conversation? = null
 
     init {
+        syncDataUseCase.syncFinished().observeForever(syncDataObserver)
+
         getConversations()
+    }
+
+    override fun onCleared() {
+        syncDataUseCase.syncFinished().removeObserver(syncDataObserver)
     }
 
     fun getConversations() {
@@ -92,13 +106,18 @@ class HomeConversationsViewModel @Inject constructor(
                         val lastSync = lastSyncSharedPrefs.get()
                         if (lastSync == 0L) {
                             syncDataUseCase()
+                        } else {
+                            val conversations = getConversationsUseCase()
+                            when (conversations.isNullOrEmpty()) {
+                                true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
+                                false -> state.postValue(
+                                    HomeConversationsState.Conversations(
+                                        conversations
+                                    )
+                                )
+                            }
+                            isLoading.postValue(false)
                         }
-                        val conversations = getConversationsUseCase()
-                        when (conversations.isNullOrEmpty()) {
-                            true -> state.postValue(HomeConversationsState.Empty(R.string.conversations_empty_conversation))
-                            false -> state.postValue(HomeConversationsState.Conversations(conversations))
-                        }
-                        isLoading.postValue(false)
                     }
                 }
             }
@@ -221,9 +240,8 @@ class HomeConversationsViewModel @Inject constructor(
 
     fun onContactChanged() {
         viewModelScope.launch(Dispatchers.IO) {
-            syncContactsUseCase()
-            syncConversationUseCase()
-            getConversations()
+            isLoading.postValue(true)
+            syncDataUseCase()
         }
     }
 

@@ -19,6 +19,7 @@
 package com.forest.forestchat.domain.useCases
 
 import com.forest.forestchat.domain.models.Conversation
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +37,13 @@ class GetOrCreateConversationByThreadIdUseCase @Inject constructor(
         getConversationUseCase(threadId) ?: getConversationFromCp(threadId)
 
     private suspend fun getConversationFromCp(threadId: Long): Conversation? {
-        syncConversationsUseCase()
+
+        // As long as the conversations aren't synchronize we stay here.
+        // Not the best thing :/
+        while (syncConversationsUseCase()) {
+            delay(100)
+        }
+
         return getConversationUseCase(threadId)
     }
 
