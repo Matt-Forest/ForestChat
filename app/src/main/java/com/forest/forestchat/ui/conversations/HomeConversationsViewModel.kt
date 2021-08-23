@@ -88,7 +88,7 @@ class HomeConversationsViewModel @Inject constructor(
 
     fun getConversations() {
         if (isLoading.value == false) {
-            isLoading.value = true
+            isLoading.postValue(true)
             viewModelScope.launch(Dispatchers.IO) {
                 when {
                     !permissionsManager.isDefaultSms() -> {
@@ -99,7 +99,7 @@ class HomeConversationsViewModel @Inject constructor(
                     !permissionsManager.hasReadSms() || !permissionsManager.hasContacts() -> {
                         withContext(Dispatchers.Main) {
                             eventEmitter.emit(HomeConversationEvent.RequestPermission)
-                            state.value = HomeConversationsState.RequestPermission
+                            state.postValue(HomeConversationsState.RequestPermission)
                         }
                     }
                     else -> {
