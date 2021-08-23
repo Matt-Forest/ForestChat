@@ -31,7 +31,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.forest.forestchat.R
 import com.forest.forestchat.app.TransversalBusEvent
 import com.forest.forestchat.extensions.observe
@@ -41,8 +40,6 @@ import com.forest.forestchat.ui.NavigationViewModel
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
-import com.forest.forestchat.ui.splash.SplashFragmentDirections
-import com.forest.forestchat.ui.splash.models.SplashEvent
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -107,11 +104,6 @@ class HomeFragment : NavigationFragment() {
         }
 
         navigationViewModel.consumeRedirection()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        conversationsViewModel.getConversations()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

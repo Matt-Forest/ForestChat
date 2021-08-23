@@ -18,11 +18,7 @@
  */
 package com.forest.forestchat.ui.splash
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.forest.forestchat.domain.useCases.SyncDataUseCase
 import com.forest.forestchat.localStorage.sharedPrefs.LastSyncSharedPrefs
 import com.forest.forestchat.manager.PermissionsManager
@@ -50,7 +46,7 @@ class SplashViewModel @Inject constructor(
     private val gdprReady = MutableLiveData(false)
 
     private val syncDataObserver = Observer<Boolean> { syncFinished ->
-        if(syncFinished) {
+        if (syncFinished) {
             viewModelScope.launch(Dispatchers.IO) {
                 syncDone.postValue(true)
             }
@@ -63,17 +59,19 @@ class SplashViewModel @Inject constructor(
         combineTupleNonNull(syncDone, gdprReady)
             .distinctUntilChanged()
             .observeForever { (syncDone, gdprReady) ->
-                if(syncDone && gdprReady) {
+                if (syncDone && gdprReady) {
                     eventEmitter.emit(SplashEvent.GoToHome)
                 }
             }
+
+        syncDataIfNeeded()
     }
 
     override fun onCleared() {
         syncDataUseCase.syncFinished().removeObserver(syncDataObserver)
     }
 
-    fun syncDataIfNeeded() {
+    private fun syncDataIfNeeded() {
         viewModelScope.launch(Dispatchers.IO) {
             when {
                 !permissionsManager.isDefaultSms() -> {

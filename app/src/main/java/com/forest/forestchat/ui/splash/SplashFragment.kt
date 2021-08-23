@@ -64,11 +64,6 @@ class SplashFragment : NavigationFragment() {
         checkAdsConsent()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.syncDataIfNeeded()
-    }
-
     private fun checkAdsConsent() {
         // Set tag for underage of consent. false means users are not underage.
         val params = ConsentRequestParameters.Builder()
