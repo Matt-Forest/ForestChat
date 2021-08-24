@@ -38,8 +38,10 @@ import com.forest.forestchat.extensions.safeStartPostponedEnterTransition
 import com.forest.forestchat.ui.NavigationEvent
 import com.forest.forestchat.ui.NavigationViewModel
 import com.forest.forestchat.ui.base.fragment.NavigationFragment
+import com.forest.forestchat.ui.conversation.models.ConversationState
 import com.forest.forestchat.ui.conversations.HomeConversationsViewModel
 import com.forest.forestchat.ui.conversations.models.HomeConversationEvent
+import com.forest.forestchat.ui.conversations.models.HomeConversationsState
 import com.zhuinden.liveevent.observe
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -80,6 +82,9 @@ class HomeFragment : NavigationFragment() {
             observe(state()) { state ->
                 navigationView.getConversationsView().updateState(state)
                 safeStartPostponedEnterTransition()
+                if (state is HomeConversationsState.Conversations) {
+                    navigationViewModel.consumeRedirection()
+                }
             }
             eventSource().observe(viewLifecycleOwner) { event ->
                 when (event) {
@@ -102,8 +107,6 @@ class HomeFragment : NavigationFragment() {
                 navigationView.deeplinkEvent(event)
             }
         }
-
-        navigationViewModel.consumeRedirection()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
