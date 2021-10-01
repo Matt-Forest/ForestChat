@@ -1,3 +1,183 @@
+<!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <resources>
-    <string name="app_name">ForestChat</string>
+    <string name="app_name" translatable="false">ForestChat</string>
+
+    <string name="bottom_nav_conversation">Conversations</string>
+    <string name="bottom_nav_dashboard">Dashboard</string>
+    <string name="bottom_nav_add">Add</string>
+
+    <string name="content_describe_remove">remove</string>
+
+    <string name="conversations_search_hint">Search</string>
+    <string name="conversations_change_permission">Change</string>
+    <string name="conversations_empty_conversation">No conversation yet.\nSend a message to get started.</string>
+    <string name="conversations_empty_search">No result</string>
+    <string name="conversations_permission_needed_text">You just have to choose ForestChat as the default application.\n\nDon\'t panic! You will find back all your SMS here and you can come back to your old application as you wish.</string>
+    <string name="conversations_sender_user">You: %s</string>
+    <string name="conversations_draft">Draft</string>
+    <string name="conversations_ads">Ads</string>
+    <string name="conversations_search_contact" translatable="false">Contacts</string>
+    <string name="conversations_search_conversation" translatable="false">Chats</string>
+    <plurals name="conversations_search_conversation_count">
+        <item quantity="one">%s message</item>
+        <item quantity="other">%s messages</item>
+    </plurals>
+    <string name="conversation_option_archived">Archive</string>
+    <string name="conversation_option_unarchived">Unarchive</string>
+    <string name="conversation_option_deleted">Remove</string>
+    <string name="conversation_option_blocked">Block</string>
+    <string name="conversation_option_pinned">Pin</string>
+    <string name="conversation_option_pinned_off">Pinned-off</string>
+    <string name="conversation_option_mark_read">Mark as read</string>
+    <string name="conversation_option_add_contact">Add to Contacts</string>
+
+    <string name="conversation_delete_dialog_title">Delete</string>
+    <string name="conversation_delete_dialog_describe">Are you sure you would like to delete this conversation?</string>
+    <string name="conversation_delete_dialog_confirm">Delete</string>
+    <string name="conversation_delete_dialog_refuse">Cancel</string>
+
+    <string name="notification_mark_read">Mark read</string>
+    <string name="notification_reply">Reply</string>
+
+    <string name="notification_message_failed_title">Message not sent</string>
+    <string name="notification_message_failed_text">The message to %s failed to send</string>
+
+    <string-array name="notification_forest_chat_responses">
+        <item>Okay</item>
+        <item>Give me a moment</item>
+        <item>On my way</item>
+        <item>Thanks</item>
+        <item>Sounds good</item>
+        <item>What\'s up?</item>
+        <item>Agreed</item>
+        <item>No</item>
+        <item>Love you</item>
+        <item>Sorry</item>
+        <item>LOL</item>
+        <item>That\'s okay</item>
+    </string-array>
+
+    <string name="conversation_message_send_hint">Write a message…</string>
+    <string name="conversation_sim_toast">SIM %1$d (%2$s) selected</string>
+    <string name="conversation_sim_content_describe">%s selected, change SIM card</string>
+
+    <string name="conversation_settings_title">Details</string>
+    <string name="conversation_settings_group_name">Conversation title</string>
+    <string name="conversation_settings_notifications">Notifications</string>
+    <string name="conversation_settings_archived">Archive</string>
+    <string name="conversation_settings_unarchived">Unarchive</string>
+    <string name="conversation_settings_block">Block</string>
+    <string name="conversation_settings_unblock">Unblock</string>
+    <string name="conversation_settings_remove">Delete conversation</string>
+    <string name="conversation_settings_members_count">%s members</string>
+    <string name="conversation_settings_dialog_update_name_title">Update</string>
+    <string name="conversation_settings_dialog_update_name_hint">Conversation title</string>
+    <string name="conversation_settings_dialog_update_name_update">Update</string>
+    <string name="conversation_settings_dialog_update_name_cancel">Cancel</string>
+
+    <string name="message_card_contact">Contact card</string>
+    <string name="message_option_copy">Copy</string>
+    <string name="message_option_details">Details</string>
+    <string name="message_option_removed">Remove</string>
+    <string name="message_option_resend">Resend</string>
+
+    <string name="message_details_title">Message details</string>
+    <string name="message_details_type">Type: %s</string>
+    <string name="message_details_from">From: %s</string>
+    <string name="message_details_to">To: %s</string>
+    <string name="message_details_subject">Subject: %s</string>
+    <string name="message_details_priority">Priority: %s</string>
+    <string name="message_details_size">Size: %s</string>
+    <string name="message_details_sent">Sent: %s</string>
+    <string name="message_details_received">Received: %s</string>
+    <string name="message_details_delivered">Delivered: %s</string>
+    <string name="message_details_error_code">Error code: %d</string>
+    <string name="message_status_sending">Sending…</string>
+    <string name="message_status_failed">Failed to send.</string>
+
+    <string name="message_attachment_gallery">Gallery</string>
+    <string name="message_attachment_camera">Photo</string>
+    <string name="message_attachment_file">File</string>
+    <string name="message_attachment_contact">Contact</string>
+
+    <string name="copy_message">Message copied</string>
+    <string name="copy_value">Copied</string>
+
+    <string name="recipients_title">Members of group</string>
+
+    <string name="create_conversation_search_hint">Enter a name or number</string>
+    <string name="create_conversation_button_next">Next</string>
+    <string name="create_conversation_button_create">Create</string>
+    <string name="create_conversation_contact">Contacts</string>
+    <plurals name="create_conversation_members">
+        <item quantity="one">%s member</item>
+        <item quantity="other">%s members</item>
+    </plurals>
+    <string name="create_conversation_add_contact">Add to recipients</string>
+
+    <string name="create_conversation_group_title">Create a group</string>
+    <string name="create_conversation_group_name">Name of the group</string>
+    <string name="create_conversation_group_profile">Group profile</string>
+    <string name="create_conversation_group_conversation_type">Conversation type</string>
+    <string name="create_conversation_group_button_create">Create</string>
+    <plurals name="create_conversation_group_members">
+        <item quantity="one">%s member</item>
+        <item quantity="other">%s members</item>
+    </plurals>
+    <string name="create_conversation_group_title_group">Group</string>
+    <string name="create_conversation_group_title_mailing_list">Mailing list</string>
+    <string name="create_conversation_group_describe_group">Create a group conversation in which everyone can interact with group members.</string>
+    <string name="create_conversation_group_describe_mailing_list">Send the same message to multiple recipients. \nThey will not be able to interact with each other.\nUseful when changing phone number.</string>
+
+    <string name="settings_app_title">Settings</string>
+    <string name="settings_app_theme_label">Application theme </string>
+    <string name="settings_app_theme_describe">Choose a dark theme for better visual comfort </string>
+    <string name="settings_app_archive_label">Archives</string>
+    <string name="settings_app_archive_describe">Find all your archived conversations </string>
+    <string name="settings_app_notifications_label">Notifications</string>
+    <string name="settings_app_notifications_describe">Personalize your notifications </string>
+    <string name="settings_app_synchronise_label">Synchronize messages </string>
+    <string name="settings_app_synchronise_describe">Resynchronize messages with native Android database </string>
+    <string name="settings_app_about_label">About ForestChat</string>
+    <string name="settings_app_about_describe">Version %s</string>
+    <string name="settings_app_cookies_setting_label">Configure cookies</string>
+    <string name="settings_app_cookies_setting_describe">Personalize your cookies</string>
+
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_version">Version</string>
+    <string name="settings_about_source_code">Source code of the application</string>
+    <string name="settings_about_source_contact">Contact</string>
+    <string name="settings_about_source_licence">Licence</string>
+    <string name="settings_about_source_copyright" translatable="false">Copyright</string>
+
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light theme</string>
+    <string name="settings_theme_dark">Dark theme</string>
+
+    <string name="settings_archive_title">Archive</string>
+    <string name="settings_archive_empty">No conversation archived.</string>
+
+    <string name="splash_loading">Loading conversations…</string>
+
+    <string name="conversations_ads_title">Publicity</string>
+    <string name="conversations_ads_snippet">Loading…</string>
+
 </resources>

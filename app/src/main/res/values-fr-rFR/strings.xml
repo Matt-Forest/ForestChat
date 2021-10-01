@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+
+    <string name="bottom_nav_conversation">Conversations</string>
+    <string name="bottom_nav_dashboard">Tableau de bord</string>
+    <string name="bottom_nav_add">Ajout</string>
+
+    <string name="content_describe_remove">supprimer</string>
+
+    <string name="conversations_search_hint">Recherche</string>
+    <string name="conversations_change_permission">Changer</string>
+    <string name="conversations_empty_conversation">Aucune conversation pour le moment.\nEnvoyer un message pour commencer.</string>
+    <string name="conversations_empty_search">Aucun résultat</string>
+    <string name="conversations_permission_needed_text">Plus qu\’à choisir ForestChat comme application par défaut.\n\nPas de panique ! Vous retrouverez tous vos SMS ici et vous pouvez revenir sur votre ancienne application quand vous le voulez.</string>
+    <string name="conversations_sender_user">Vous: %s</string>
+    <string name="conversations_draft">Brouillon</string>
+    <string name="conversations_ads">Pub</string>
+    <string name="conversation_option_archived">Archiver</string>
+    <string name="conversation_option_unarchived">Désarchiver</string>
+    <string name="conversation_option_deleted">Supprimer</string>
+    <string name="conversation_option_blocked">Bloquer</string>
+    <string name="conversation_option_pinned">Epingler</string>
+    <string name="conversation_option_pinned_off">Détacher</string>
+    <string name="conversation_option_mark_read">Marquer comme lu</string>
+    <string name="conversation_option_add_contact">Ajouter aux contacts</string>
+
+    <string name="conversation_delete_dialog_title">Supprimer</string>
+    <string name="conversation_delete_dialog_describe">Êtes-vous sûr de vouloir supprimer cette conversation ?</string>
+    <string name="conversation_delete_dialog_confirm">Supprimer</string>
+    <string name="conversation_delete_dialog_refuse">Annuler</string>
+
+    <string name="notification_mark_read">Marquer comme lu</string>
+    <string name="notification_reply">Répondre</string>
+
+    <string name="notification_message_failed_title">Message non envoyé</string>
+    <string name="notification_message_failed_text">Le message à %s n\'a pu être envoyé</string>
+
+    <string-array name="notification_forest_chat_responses">
+        <item>Okay</item>
+        <item>Donne moi une minute</item>
+        <item>J\'arrive</item>
+        <item>Merci</item>
+        <item>ça me semble correct</item>
+        <item>Quoi de neuf ?</item>
+        <item>Je suis d\'accord</item>
+        <item>Non</item>
+        <item>Je t\'aime</item>
+        <item>Désolé</item>
+        <item>LOL</item>
+        <item>C\'est bon</item>
+    </string-array>
+
+    <string name="conversation_message_send_hint">Ecrire un message…</string>
+    <string name="conversation_sim_toast">SIM %1$d (%2$s) sélectionné</string>
+    <string name="conversation_sim_content_describe">%s sélectionné, changer de carte SIM</string>
+
+    <string name="conversation_settings_title">Détails</string>
+    <string name="conversation_settings_group_name">Titre de la conversation</string>
+    <string name="conversation_settings_notifications">Notifications</string>
+    <string name="conversation_settings_archived">Archiver</string>
+    <string name="conversation_settings_unarchived">Désarchiver</string>
+    <string name="conversation_settings_block">Bloquer</string>
+    <string name="conversation_settings_unblock">Débloquer</string>
+    <string name="conversation_settings_remove">Supprimer la conversation</string>
+    <string name="conversation_settings_members_count">%s membres</string>
+    <string name="conversation_settings_dialog_update_name_title">Mise à jour</string>
+    <string name="conversation_settings_dialog_update_name_hint">Titre de la conversation</string>
+    <string name="conversation_settings_dialog_update_name_update">Mettre à jour</string>
+    <string name="conversation_settings_dialog_update_name_cancel">Annuler</string>
+
+    <string name="message_card_contact">Carte de contact</string>
+    <string name="message_option_copy">Copier</string>
+    <string name="message_option_details">Détails</string>
+    <string name="message_option_removed">Supprimer</string>
+    <string name="message_option_resend">Renvoyer</string>
+
+    <string name="message_details_title">Détails du message</string>
+    <string name="message_details_type">Type : %s</string>
+    <string name="message_details_from">De : %s</string>
+    <string name="message_details_to">À : %s</string>
+    <string name="message_details_subject">Objet : %s</string>
+    <string name="message_details_priority">Priorité : %s</string>
+    <string name="message_details_size">Taille : %s</string>
+    <string name="message_details_sent">Envoyé : %s</string>
+    <string name="message_details_received">Reçu : %s</string>
+    <string name="message_details_delivered">Délivré : %s</string>
+    <string name="message_details_error_code">Code erreur : %d</string>
+    <string name="message_status_sending">Envoie…</string>
+    <string name="message_status_failed">Echec de l\'envoie.</string>
+
+    <string name="message_attachment_gallery">Galerie</string>
+    <string name="message_attachment_camera">Photo</string>
+    <string name="message_attachment_file">Fichier</string>
+    <string name="message_attachment_contact">Contact</string>
+
+    <string name="copy_message">Message copié</string>
+    <string name="copy_value">Copié</string>
+
+    <string name="recipients_title">Membres du groupe</string>
+
+    <string name="create_conversation_search_hint">Entrez un nom ou un numéro</string>
+    <string name="create_conversation_button_next">Suivant</string>
+    <string name="create_conversation_button_create">Créer</string>
+    <string name="create_conversation_contact">Contacts</string>
+    <plurals name="create_conversation_members">
+        <item quantity="one">%s membre</item>
+        <item quantity="other">%s membres</item>
+    </plurals>
+    <string name="create_conversation_add_contact">Ajouter aux destinaires</string>
+
+    <string name="create_conversation_group_title">Créer un groupe</string>
+    <string name="create_conversation_group_name">Nom du groupe</string>
+    <string name="create_conversation_group_profile">Profil du groupe</string>
+    <string name="create_conversation_group_conversation_type">Type de conversation</string>
+    <string name="create_conversation_group_button_create">Créer</string>
+    <plurals name="create_conversation_group_members">
+        <item quantity="one">%s membre</item>
+        <item quantity="other">%s membres</item>
+    </plurals>
+    <string name="create_conversation_group_title_group">Groupe</string>
+    <string name="create_conversation_group_title_mailing_list">Liste de diffusion</string>
+    <string name="create_conversation_group_describe_group">Créer une conversation groupé dans laquelle chacun peut intéragir avec les membres du groupe.</string>
+    <string name="create_conversation_group_describe_mailing_list">Envoyez le même message à plusieurs destinataires.\nIls ne pourront pas intéragir entre eux.\nUtile lorsque vous changez de numéro de téléphone.</string>
+
+    <string name="settings_app_title">Paramètres</string>
+    <string name="settings_app_theme_label">Thème de l\'application</string>
+    <string name="settings_app_theme_describe">Choisissez un thème sombre pour un meilleur confort visuel</string>
+    <string name="settings_app_archive_label">Archives</string>
+    <string name="settings_app_archive_describe">Retrouver toutes vos conversations archivées</string>
+    <string name="settings_app_notifications_label">Notifications</string>
+    <string name="settings_app_notifications_describe">Personnaliser vos notifications</string>
+    <string name="settings_app_synchronise_label">Synchroniser les messages</string>
+    <string name="settings_app_synchronise_describe">Resynchroniser les messages avec la base de données Android native</string>
+    <string name="settings_app_about_label">A propos de ForestChat</string>
+    <string name="settings_app_about_describe">Version %s</string>
+    <string name="settings_app_cookies_setting_label">Paramétrer les cookies</string>
+    <string name="settings_app_cookies_setting_describe">Personaliser vos cookies</string>
+
+    <string name="settings_about_title">A propos</string>
+    <string name="settings_about_version">Version</string>
+    <string name="settings_about_source_code">Code source de l\'application</string>
+    <string name="settings_about_source_contact">Contact</string>
+    <string name="settings_about_source_licence">Licence</string>
+
+    <string name="settings_theme">Thème</string>
+    <string name="settings_theme_system">Valeur par défaut du système</string>
+    <string name="settings_theme_light">Thème clair</string>
+    <string name="settings_theme_dark">Thème sombre</string>
+
+    <string name="settings_archive_title">Archive</string>
+    <string name="settings_archive_empty">Aucun conversation archivée.</string>
+
+    <string name="splash_loading">Chargement des conversations…</string>
+
+    <string name="conversations_ads_title">Publicité</string>
+    <string name="conversations_ads_snippet">Chargement…</string>
+
+</resources>

@@ -1,0 +1,31 @@
+/*
+ * Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+ *
+ * This file is part of ForestChat.
+ *
+ * ForestChat is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ForestChat is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.forest.forestchat.ui.common.avatar
+
+sealed class AvatarType {
+
+    sealed class Single : AvatarType() {
+        object Profile : Single()
+        object Ads : Single()
+        data class Letters(val letters: String) : Single()
+        data class Image(val uri: String) : Single()
+    }
+
+    data class Group(val foreground: Single, val background: Single) : AvatarType()
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+
+    <style name="Typography" />
+
+    <style name="Typography.H6">
+        <item name="fontFamily">@font/mulish_semibold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">25.1sp</item>
+        <item name="android:letterSpacing">0.0015</item>
+    </style>
+
+    <style name="Typography.Subtitle1">
+        <item name="fontFamily">@font/mulish_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="lineHeight">20.1sp</item>
+        <item name="android:letterSpacing">0.0015</item>
+    </style>
+
+    <style name="Typography.Subtitle2">
+        <item name="fontFamily">@font/mulish_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">17.6sp</item>
+        <item name="android:letterSpacing">0.0015</item>
+    </style>
+
+    <style name="Typography.Caption">
+        <item name="fontFamily">@font/mulish_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="lineHeight">15.1sp</item>
+        <item name="android:letterSpacing">0.0312</item>
+    </style>
+
+    <style name="Typography.Button">
+        <item name="fontFamily">@font/mulish_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">17.6sp</item>
+        <item name="android:letterSpacing">0.0125</item>
+    </style>
+
+    <style name="Typography.Overline">
+        <item name="fontFamily">@font/mulish_bold</item>
+        <item name="android:textSize">10sp</item>
+        <item name="lineHeight">12.6sp</item>
+        <item name="android:letterSpacing">0.0938</item>
+    </style>
+
+</resources>

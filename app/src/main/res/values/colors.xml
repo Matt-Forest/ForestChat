@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <!-- Basic color -->
+    <color name="transparent">#FFFFFFFF</color>
+    <color name="primary">#00796B</color>
+    <color name="primary_50">#8000796B</color>
+    <color name="error">#D62839</color>
+    <color name="richeBlack">#031926</color>
+    <color name="richeBlack1">#032130</color>
+    <color name="richeBlack2">#042B3E</color>
+    <color name="richeBlack3">#05364D</color>
+    <color name="richeBlack4">#095981</color>
+    <color name="richeBlack5">#0C73A7</color>
+    <color name="richeBlack_50">#80031926</color>
+    <color name="richeBlack3_50">#8005364D</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="snow">#EDF2FB</color>
+
+    <color name="background">#FFFFFF</color>
+    <color name="bottomNavBackground">#FFFFFF</color>
+    <color name="toolbarBackground">#FFFFFF</color>
+    <color name="editTextBackground">#EDF2FB</color>
+    <color name="editTextBackground2">#EDF2FB</color>
+    <color name="bubbleBackground">#EDF2FB</color>
+    <color name="attachmentCardBackground">#EDF2FB</color>
+    <color name="attachmentBackground">#FFFFFF</color>
+    <color name="text">#031926</color>
+    <color name="text_50">#80031926</color>
+    <color name="divider">#1A031926</color>
+    <color name="dialogBackground">#FFFFFF</color>
+    <color name="avatarBackground">#00796B</color>
+
 </resources>

@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M9,11C11.2091,11 13,9.2091 13,7C13,4.7909 11.2091,3 9,3C6.7909,3 5,4.7909 5,7C5,9.2091 6.7909,11 9,11Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="#031926"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M3,21V19C3,17.9391 3.4214,16.9217 4.1716,16.1716C4.9217,15.4214 5.9391,15 7,15H11C12.0609,15 13.0783,15.4214 13.8284,16.1716C14.5786,16.9217 15,17.9391 15,19V21"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="#031926"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M19,8V14M16,11H22H16Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeColor="#031926"
+        android:strokeLineCap="round"/>
+</vector>
+

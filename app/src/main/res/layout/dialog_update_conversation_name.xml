@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2021 Matthieu Bouquet <matthieu@forestchat.org>
+  ~
+  ~ This file is part of ForestChat.
+  ~
+  ~ ForestChat is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ForestChat is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ForestChat.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    app:cardBackgroundColor="@color/dialogBackground"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="16dp"
+    tools:layout_width="300dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Typography.H6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingHorizontal="16dp"
+            android:text="@string/conversation_settings_dialog_update_name_title"
+            android:textColor="@color/text" />
+
+        <EditText
+            android:id="@+id/updateTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:foregroundTint="@color/edit_text_tint_selector"
+            android:hint="@string/conversation_settings_dialog_update_name_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp" />
+
+        <TextView
+            android:id="@+id/confirm"
+            style="@style/Typography.Button"
+            android:layout_width="match_parent"
+            android:layout_height="52sp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:text="@string/conversation_settings_dialog_update_name_update"
+            android:textAllCaps="true"
+            android:textColor="@color/text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:id="@+id/refuse"
+            style="@style/Typography.Button"
+            android:layout_width="match_parent"
+            android:layout_height="52sp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:text="@string/conversation_settings_dialog_update_name_cancel"
+            android:textAllCaps="true"
+            android:textColor="@color/text" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

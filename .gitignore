@@ -9,9 +9,11 @@ bin/
 gen/
 .idea/
 *.iml
+*.aab
 out
 tests
 local.properties
+keystore.properties
 ant.properties
 .DS_Store
 build.log
@@ -26,3 +28,9 @@ test/androidTestEspresso/res/values/arrays.xml
 obj/
 jni/libspeex/.deps/
 pkcs11.password
+app/schemas
+app/prodForestChat
+app/src/prodForestChat/google-services.json
+app/src/devForestChat/google-services.json
+app/src/main/res/values/secret.xml
+app/src/devForestChat/res/values/secret.xml
